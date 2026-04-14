@@ -760,7 +760,7 @@ if (!showReport) {
       {/* Hero Header — minimal */}
       <div style={{ position: "sticky", top: 0, zIndex: 10, padding: "10px 16px 8px", marginBottom: 10 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-     <div style={{ display: "flex", alignItems: "center", gap: 6 }}><Logo /><span style={{ fontSize: 9, color: C.muted, opacity: 0.6 }}>by JMJ Invest LLC</span></div>
+     <div style={{ display: "flex", alignItems: "center", gap: 6 }}><Logo /><span style={{ fontSize: 9, color: C.muted, opacity: 0.6 }}>by JMJ</span></div>
      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
        <button onClick={() => { handleCopyExport(); setSaveMsg("✅ 已保存到剪贴板"); setTimeout(() => setSaveMsg(""), 2000); }} style={{ padding: "2px 8px", cursor: "pointer", fontFamily: "inherit", fontSize: 8, fontWeight: 700, border: "none", borderRadius: 10, background: C.green, color: "#fff", height: 22, display: "flex", alignItems: "center", gap: 2 }}>💾 存档</button>
        <button onClick={() => setSaveModal("import")} style={{ padding: "2px 8px", cursor: "pointer", fontFamily: "inherit", fontSize: 8, fontWeight: 700, border: "none", borderRadius: 10, background: C.blue, color: "#fff", height: 22, display: "flex", alignItems: "center", gap: 2 }}>📂 读档</button>
@@ -1348,7 +1348,7 @@ if (!showReport) {
      <div>税后CoC = (净CF + 税盾) / TCI</div>
         </div>}</div>
       <div style={{ textAlign: "center", fontSize: 7, color: C.muted, marginBottom: 24, letterSpacing: "0.04em", lineHeight: 1.6, padding: "0 14px", opacity: 0.6 }}>
-        © JMJ Invest LLC · All Rights Reserved</div>
+        © JMJ · All Rights Reserved</div>
       {saveModal === "import" && (
     <div style={overlay} onClick={() => setSaveModal(null)}>
       <div style={mBox} onClick={e => e.stopPropagation()}>
