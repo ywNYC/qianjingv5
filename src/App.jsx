@@ -1,9 +1,9 @@
-import React, { useState, useMemo, useEffect, useRef, useCallback, startTransition } from “react”;
+import React, { useState, useMemo, useEffect, useRef, useCallback, startTransition } from "react";
 import {
 ComposedChart, Line, Bar, XAxis, YAxis,
 CartesianGrid, Tooltip, Legend, ReferenceLine, ReferenceArea, ResponsiveContainer,
 RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-} from “recharts”;
+} from "recharts";
 
 function monthlyPI(P, annRate, yrs) {
 if (annRate === 0) return P / (yrs * 12);
@@ -15,24 +15,24 @@ if (annRate === 0) return P - (P / (yrs * 12)) * (yearsElapsed * 12);
 const r = annRate / 100 / 12, n = yrs * 12, m = yearsElapsed * 12;
 return monthlyPI(P, annRate, yrs) * (1 - Math.pow(1 + r, -(n - m))) / r;}
 function fmtMoney(n) {
-if (!isFinite(n)) return “\u2014”;
+if (!isFinite(n)) return "\u2014";
 const neg = n < 0, a = Math.abs(n);
 let s;
-if (a < 1000) s = “$” + Math.round(a);
-else if (a < 1000000) s = “$” + (a / 1000).toFixed(2) + “K”;
-else s = “$” + (a / 1000000).toFixed(2) + “M”;
-return neg ? “-” + s : s;}
+if (a < 1000) s = "$" + Math.round(a);
+else if (a < 1000000) s = "$" + (a / 1000).toFixed(2) + "K";
+else s = "$" + (a / 1000000).toFixed(2) + "M";
+return neg ? "-" + s : s;}
 function fmtNum(n) {
-if (!isFinite(n)) return “\u2014”;
+if (!isFinite(n)) return "\u2014";
 const a = Math.abs(n);
 if (a < 1000) return String(Math.round(a));
-if (a < 1000000) return (a / 1000).toFixed(1) + “K”;
-return (a / 1000000).toFixed(2) + “M”;}
-function fmtPct(n) { return n.toFixed(2) + “%”; }
-function moToYrMo(mo) { return Math.floor(mo / 12) + “yr “ + (mo % 12) + “mo”; }
+if (a < 1000000) return (a / 1000).toFixed(1) + "K";
+return (a / 1000000).toFixed(2) + "M";}
+function fmtPct(n) { return n.toFixed(2) + "%"; }
+function moToYrMo(mo) { return Math.floor(mo / 12) + "yr " + (mo % 12) + "mo"; }
 function getAgeSavings(age) {
 const t = [[20,500],[25,8000],[30,22000],[35,45000],[40,78000],[45,115000],[50,160000],[55,210000],[60,270000],[65,350000]];
-for (let i = t.length - 1; i >= 0; i–) {
+for (let i = t.length - 1; i >= 0; i--) {
 if (age >= t[i][0]) {
 if (i < t.length - 1) {
 const [a1, s1] = [t[i][0], t[i][1]], [a2, s2] = [t[i + 1][0], t[i + 1][1]];
@@ -48,40 +48,39 @@ const pct = fiGoal > 0 ? Math.min((payload.monthlyTotalPsv || 0) / fiGoal, 1) : 
 const fillOp = inFire ? 0.12 + pct * 0.28 : pct * 0.15;
 return (
 <g>
-<rect x={x} y={y} width={Math.max(width, 1)} height={height} fill=”#E07830” fillOpacity={fillOp} rx={1} />
-{!inFire && <rect x={x} y={y} width={Math.max(width, 1)} height={height} fill=“none” stroke=”#E07830” strokeWidth={0.8} strokeDasharray=“3 3” opacity={0.35} rx={1} />}
+<rect x={x} y={y} width={Math.max(width, 1)} height={height} fill="#E07830" fillOpacity={fillOp} rx={1} />
+{!inFire && <rect x={x} y={y} width={Math.max(width, 1)} height={height} fill="none" stroke="#E07830" strokeWidth={0.8} strokeDasharray="3 3" opacity={0.35} rx={1} />}
 </g>
 );}
 
 const pF = v => parseFloat(v) || 0;
 const pI = v => parseInt(v) || 0;
 const C = {
-bg: “#FAF9F6”, surface: “#FFFFFF”, inset: “#F0EDE8”,
-border: “#D1D1D6”, borderIn: “#C7C7CC”, accent: “#8B6F5E”,
-text: “#1C1C1E”, sub: “#636366”, muted: “#8E8E93”,
-blue: “#007AFF”, green: “#34C759”, orange: “#FF9500”, red: “#FF3B30”,
-cta: “#8B6F5E”,
+bg: "#FAF9F6", surface: "#FFFFFF", inset: "#F0EDE8",
+border: "#D1D1D6", borderIn: "#C7C7CC", accent: "#8B6F5E",
+text: "#1C1C1E", sub: "#636366", muted: "#8E8E93",
+blue: "#007AFF", green: "#34C759", orange: "#FF9500", red: "#FF3B30",
+cta: "#8B6F5E",
 };
-const FG6 = { display: “flex”, gap: 6 };
-const FG4 = { display: “flex”, gap: 4 };
-const FG8 = { display: “flex”, gap: 8 };
-const FAC = { display: “flex”, alignItems: “center”, gap: 3 };
-const FACB = (mb) => ({ display: “flex”, alignItems: “center”, justifyContent: “space-between”, marginBottom: mb || 4 });
-const GOLD = { display: “flex”, alignItems: “center”, height: 38, background: “#fff”, borderRadius: 8, padding: “0 10px”, border: “1px solid “ + C.border, boxSizing: “border-box” };
-const PILL = (bg) => ({ display: “inline-flex”, alignItems: “center”, gap: 3, background: bg, borderRadius: 10, padding: “2px 8px”, marginBottom: 4 });
-const SEC = (border) => ({ background: “#FAF9F6”, borderRadius: 12, padding: “6px 10px”, marginBottom: 4, overflow: “hidden”, borderLeft: “3px solid “ + border });
+const FG6 = { display: "flex", gap: 6 };
+const FG4 = { display: "flex", gap: 4 };
+const FG8 = { display: "flex", gap: 8 };
+const FAC = { display: "flex", alignItems: "center", gap: 3 };
+const FACB = (mb) => ({ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: mb || 4 });
+const GOLD = { display: "flex", alignItems: "center", height: 38, background: "#fff", borderRadius: 8, padding: "0 10px", border: "1px solid " + C.border, boxSizing: "border-box" };
+const PILL = (bg) => ({ display: "inline-flex", alignItems: "center", gap: 3, background: bg, borderRadius: 10, padding: "2px 8px", marginBottom: 4 });
+const SEC = (border) => ({ background: "#FAF9F6", borderRadius: 12, padding: "6px 10px", marginBottom: 4, overflow: "hidden", borderLeft: "3px solid " + border });
 const EXP_RATIOS = [0.30, 0.35, 0.40, 0.45];
-const EXP_LABELS = [“30% \u81ea\u7ba1\u00b7\u4e0d\u5305”, “35% \u81ea\u7ba1\u00b7\u5305”, “40% \u6258\u7ba1\u00b7\u4e0d\u5305”, “45% \u6258\u7ba1\u00b7\u5305”, “\u81ea\u5b9a\u4e49”];
+const EXP_LABELS = ["30% \u81ea\u7ba1\u00b7\u4e0d\u5305", "35% \u81ea\u7ba1\u00b7\u5305", "40% \u6258\u7ba1\u00b7\u4e0d\u5305", "45% \u6258\u7ba1\u00b7\u5305", "\u81ea\u5b9a\u4e49"];
 
-function NumInp({ label, val, setVal, prefix = “”, suffix = “”, money = false, decimals = null, style = {} }) {
+function NumInp({ label, val, setVal, prefix = "", suffix = "", money = false, decimals = null, style = {} }) {
 const [editing, setEditing] = useState(false);
 let displayVal;
-if (editing || val === “”) displayVal = val;
-else if (money) displayVal = (parseFloat(val) || 0).toLocaleString(“en-US”, { maximumFractionDigits: 0 });
+if (editing || val === "") displayVal = val;
+else if (money) displayVal = (parseFloat(val) || 0).toLocaleString("en-US", { maximumFractionDigits: 0 });
 else if (decimals !== null) { const n = parseFloat(val); displayVal = isNaN(n) ? val : n.toFixed(decimals); }
 else displayVal = val;
 return (
-
 <div style={style}>
 {label && <div style={{ fontSize: 9.5, color: C.muted, fontWeight: 500, marginBottom: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{label}</div>}
 <div style={{ display: "flex", alignItems: "center", height: 32, background: C.inset, borderRadius: 8, padding: "0 8px" }}>
@@ -145,6 +144,10 @@ const [portfolio, setPortfolio] = useState([
 { id: 1, listP: "500000", saleP: "450000", type: "sf", mfUnits: "2", unitRents: ["9700"], purchaseYear: "2022", purchaseMonth: "1", purchaseDay: "15" },
 ]);
 const [downPct, setDownPct] = useState("20"); const [downMode, setDownMode] = useState("pct"); const [downAmt, setDownAmt] = useState(""); const [annRate, setAnnRate] = useState("6.875"); const [loanYrs, setLoanYrs] = useState("30"); const [closing, setClosing] = useState("20000"); const [expIdx, setExpIdx] = useState(1); const [hmAmt, setHmAmt] = useState("0"); const [hmRate, setHmRate] = useState("10"); const [capRate, setCapRate] = useState("8"); const [modal, setModal] = useState(null); const [wfViewAll, setWfViewAll] = useState(true); const [scnInc, setScnInc] = useState(0); const [scnSav, setScnSav] = useState(0); const [scnTgt, setScnTgt] = useState(0); const [modalXtra, setModalXtra] = useState(0); const [showReport, setShowReport] = useState(false); const [userName, setUserName] = useState(""); const [propAddress, setPropAddress] = useState(""); const [showFormulas, setShowFormulas] = useState(false); const [showGuide, setShowGuide] = useState(false); const [introMode, setIntroMode] = useState(""); const [wantHome, setWantHome] = useState(false); const [wantFire, setWantFire] = useState(false); const [wantInvest, setWantInvest] = useState(false); const [extraPmt, setExtraPmt] = useState("0"); const [homeExtraPmt, setHomeExtraPmt] = useState("0"); const [wYears, setWYears] = useState("30"); const [birthYear, setBirthYear] = useState("2000"); const [birthMonth, setBirthMonth] = useState("1"); const [selSimIdx, setSelSimIdx] = useState(null);
+const [rptStep, setRptStep] = useState(0);
+const [rptYear, setRptYear] = useState("2036");
+const [rptPrepay, setRptPrepay] = useState(0);
+const [rptStyle, setRptStyle] = useState("list");
 const userAge = String(Math.max(0, new Date().getFullYear() - (parseInt(birthYear)||2000) - (parseInt(birthMonth) > new Date().getMonth()+1 ? 1 : 0)));
 const setUserAge = () => {};
 const [appRate, setAppRate] = useState("3"); const [showStockComp, setShowStockComp] = useState(true); const [showInflAdj, setShowInflAdj] = useState(true); const [showNominal, setShowNominal] = useState(false); const [stockCAGR, setStockCAGR] = useState("8"); const [stockSWR, setStockSWR] = useState("4"); const [calcMode, setCalcMode] = useState("invest"); const [propMode, setPropMode] = useState("buy"); const [purchaseYear, setPurchaseYear] = useState("2022"); const [purchaseMonth, setPurchaseMonth] = useState("1"); const [purchaseDay, setPurchaseDay] = useState("15"); const [alreadyBought, setAlreadyBought] = useState(true); const [investOwn, setInvestOwn] = useState("100"); const [homeOwn, setHomeOwn] = useState("100"); const [hmEnabled, setHmEnabled] = useState(false); const [investOther, setInvestOther] = useState("0"); const [investExtras, setInvestExtras] = useState([]); const [portfolioCollapsed, setPortfolioCollapsed] = useState(true); const [homeHasLoan, setHomeHasLoan] = useState(true); const [homeDownPct, setHomeDownPct] = useState("20"); const [homeAnnRate, setHomeAnnRate] = useState("6.75"); const [homeLoanYrs, setHomeLoanYrs] = useState("30"); const [homeClosing, setHomeClosing] = useState("30000"); const [homeRenovation, setHomeRenovation] = useState("0"); const [homePurchaseYear, setHomePurchaseYear] = useState(""); const [homePurchaseMonth, setHomePurchaseMonth] = useState("1"); const [landPct, setLandPct] = useState("20"); const [costSeg, setCostSeg] = useState(false); const [taxRate, setTaxRate] = useState("24"); const [arv, setArv] = useState(""); const [refiLtv, setRefiLtv] = useState("75"); const [refiRate, setRefiRate] = useState(""); const [renoAmt, setRenoAmt] = useState("60000"); const [homeInsurance, setHomeInsurance] = useState("0"); const [homeTax, setHomeTax] = useState("0"); const [homeUtils, setHomeUtils] = useState("0"); const [homeMaint, setHomeMaint] = useState("0"); const [poolRate, setPoolRate] = useState("4"); const [ffMode, setFfMode] = useState("income"); const [compoundMode, setCompoundMode] = useState("mix"); const [ffIncomeTgt, setFfIncomeTgt] = useState("10000"); const [ffWealthTgt, setFfWealthTgt] = useState("3000000"); const [ffWithdraw, setFfWithdraw] = useState("8000"); const [initSavings, setInitSavings] = useState("80000"); const [annualIncome, setAnnualIncome] = useState("100000"); const [savingsRate, setSavingsRate] = useState("8"); const [k401Balance, setK401Balance] = useState("40000"); const [k401CAGR, setK401CAGR] = useState("8"); const [k401DrawAge, setK401DrawAge] = useState("60"); const [k401Penalty, setK401Penalty] = useState(false); const [k401SWR, setK401SWR] = useState("4"); const [ssWorkStart, setSsWorkStart] = useState("24"); const [ssClaimAge, setSsClaimAge] = useState("67"); const [showIncomeLine, setShowIncomeLine] = useState(true); const [bankSavings, setBankSavings] = useState("50000"); const [cdRate, setCdRate] = useState("4"); const [savingsAlloc, setSavingsAlloc] = useState("compare"); const [bankWithdrawPct, setBankWithdrawPct] = useState("0"); const [compoundYears, setCompoundYears] = useState("44"); const [stockAccount, setStockAccount] = useState("30000"); const [retireAge, setRetireAge] = useState(""); const [retireManual, setRetireManual] = useState(false); const [savBankPct, setSavBankPct] = useState("10"); const [savStockPct, setSavStockPct] = useState("44"); const [savREPct, setSavREPct] = useState("40"); const [sav401Pct, setSav401Pct] = useState("6"); const [savInvestPrepay, setSavInvestPrepay] = useState("0"); const [savHomePrepay, setSavHomePrepay] = useState("0"); const [incomeGrowth, setIncomeGrowth] = useState("3"); const [effectiveTax, setEffectiveTax] = useState("15"); const [inflRate, setInflRate] = useState("2"); const [gender, setGender] = useState("M"); const [marital, setMarital] = useState("single"); const [dependents, setDependents] = useState("0"); const [city, setCity] = useState("New York"); const [currency, setCurrency] = useState("USD");
@@ -245,193 +248,193 @@ const trackEvent = useCallback((mode, extraData) => {
 }, [userGeo, currency, city, saleP, unitRents, downPct, annRate, loanYrs, closing, investOwn, alreadyBought, mfUnits, propType, homeSaleP, homeDownPct, homeAnnRate, homeLoanYrs, homePropType, homeHasLoan, annualIncome, savingsRate, retireAge, birthYear, compoundMode, initSavings, k401Balance, stockAccount, bankSavings]);
 
 const searchPropertyTax = async (address) => {
-if (!address || address.length < 5) { setAiResult({ notes: “请输入完整地址” }); return; }
-setAiSearching(true);
-setAiResult(null);
-try {
-var resp = await fetch(“https://api.anthropic.com/v1/messages”, {
-method: “POST”,
-headers: { “Content-Type”: “application/json” },
-body: JSON.stringify({
-model: “claude-sonnet-4-20250514”,
-max_tokens: 1000,
-messages: [{
-role: “user”,
-content: “For US property: “ + address + “\nEstimate annual property tax, tax rate %, assessed value, annual insurance.\nRespond ONLY with JSON, no other text:\n{"tax_annual":0,"tax_rate":0,"insurance_annual":0,"assessed_value":0,"notes":""}”
-}]
-})});
-var rawBody = await resp.text();
-if (!resp.ok) {
-setAiResult({ notes: “HTTP” + resp.status + “: “ + rawBody.substring(0, 80) });
-setAiSearching(false);
-return;}
-var data = JSON.parse(rawBody);
-if (data.error) {
-setAiResult({ notes: “API: “ + (data.error.message || rawBody.substring(0, 80)) });
-setAiSearching(false);
-return;}
-var blocks = data.content || [];
-var txt = “”;
-for (var i = 0; i < blocks.length; i++) {
-if (blocks[i].text) txt += blocks[i].text;}
-txt = txt.trim();
-if (!txt) {
-var bt = [];
-for (var j = 0; j < blocks.length; j++) bt.push(blocks[j].type || “?”);
-setAiResult({ notes: “无文本: types=” + bt.join(”,”) });
-setAiSearching(false);
-return;}
-var clean = txt.replace(/`json/g, "").replace(/`/g, “”).trim();
-var m = clean.match(/{[\s\S]*}/);
-if (!m) {
-setAiResult({ notes: “非JSON: “ + clean.substring(0, 60) });
-setAiSearching(false);
-return;}
-var parsed = JSON.parse(m[0]);
-setAiResult(parsed);
-if (parsed.tax_annual) setTaxMo(String(Math.round(parsed.tax_annual / 12)));
-if (parsed.insurance_annual) setInsuranceMo(String(Math.round(parsed.insurance_annual / 12)));
-} catch (err) {
-setAiResult({ notes: “失败: “ + String(err).substring(0, 100) });}
-setAiSearching(false);
+  if (!address || address.length < 5) { setAiResult({ notes: "请输入完整地址" }); return; }
+  setAiSearching(true);
+  setAiResult(null);
+  try {
+    var resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{
+     role: "user",
+     content: "For US property: " + address + "\nEstimate annual property tax, tax rate %, assessed value, annual insurance.\nRespond ONLY with JSON, no other text:\n{\"tax_annual\":0,\"tax_rate\":0,\"insurance_annual\":0,\"assessed_value\":0,\"notes\":\"\"}"
+        }]
+      })});
+    var rawBody = await resp.text();
+    if (!resp.ok) {
+      setAiResult({ notes: "HTTP" + resp.status + ": " + rawBody.substring(0, 80) });
+      setAiSearching(false);
+      return;}
+    var data = JSON.parse(rawBody);
+    if (data.error) {
+      setAiResult({ notes: "API: " + (data.error.message || rawBody.substring(0, 80)) });
+      setAiSearching(false);
+      return;}
+    var blocks = data.content || [];
+    var txt = "";
+    for (var i = 0; i < blocks.length; i++) {
+      if (blocks[i].text) txt += blocks[i].text;}
+    txt = txt.trim();
+    if (!txt) {
+      var bt = [];
+      for (var j = 0; j < blocks.length; j++) bt.push(blocks[j].type || "?");
+      setAiResult({ notes: "无文本: types=" + bt.join(",") });
+      setAiSearching(false);
+      return;}
+    var clean = txt.replace(/```json/g, "").replace(/```/g, "").trim();
+    var m = clean.match(/\{[\s\S]*\}/);
+    if (!m) {
+      setAiResult({ notes: "非JSON: " + clean.substring(0, 60) });
+      setAiSearching(false);
+      return;}
+    var parsed = JSON.parse(m[0]);
+    setAiResult(parsed);
+    if (parsed.tax_annual) setTaxMo(String(Math.round(parsed.tax_annual / 12)));
+    if (parsed.insurance_annual) setInsuranceMo(String(Math.round(parsed.insurance_annual / 12)));
+  } catch (err) {
+    setAiResult({ notes: "失败: " + String(err).substring(0, 100) });}
+  setAiSearching(false);
 };
-const [saveMsg, setSaveMsg] = useState(””); const [importText, setImportText] = useState(””);
+const [saveMsg, setSaveMsg] = useState(""); const [importText, setImportText] = useState("");
 
 const getStateSnapshot = () => ({
-listP, saleP, propType, mfUnits, unitRents, homeListP, homeSaleP, homePropType,
-homeMfUnits, homeUnitRents, rentPeriod, downPct, annRate, loanYrs, closing,
-expIdx, hmAmt, hmRate, capRate, extraPmt, wYears, birthYear, birthMonth,
-appRate, stockCAGR, stockSWR, calcMode, propMode, purchaseYear, purchaseMonth, purchaseDay, alreadyBought,
-investOwn, homeOwn, hmEnabled, investOther, investExtras, landPct, taxRate, arv, refiLtv,
-refiRate, renoAmt, homeInsurance, homeTax, homeUtils, homeMaint, poolRate,
-ffMode, compoundMode, ffIncomeTgt, ffWealthTgt, ffWithdraw, initSavings,
-annualIncome, savingsRate, k401Balance, k401CAGR, k401DrawAge, k401Penalty,
-k401SWR, ssWorkStart, ssClaimAge, bankSavings, cdRate, bankWithdrawPct,
-compoundYears, stockAccount, retireAge, retireManual, savBankPct, savStockPct,
-savREPct, sav401Pct, incomeGrowth, effectiveTax, inflRate, gender, marital,
-dependents, city, currency, vacancyPct, maintMo, mgmtPct, taxMo, insuranceMo,
-utilitiesMo, otherMo, showStockComp, showInflAdj, showNominal, showIncomeLine,
-homeHasLoan, homeDownPct, homeAnnRate, homeLoanYrs, homeClosing, homeRenovation,
-homePurchaseYear, homePurchaseMonth, homeHoa, homeCoopMaint, homeRentMo, homeCostGrowth,
-homePmiRate, expSlider, expDetail, hoaMo, portfolioMode, wantInvest, wantHome, wantFire, introMode,
-modalXtra, userName, propAddress, savInvestPrepay, savHomePrepay,
+  listP, saleP, propType, mfUnits, unitRents, homeListP, homeSaleP, homePropType,
+  homeMfUnits, homeUnitRents, rentPeriod, downPct, annRate, loanYrs, closing,
+  expIdx, hmAmt, hmRate, capRate, extraPmt, wYears, birthYear, birthMonth,
+  appRate, stockCAGR, stockSWR, calcMode, propMode, purchaseYear, purchaseMonth, purchaseDay, alreadyBought,
+  investOwn, homeOwn, hmEnabled, investOther, investExtras, landPct, taxRate, arv, refiLtv,
+  refiRate, renoAmt, homeInsurance, homeTax, homeUtils, homeMaint, poolRate,
+  ffMode, compoundMode, ffIncomeTgt, ffWealthTgt, ffWithdraw, initSavings,
+  annualIncome, savingsRate, k401Balance, k401CAGR, k401DrawAge, k401Penalty,
+  k401SWR, ssWorkStart, ssClaimAge, bankSavings, cdRate, bankWithdrawPct,
+  compoundYears, stockAccount, retireAge, retireManual, savBankPct, savStockPct,
+  savREPct, sav401Pct, incomeGrowth, effectiveTax, inflRate, gender, marital,
+  dependents, city, currency, vacancyPct, maintMo, mgmtPct, taxMo, insuranceMo,
+  utilitiesMo, otherMo, showStockComp, showInflAdj, showNominal, showIncomeLine,
+  homeHasLoan, homeDownPct, homeAnnRate, homeLoanYrs, homeClosing, homeRenovation,
+  homePurchaseYear, homePurchaseMonth, homeHoa, homeCoopMaint, homeRentMo, homeCostGrowth,
+  homePmiRate, expSlider, expDetail, hoaMo, portfolioMode, wantInvest, wantHome, wantFire, introMode,
+  modalXtra, userName, propAddress, savInvestPrepay, savHomePrepay,
 });
 
 const applyState = (saved) => {
-const S = {
-listP: setListP, saleP: setSaleP, propType: setPropType, mfUnits: setMfUnits,
-unitRents: setUnitRents, homeListP: setHomeListP, homeSaleP: setHomeSaleP,
-homePropType: setHomePropType, homeMfUnits: setHomeMfUnits,
-homeUnitRents: setHomeUnitRents, rentPeriod: setRentPeriod, downPct: setDownPct,
-annRate: setAnnRate, loanYrs: setLoanYrs, closing: setClosing, expIdx: setExpIdx,
-hmAmt: setHmAmt, hmRate: setHmRate, capRate: setCapRate, extraPmt: setExtraPmt,
-wYears: setWYears, birthYear: setBirthYear, birthMonth: setBirthMonth,
-appRate: setAppRate, stockCAGR: setStockCAGR, stockSWR: setStockSWR,
-calcMode: setCalcMode, propMode: setPropMode, purchaseYear: setPurchaseYear,
-purchaseMonth: setPurchaseMonth, purchaseDay: setPurchaseDay, alreadyBought: setAlreadyBought, investOwn: setInvestOwn, homeOwn: setHomeOwn,
-hmEnabled: setHmEnabled, investOther: setInvestOther, investExtras: setInvestExtras, landPct: setLandPct,
-taxRate: setTaxRate, arv: setArv, refiLtv: setRefiLtv, refiRate: setRefiRate,
-renoAmt: setRenoAmt, homeInsurance: setHomeInsurance, homeTax: setHomeTax,
-homeUtils: setHomeUtils, homeMaint: setHomeMaint, poolRate: setPoolRate,
-ffMode: setFfMode, compoundMode: setCompoundMode, ffIncomeTgt: setFfIncomeTgt,
-ffWealthTgt: setFfWealthTgt, ffWithdraw: setFfWithdraw,
-initSavings: setInitSavings, annualIncome: setAnnualIncome,
-savingsRate: setSavingsRate, k401Balance: setK401Balance, k401CAGR: setK401CAGR,
-k401DrawAge: setK401DrawAge, k401Penalty: setK401Penalty, k401SWR: setK401SWR,
-ssWorkStart: setSsWorkStart, ssClaimAge: setSsClaimAge,
-bankSavings: setBankSavings, cdRate: setCdRate,
-bankWithdrawPct: setBankWithdrawPct, compoundYears: setCompoundYears,
-stockAccount: setStockAccount, retireAge: setRetireAge,
-retireManual: setRetireManual, savBankPct: setSavBankPct,
-savStockPct: setSavStockPct, savREPct: setSavREPct, sav401Pct: setSav401Pct,
-incomeGrowth: setIncomeGrowth, effectiveTax: setEffectiveTax,
-inflRate: setInflRate, gender: setGender, marital: setMarital,
-dependents: setDependents, city: setCity, currency: setCurrency,
-vacancyPct: setVacancyPct, maintMo: setMaintMo, mgmtPct: setMgmtPct,
-taxMo: setTaxMo, insuranceMo: setInsuranceMo, utilitiesMo: setUtilitiesMo,
-otherMo: setOtherMo, showStockComp: setShowStockComp,
-showInflAdj: setShowInflAdj, showNominal: setShowNominal,
-showIncomeLine: setShowIncomeLine,
-homeHasLoan: setHomeHasLoan, homeDownPct: setHomeDownPct, homeAnnRate: setHomeAnnRate,
-homeLoanYrs: setHomeLoanYrs, homeClosing: setHomeClosing, homeRenovation: setHomeRenovation,
-homePurchaseYear: setHomePurchaseYear, homePurchaseMonth: setHomePurchaseMonth,
-homeHoa: setHomeHoa, homeCoopMaint: setHomeCoopMaint, homeRentMo: setHomeRentMo,
-homeCostGrowth: setHomeCostGrowth, homePmiRate: setHomePmiRate,
-expSlider: setExpSlider, expDetail: setExpDetail, hoaMo: setHoaMo,
-portfolioMode: setPortfolioMode, wantInvest: setWantInvest, wantHome: setWantHome, wantFire: setWantFire, introMode: setIntroMode,
-modalXtra: setModalXtra, userName: setUserName, propAddress: setPropAddress,
-savInvestPrepay: setSavInvestPrepay, savHomePrepay: setSavHomePrepay,
-};
-for (const [key, setter] of Object.entries(S)) {
-if (saved[key] !== undefined) setter(saved[key]);}
+  const S = {
+    listP: setListP, saleP: setSaleP, propType: setPropType, mfUnits: setMfUnits,
+    unitRents: setUnitRents, homeListP: setHomeListP, homeSaleP: setHomeSaleP,
+    homePropType: setHomePropType, homeMfUnits: setHomeMfUnits,
+    homeUnitRents: setHomeUnitRents, rentPeriod: setRentPeriod, downPct: setDownPct,
+    annRate: setAnnRate, loanYrs: setLoanYrs, closing: setClosing, expIdx: setExpIdx,
+    hmAmt: setHmAmt, hmRate: setHmRate, capRate: setCapRate, extraPmt: setExtraPmt,
+    wYears: setWYears, birthYear: setBirthYear, birthMonth: setBirthMonth,
+    appRate: setAppRate, stockCAGR: setStockCAGR, stockSWR: setStockSWR,
+    calcMode: setCalcMode, propMode: setPropMode, purchaseYear: setPurchaseYear,
+    purchaseMonth: setPurchaseMonth, purchaseDay: setPurchaseDay, alreadyBought: setAlreadyBought, investOwn: setInvestOwn, homeOwn: setHomeOwn,
+    hmEnabled: setHmEnabled, investOther: setInvestOther, investExtras: setInvestExtras, landPct: setLandPct,
+    taxRate: setTaxRate, arv: setArv, refiLtv: setRefiLtv, refiRate: setRefiRate,
+    renoAmt: setRenoAmt, homeInsurance: setHomeInsurance, homeTax: setHomeTax,
+    homeUtils: setHomeUtils, homeMaint: setHomeMaint, poolRate: setPoolRate,
+    ffMode: setFfMode, compoundMode: setCompoundMode, ffIncomeTgt: setFfIncomeTgt,
+    ffWealthTgt: setFfWealthTgt, ffWithdraw: setFfWithdraw,
+    initSavings: setInitSavings, annualIncome: setAnnualIncome,
+    savingsRate: setSavingsRate, k401Balance: setK401Balance, k401CAGR: setK401CAGR,
+    k401DrawAge: setK401DrawAge, k401Penalty: setK401Penalty, k401SWR: setK401SWR,
+    ssWorkStart: setSsWorkStart, ssClaimAge: setSsClaimAge,
+    bankSavings: setBankSavings, cdRate: setCdRate,
+    bankWithdrawPct: setBankWithdrawPct, compoundYears: setCompoundYears,
+    stockAccount: setStockAccount, retireAge: setRetireAge,
+    retireManual: setRetireManual, savBankPct: setSavBankPct,
+    savStockPct: setSavStockPct, savREPct: setSavREPct, sav401Pct: setSav401Pct,
+    incomeGrowth: setIncomeGrowth, effectiveTax: setEffectiveTax,
+    inflRate: setInflRate, gender: setGender, marital: setMarital,
+    dependents: setDependents, city: setCity, currency: setCurrency,
+    vacancyPct: setVacancyPct, maintMo: setMaintMo, mgmtPct: setMgmtPct,
+    taxMo: setTaxMo, insuranceMo: setInsuranceMo, utilitiesMo: setUtilitiesMo,
+    otherMo: setOtherMo, showStockComp: setShowStockComp,
+    showInflAdj: setShowInflAdj, showNominal: setShowNominal,
+    showIncomeLine: setShowIncomeLine,
+    homeHasLoan: setHomeHasLoan, homeDownPct: setHomeDownPct, homeAnnRate: setHomeAnnRate,
+    homeLoanYrs: setHomeLoanYrs, homeClosing: setHomeClosing, homeRenovation: setHomeRenovation,
+    homePurchaseYear: setHomePurchaseYear, homePurchaseMonth: setHomePurchaseMonth,
+    homeHoa: setHomeHoa, homeCoopMaint: setHomeCoopMaint, homeRentMo: setHomeRentMo,
+    homeCostGrowth: setHomeCostGrowth, homePmiRate: setHomePmiRate,
+    expSlider: setExpSlider, expDetail: setExpDetail, hoaMo: setHoaMo,
+    portfolioMode: setPortfolioMode, wantInvest: setWantInvest, wantHome: setWantHome, wantFire: setWantFire, introMode: setIntroMode,
+    modalXtra: setModalXtra, userName: setUserName, propAddress: setPropAddress,
+    savInvestPrepay: setSavInvestPrepay, savHomePrepay: setSavHomePrepay,
+  };
+  for (const [key, setter] of Object.entries(S)) {
+    if (saved[key] !== undefined) setter(saved[key]);}
 };
 
 const handleCopyExport = useCallback(() => {
-const snap = getStateSnapshot();
-snap._savedAt = new Date().toISOString();
-const text = JSON.stringify(snap);
-try {
-navigator.clipboard.writeText(text).then(() => {
-setSaveMsg(“✅ 已复制！粘贴到备忘录保存”);
-setTimeout(() => setSaveMsg(””), 3000);
-}).catch(() => {
-// fallback: select textarea content
-setSaveMsg(“⬆️ 请长按上方文本框 → 全选 → 拷贝”);});
-} catch(e) {
-setSaveMsg(“⬆️ 请长按上方文本框 → 全选 → 拷贝”);}
+  const snap = getStateSnapshot();
+  snap._savedAt = new Date().toISOString();
+  const text = JSON.stringify(snap);
+  try {
+    navigator.clipboard.writeText(text).then(() => {
+      setSaveMsg("✅ 已复制！粘贴到备忘录保存");
+      setTimeout(() => setSaveMsg(""), 3000);
+    }).catch(() => {
+      // fallback: select textarea content
+      setSaveMsg("⬆️ 请长按上方文本框 → 全选 → 拷贝");});
+  } catch(e) {
+    setSaveMsg("⬆️ 请长按上方文本框 → 全选 → 拷贝");}
 }, [listP, saleP, propType, mfUnits, unitRents, homeListP, homeSaleP, downPct, annRate, loanYrs, closing, annualIncome, savingsRate, bankSavings, stockAccount, k401Balance, currency, calcMode, compoundMode, birthYear, birthMonth, expIdx, hmAmt, hmRate, capRate, investOwn, homeOwn, hmEnabled, investOther, compoundYears, ffMode, ffIncomeTgt, ffWealthTgt, effectiveTax, inflRate, savREPct, savStockPct, savBankPct, sav401Pct, incomeGrowth, retireAge]);
 
 const handleApplyImport = useCallback(() => {
-try {
-const saved = JSON.parse(importText.trim());
-setSaveModal(null);
-setImportText(””);
-setSaveMsg(“⏳ 正在恢复…”);
-startTransition(() => {
-applyState(saved);
-setSaveMsg(“✅ 已恢复”);
-setTimeout(() => setSaveMsg(””), 2000);
-});
-} catch (err) {
-setSaveMsg(“❌ 格式错误，请检查粘贴内容”);
-setTimeout(() => setSaveMsg(””), 3000);}
+  try {
+    const saved = JSON.parse(importText.trim());
+    setSaveModal(null);
+    setImportText("");
+    setSaveMsg("⏳ 正在恢复...");
+    startTransition(() => {
+      applyState(saved);
+      setSaveMsg("✅ 已恢复");
+      setTimeout(() => setSaveMsg(""), 2000);
+    });
+  } catch (err) {
+    setSaveMsg("❌ 格式错误，请检查粘贴内容");
+    setTimeout(() => setSaveMsg(""), 3000);}
 }, [importText]);
 
 const toMonthly = (v) => parseFloat(v) || 0;
 
 const computedRent = useMemo(() => {
-if (calcMode === “home”) return homeUnitRents.reduce((s, r) => s + toMonthly(r), 0);
+if (calcMode === "home") return homeUnitRents.reduce((s, r) => s + toMonthly(r), 0);
 if (!portfolioMode) return unitRents.reduce((s, r) => s + toMonthly(r), 0);
 return portfolio.reduce((total, p) => total + p.unitRents.reduce((s, r) => s + toMonthly(r), 0), 0);
 }, [portfolioMode, calcMode, homeUnitRents, unitRents, portfolio]);
 
 const computedRentIncome = useMemo(() => {
-if (calcMode === “home”) {
-const rents = (homePropType === “mf” && homeUnitRents.length > 1) ? homeUnitRents.slice(1) : homeUnitRents;
+if (calcMode === "home") {
+const rents = (homePropType === "mf" && homeUnitRents.length > 1) ? homeUnitRents.slice(1) : homeUnitRents;
 return rents.reduce((s, r) => s + toMonthly(r), 0);}
 if (!portfolioMode) return unitRents.reduce((s, r) => s + toMonthly(r), 0);
 return portfolio.reduce((total, p) => total + p.unitRents.reduce((s, r) => s + toMonthly(r), 0), 0);
 }, [portfolioMode, calcMode, homePropType, homeUnitRents, unitRents, portfolio]);
 
-const activeSaleP = calcMode === “home” ? homeSaleP : saleP;
-const activeListP = calcMode === “home” ? homeListP : listP;
-const activePropType = calcMode === “home” ? homePropType : propType;
-const activeMfUnits = calcMode === “home” ? homeMfUnits : mfUnits;
-const activeUnitRents = calcMode === “home” ? homeUnitRents : unitRents;
-const setActiveSaleP = calcMode === “home” ? setHomeSaleP : setSaleP;
-const setActiveListP = calcMode === “home” ? setHomeListP : setListP;
-const setActivePropType = calcMode === “home” ? setHomePropType : setPropType;
-const setActiveMfUnits = calcMode === “home” ? setHomeMfUnits : setMfUnits;
-const setActiveUnitRents = calcMode === “home” ? setHomeUnitRents : setUnitRents;
+const activeSaleP = calcMode === "home" ? homeSaleP : saleP;
+const activeListP = calcMode === "home" ? homeListP : listP;
+const activePropType = calcMode === "home" ? homePropType : propType;
+const activeMfUnits = calcMode === "home" ? homeMfUnits : mfUnits;
+const activeUnitRents = calcMode === "home" ? homeUnitRents : unitRents;
+const setActiveSaleP = calcMode === "home" ? setHomeSaleP : setSaleP;
+const setActiveListP = calcMode === "home" ? setHomeListP : setListP;
+const setActivePropType = calcMode === "home" ? setHomePropType : setPropType;
+const setActiveMfUnits = calcMode === "home" ? setHomeMfUnits : setMfUnits;
+const setActiveUnitRents = calcMode === "home" ? setHomeUnitRents : setUnitRents;
 
 const computedListP = useMemo(() => {
-if (calcMode === “home”) return parseFloat(homeListP) || 0;
+if (calcMode === "home") return parseFloat(homeListP) || 0;
 if (!portfolioMode) return parseFloat(listP) || 0;
 return portfolio.reduce((s, p) => s + (parseFloat(p.listP) || 0), 0);
 }, [portfolioMode, calcMode, homeListP, listP, portfolio]);
 
 const computedSalePTotal = useMemo(() => {
-if (calcMode === “home”) return parseFloat(homeSaleP) || 0;
+if (calcMode === "home") return parseFloat(homeSaleP) || 0;
 if (!portfolioMode) return parseFloat(saleP) || 0;
 return portfolio.reduce((s, p) => s + (parseFloat(p.saleP) || 0), 0);
 }, [portfolioMode, calcMode, homeSaleP, saleP, portfolio]);
@@ -510,14 +513,14 @@ return { base, withExtra, moSaved: base.months - withExtra.months, intSaved: bas
 }, [calc, xtra]);
 // Years already held — empty purchase year means today (0 years)
 const investHeld = useMemo(() => {
-if (!alreadyBought || !purchaseYear) return 0;
-var py = parseInt(purchaseYear)||2026, pm = parseInt(purchaseMonth)||1, pd = parseInt(purchaseDay)||15;
-// Mid-month: if close >= 15th, first payment = 2 months later; < 15th, first payment = next month
-var firstPmtMo = pd >= 15 ? pm + 1 : pm;
-var firstPmtYr = py; if (firstPmtMo > 12) { firstPmtMo -= 12; firstPmtYr++; }
-var now = new Date(); var nowY = now.getFullYear(), nowM = now.getMonth() + 1;
-var monthsPaid = (nowY - firstPmtYr) * 12 + (nowM - firstPmtMo);
-return Math.max(0, monthsPaid / 12);
+  if (!alreadyBought || !purchaseYear) return 0;
+  var py = parseInt(purchaseYear)||2026, pm = parseInt(purchaseMonth)||1, pd = parseInt(purchaseDay)||15;
+  // Mid-month: if close >= 15th, first payment = 2 months later; < 15th, first payment = next month
+  var firstPmtMo = pd >= 15 ? pm + 1 : pm;
+  var firstPmtYr = py; if (firstPmtMo > 12) { firstPmtMo -= 12; firstPmtYr++; }
+  var now = new Date(); var nowY = now.getFullYear(), nowM = now.getMonth() + 1;
+  var monthsPaid = (nowY - firstPmtYr) * 12 + (nowM - firstPmtMo);
+  return Math.max(0, monthsPaid / 12);
 }, [alreadyBought, purchaseYear, purchaseMonth, purchaseDay]);
 const homeHeld = useMemo(() => homePurchaseYear ? Math.max(0, (2026 + 4/12) - (parseInt(homePurchaseYear)||2026) - ((parseInt(homePurchaseMonth)||1)-1)/12) : 0, [homePurchaseYear, homePurchaseMonth]);
 // Adjusted investment equity (accounting for appreciation + loan paydown)
@@ -526,39 +529,39 @@ const investCurrentBal = investHeld > 0 ? loanBal(calc.loanAmt, parseFloat(annRa
 const investAdjEquity = investCurrentVal - investCurrentBal;
 // Home monthly costs (split for payoff logic)
 const homePI = useMemo(() => {
-if (!wantHome || !homeHasLoan) return 0;
-const hSP = parseFloat(homeSaleP) || 0;
-const hDown = hSP * (pF(homeDownPct) || 20) / 100;
-const hLoan = hSP - hDown;
-const hR = (pF(homeAnnRate) || 6.75) / 100 / 12;
-const hN = (pI(homeLoanYrs) || 30) * 12;
-return hLoan > 0 && hR > 0 ? hLoan * hR / (1 - Math.pow(1 + hR, -hN)) : 0;
+  if (!wantHome || !homeHasLoan) return 0;
+  const hSP = parseFloat(homeSaleP) || 0;
+  const hDown = hSP * (pF(homeDownPct) || 20) / 100;
+  const hLoan = hSP - hDown;
+  const hR = (pF(homeAnnRate) || 6.75) / 100 / 12;
+  const hN = (pI(homeLoanYrs) || 30) * 12;
+  return hLoan > 0 && hR > 0 ? hLoan * hR / (1 - Math.pow(1 + hR, -hN)) : 0;
 }, [wantHome, homeHasLoan, homeSaleP, homeDownPct, homeAnnRate, homeLoanYrs]);
 const homeFixed = useMemo(() => {
-const hSP = parseFloat(homeSaleP) || 0;
-const tax = pF(homeTax) || (homePropType !== “coop” ? Math.round(hSP * 0.011 / 12) : 0);
-const ins = pF(homeInsurance) || (homePropType === “coop” ? 50 : Math.round(hSP * 0.004 / 12));
-const util = pF(homeUtils) || (homePropType === “coop” ? 100 : homePropType === “condo” ? 150 : 200);
-const maint = pF(homeMaint) || (homePropType === “coop” ? 0 : homePropType === “condo” ? Math.round(hSP * 0.005 / 12) : Math.round(hSP * 0.01 / 12));
-const coopM = homePropType === “coop” ? pF(homeCoopMaint) || Math.round(hSP * 0.008 / 12 + 500) : 0;
-const hoa = parseFloat(homeHoa) || 0;
-return homePropType === “coop” ? coopM + ins + util : tax + ins + util + maint + hoa;
+  const hSP = parseFloat(homeSaleP) || 0;
+  const tax = pF(homeTax) || (homePropType !== "coop" ? Math.round(hSP * 0.011 / 12) : 0);
+  const ins = pF(homeInsurance) || (homePropType === "coop" ? 50 : Math.round(hSP * 0.004 / 12));
+  const util = pF(homeUtils) || (homePropType === "coop" ? 100 : homePropType === "condo" ? 150 : 200);
+  const maint = pF(homeMaint) || (homePropType === "coop" ? 0 : homePropType === "condo" ? Math.round(hSP * 0.005 / 12) : Math.round(hSP * 0.01 / 12));
+  const coopM = homePropType === "coop" ? pF(homeCoopMaint) || Math.round(hSP * 0.008 / 12 + 500) : 0;
+  const hoa = parseFloat(homeHoa) || 0;
+  return homePropType === "coop" ? coopM + ins + util : tax + ins + util + maint + hoa;
 }, [homeTax, homeInsurance, homeUtils, homeMaint, homeHoa, homeSaleP, homePropType, homeCoopMaint]);
 const homeMonthlyBurden = useMemo(() => wantHome ? homePI + homeFixed : 0, [wantHome, homePI, homeFixed]);
 // Actual payoff years (with extra payments)
 const calcPayoffYrs = (loan, annR, termYrs, extra) => {
-if (loan <= 0 || annR <= 0) return termYrs;
-const r = annR / 100 / 12;
-const pi = loan * r / (1 - Math.pow(1 + r, -(termYrs * 12)));
-const totalPmt = pi + extra;
-if (totalPmt <= loan * r) return termYrs;
-const n = -Math.log(1 - loan * r / totalPmt) / Math.log(1 + r);
-return Math.min(termYrs, n / 12);
+  if (loan <= 0 || annR <= 0) return termYrs;
+  const r = annR / 100 / 12;
+  const pi = loan * r / (1 - Math.pow(1 + r, -(termYrs * 12)));
+  const totalPmt = pi + extra;
+  if (totalPmt <= loan * r) return termYrs;
+  const n = -Math.log(1 - loan * r / totalPmt) / Math.log(1 + r);
+  return Math.min(termYrs, n / 12);
 };
 const investPayoffYrs = useMemo(() => calcPayoffYrs(calc.loanAmt, parseFloat(annRate)||0, parseInt(loanYrs)||30, xtra), [calc.loanAmt, annRate, loanYrs, xtra]);
 const homePayoffYrs = useMemo(() => homeHasLoan ? calcPayoffYrs(
-(parseFloat(homeSaleP)||0) * (1 - (parseFloat(homeDownPct)||20)/100),
-parseFloat(homeAnnRate)||6.75, parseInt(homeLoanYrs)||30, homeXtra
+  (parseFloat(homeSaleP)||0) * (1 - (parseFloat(homeDownPct)||20)/100),
+  parseFloat(homeAnnRate)||6.75, parseInt(homeLoanYrs)||30, homeXtra
 ) : 0, [homeHasLoan, homeSaleP, homeDownPct, homeAnnRate, homeLoanYrs, homeXtra]);
 const homeLoanTermYrs = useMemo(() => homePayoffYrs > 0 ? homePayoffYrs : parseInt(homeLoanYrs) || 30, [homePayoffYrs, homeLoanYrs]);
 const wealthSim = useMemo(() => {
@@ -591,8 +594,8 @@ const claimAdj = ssCa >= 70 ? 1.24 : ssCa >= 67 ? 1 + (ssCa - 67) * 0.08 : ssCa 
 const ssEstimate = Math.round(pia * claimAdj);
 const dPctW = parseFloat(downPct) / 100 || 0.25;
 const invOwnPct = (parseFloat(investOwn) || 100) / 100;
-const isIndexMode = compoundMode === “index” || !wantInvest;
-const isMixMode = compoundMode === “mix”;
+const isIndexMode = compoundMode === "index" || !wantInvest;
+const isMixMode = compoundMode === "mix";
 const indexCAGR = parseFloat(stockCAGR) / 100 || 0.08;
 let cashPool = initS, units = isIndexMode ? 0 : 1, cumulativeCF = 0, k401Val = k401B;
 let indexPool = isIndexMode ? (tci > 0 ? tci : initS) : 0;
@@ -655,7 +658,7 @@ let totalMV = 0, totalDebtW = 0;
 for (const p of purchases) { const held = yr - p.buyYr; totalMV += p.purchaseSP * Math.pow(1 + aR2 / 100, held); totalDebtW += (held >= investPayoffYrs) ? 0 : loanBal(p.pLoan, aR, lY, held); }
 netWorth = (totalMV - totalDebtW) * invOwnPct + cashPool + k401Val + stockPool;}
 cumulativeCF += annCF;
-// Theoretical passive income = what you’d earn IF you retired this year
+// Theoretical passive income = what you'd earn IF you retired this year
 const theoStockDiv = stockPool * 0.04;
 const theoK401 = (age >= (parseInt(k401DrawAge)||60)) ? k401Val * (parseFloat(k401SWR)/100||0.04) : 0;
 const theoSS = (age >= (parseInt(ssClaimAge)||67)) ? (ssEstimate || 0) : 0;
@@ -672,30 +675,30 @@ const stockValue = isIndexMode ? indexPool : Math.max(0, stockGrown - stockWithd
 // Home equity for wealth check
 let homeEqAtYr = 0;
 if (wantHome) {
-const hSP2 = parseFloat(homeSaleP) || 0;
-const hDP2 = (parseFloat(homeDownPct)||20)/100;
-const hLoan2 = homeHasLoan ? hSP2 * (1 - hDP2) : 0;
-const hAppR = (parseFloat(appRate)||3) / 100;
-const hAR2 = (parseFloat(homeAnnRate)||6.75) / 100 / 12;
-const hLY2 = (parseInt(homeLoanYrs)||30) * 12;
-const totalYrs = homeHeld + yr;
-const hBal = hLoan2 > 0 && hAR2 > 0 ? hLoan2 * (Math.pow(1+hAR2, hLY2) - Math.pow(1+hAR2, Math.min(totalYrs*12, hLY2))) / (Math.pow(1+hAR2, hLY2) - 1) : 0;
-homeEqAtYr = hSP2 * Math.pow(1 + hAppR, totalYrs) - Math.max(0, hBal);}
+  const hSP2 = parseFloat(homeSaleP) || 0;
+  const hDP2 = (parseFloat(homeDownPct)||20)/100;
+  const hLoan2 = homeHasLoan ? hSP2 * (1 - hDP2) : 0;
+  const hAppR = (parseFloat(appRate)||3) / 100;
+  const hAR2 = (parseFloat(homeAnnRate)||6.75) / 100 / 12;
+  const hLY2 = (parseInt(homeLoanYrs)||30) * 12;
+  const totalYrs = homeHeld + yr;
+  const hBal = hLoan2 > 0 && hAR2 > 0 ? hLoan2 * (Math.pow(1+hAR2, hLY2) - Math.pow(1+hAR2, Math.min(totalYrs*12, hLY2))) / (Math.pow(1+hAR2, hLY2) - 1) : 0;
+  homeEqAtYr = hSP2 * Math.pow(1 + hAppR, totalYrs) - Math.max(0, hBal);}
 const nwWithHome = netWorth + Math.max(0, homeEqAtYr) * invOwnPct;
 if (freedomYear === null && !userRetired) {
-const byIncome = ffMode === “income” && ffInc > 0 && effectivePsv >= ffInc;
-const byWealth = ffMode === “wealth” && ffWlth > 0 && nwWithHome >= ffWlth;
+const byIncome = ffMode === "income" && ffInc > 0 && effectivePsv >= ffInc;
+const byWealth = ffMode === "wealth" && ffWlth > 0 && nwWithHome >= ffWlth;
 if (byIncome || byWealth) freedomYear = yr;}
 const inRetirement = userRetired;
 const inflD = Math.pow(1 + (parseFloat(inflRate)||2)/100, yr);
 var evts = [];
 var prevU = yr > 1 && rows.length > 0 ? rows[rows.length-1].units || 1 : (isIndexMode ? 0 : 1);
-if (units > prevU) evts.push(“🏠 购入第”+units+“套房”);
-if (wantInvest && yr === Math.ceil(investPayoffYrs - investHeld) && investPayoffYrs < 90) evts.push(“🔓 投资房清贷·被动收入↑”);
-if (wantHome && homeHasLoan && yr === Math.ceil(homePayoffYrs - homeHeld) && homePayoffYrs < 90) evts.push(“🏡 自住房清贷·月支出↓”);
-if (age === (parseInt(k401DrawAge)||60)) evts.push(“💰 “+retLabel+“可提取”);
-if (age === (parseInt(ssClaimAge)||67)) evts.push(“🏛 “+ssLabel+“开始领取”);
-if (freedomYear === yr) evts.push(“🔥 FIRE达成”);
+if (units > prevU) evts.push("🏠 购入第"+units+"套房");
+if (wantInvest && yr === Math.ceil(investPayoffYrs - investHeld) && investPayoffYrs < 90) evts.push("🔓 投资房清贷·被动收入↑");
+if (wantHome && homeHasLoan && yr === Math.ceil(homePayoffYrs - homeHeld) && homePayoffYrs < 90) evts.push("🏡 自住房清贷·月支出↓");
+if (age === (parseInt(k401DrawAge)||60)) evts.push("💰 "+retLabel+"可提取");
+if (age === (parseInt(ssClaimAge)||67)) evts.push("🏛 "+ssLabel+"开始领取");
+if (freedomYear === yr) evts.push("🔥 FIRE达成");
 rows.push({ yr, age, units, cashPool, cashReal: cashPool / inflD, k401Val, netWorth: nwWithHome, cumulativeCF, stockValue, monthlyRE, k401AnnIncome, ssAnnIncome, monthlyTotalPsv: effectivePsv, annPsv: effectivePsv * 12, psvReal: effectivePsv / inflD, annPsvReal: effectivePsv * 12 / inflD, inRetirement, netWorthPre: !userRetired ? nwWithHome : null, netWorthPost: userRetired ? nwWithHome : null, nwReal: nwWithHome / inflD, homeMonthlyBurden: dynHomeBurden, events: evts });
 }
 let theoFireYear = null;
@@ -708,16 +711,16 @@ const curTCI2 = (sP * Math.pow(1 + aR2/100, yr2)) * dPctW + (parseFloat(closing)
 if (isIndexMode) {
 ip2 = ip2 * (1 + (parseFloat(stockCAGR)/100||0.08)) + annS2;
 const div2 = ip2 * 0.04;
-if (ffMode === “income” && ffInc > 0 && div2/12 - ((homeHeld + yr2 < homeLoanTermYrs) ? homePI + homeFixed : homeFixed) >= ffInc) { theoFireYear = yr2; break; }
-if (ffMode === “wealth” && ffWlth > 0 && ip2 + cp2 >= ffWlth) { theoFireYear = yr2; break; }
+if (ffMode === "income" && ffInc > 0 && div2/12 - ((homeHeld + yr2 < homeLoanTermYrs) ? homePI + homeFixed : homeFixed) >= ffInc) { theoFireYear = yr2; break; }
+if (ffMode === "wealth" && ffWlth > 0 && ip2 + cp2 >= ffWlth) { theoFireYear = yr2; break; }
 } else {
 const annCF2 = purchases2.reduce(function(s,p) { return s + p.tciPaid * (yr2 >= investPayoffYrs ? cocNoDbt : coc); }, 0) * invOwnPct;
 cp2 = cp2 * (1+pr) + annCF2 + annS2;
 while (cp2 >= curTCI2 * invOwnPct && u2 < 500) { cp2 -= curTCI2 * invOwnPct; u2++; purchases2.push({ tciPaid: curTCI2 }); }
 const annCF2b = purchases2.reduce(function(s,p) { return s + p.tciPaid * (yr2 >= investPayoffYrs ? cocNoDbt : coc); }, 0) * invOwnPct;
 const nw2 = cp2;
-if (ffMode === “income” && ffInc > 0 && annCF2b/12 - ((homeHeld + yr2 < homeLoanTermYrs) ? homePI + homeFixed : homeFixed) >= ffInc) { theoFireYear = yr2; break; }
-if (ffMode === “wealth” && ffWlth > 0 && nw2 >= ffWlth) { theoFireYear = yr2; break; }}
+if (ffMode === "income" && ffInc > 0 && annCF2b/12 - ((homeHeld + yr2 < homeLoanTermYrs) ? homePI + homeFixed : homeFixed) >= ffInc) { theoFireYear = yr2; break; }
+if (ffMode === "wealth" && ffWlth > 0 && nw2 >= ffWlth) { theoFireYear = yr2; break; }}
 }}
 const finalFireYear = freedomYear || theoFireYear;
 return { rows, freedomYear: finalFireYear, freedomAge: finalFireYear ? uAge + finalFireYear : null, ssEstimate };
@@ -733,9 +736,9 @@ const irrEst = tci > 0 ? (netCF + yr1Principal + sP * 0.03) / tci : 0;
 const beOcc0 = grossRent > 0 ? (annualExp + totalAnnDS) / grossRent : 0;
 const dealScores = [norm(coc, 0, 0.12), norm(dscr0, 0.8, 1.5), norm(eqAdj, 0, 0.15), norm(irrEst, 0, 0.25), norm(beOcc0, 1.0, 0.5), norm(actualCap, 0.02, 0.10)];
 const dealAvg = Math.round(dealScores.reduce((a, b) => a + b, 0) / 6);
-const dealGrade = dealAvg >= 90 ? “A+” : dealAvg >= 80 ? “A” : dealAvg >= 70 ? “A-” : dealAvg >= 60 ? “B+” : dealAvg >= 50 ? “B” : dealAvg >= 40 ? “B-” : dealAvg >= 25 ? “C” : “D”;
-const dealDesc = dealAvg >= 90 ? “极品 Excellent” : dealAvg >= 80 ? “优质 Great” : dealAvg >= 70 ? “良好 Good” : dealAvg >= 60 ? “可考虑 Fair” : dealAvg >= 50 ? “一般 Average” : dealAvg >= 40 ? “偏弱 Weak” : dealAvg >= 25 ? “谨慎 Caution” : “高风险 Risky”;
-const dealColor = dealAvg >= 80 ? C.green : dealAvg >= 70 ? “#43A047” : dealAvg >= 60 ? “#8B6914” : dealAvg >= 50 ? C.orange : dealAvg >= 40 ? “#E65100” : C.red;
+const dealGrade = dealAvg >= 90 ? "A+" : dealAvg >= 80 ? "A" : dealAvg >= 70 ? "A-" : dealAvg >= 60 ? "B+" : dealAvg >= 50 ? "B" : dealAvg >= 40 ? "B-" : dealAvg >= 25 ? "C" : "D";
+const dealDesc = dealAvg >= 90 ? "极品 Excellent" : dealAvg >= 80 ? "优质 Great" : dealAvg >= 70 ? "良好 Good" : dealAvg >= 60 ? "可考虑 Fair" : dealAvg >= 50 ? "一般 Average" : dealAvg >= 40 ? "偏弱 Weak" : dealAvg >= 25 ? "谨慎 Caution" : "高风险 Risky";
+const dealColor = dealAvg >= 80 ? C.green : dealAvg >= 70 ? "#43A047" : dealAvg >= 60 ? "#8B6914" : dealAvg >= 50 ? C.orange : dealAvg >= 40 ? "#E65100" : C.red;
 const { rows: wealthRows, freedomYear, freedomAge, ssEstimate } = wealthSim;
 const lastW = wealthRows[wealthRows.length - 1] || null;
 const fireRow = freedomYear ? wealthRows.find(d => d.yr === freedomYear) : null;
@@ -783,72 +786,78 @@ const cgRate = (pF(homeCostGrowth) || 3) / 100;
 const rows = [];
 var balBase = hLoan, balPrepay = hLoan;
 for (var yr = 0; yr <= totalYrs; yr++) {
-var homeVal = hSP * Math.pow(1 + aR2 / 100, yr);
-var isHeld = yr < heldYrs;
-var yrsFrom26 = Math.max(0, yr - heldYrs);
-var gm = Math.pow(1 + cgRate, yrsFrom26);
-var piCost = balPrepay > 0.01 ? hPI : 0;
-rows.push({ yr: yr, age: uAge - heldYrs + yr, calYr: buyYr + yr, held: isHeld, homeVal: homeVal, debt: Math.max(0, balPrepay), debtBase: Math.max(0, balBase), equity: homeVal - Math.max(0, balPrepay), cPI: piCost, cFixed: Math.round(homeFixed * gm) - piCost > 0 ? Math.round((homeFixed - piCost > 0 ? homeFixed - piCost : homeFixed) * gm) : Math.round(homeFixed * gm) });
-if (yr < totalYrs) {
-for (var mo = 0; mo < 12; mo++) {
-if (balBase > 0.01) { var intB = balBase * hR; balBase = Math.max(0, balBase - Math.max(0, hPI - intB)); }
-if (balPrepay > 0.01) { var intP = balPrepay * hR; balPrepay = Math.max(0, balPrepay - Math.max(0, hPI - intP) - (isHeld ? 0 : hXtra)); }}
-}}
+  var homeVal = hSP * Math.pow(1 + aR2 / 100, yr);
+  var isHeld = yr < heldYrs;
+  var yrsFrom26 = Math.max(0, yr - heldYrs);
+  var gm = Math.pow(1 + cgRate, yrsFrom26);
+  var piCost = balPrepay > 0.01 ? hPI : 0;
+  rows.push({ yr: yr, age: uAge - heldYrs + yr, calYr: buyYr + yr, held: isHeld, homeVal: homeVal, debt: Math.max(0, balPrepay), debtBase: Math.max(0, balBase), equity: homeVal - Math.max(0, balPrepay), cPI: piCost, cFixed: Math.round(homeFixed * gm) - piCost > 0 ? Math.round((homeFixed - piCost > 0 ? homeFixed - piCost : homeFixed) * gm) : Math.round(homeFixed * gm) });
+  if (yr < totalYrs) {
+    for (var mo = 0; mo < 12; mo++) {
+      if (balBase > 0.01) { var intB = balBase * hR; balBase = Math.max(0, balBase - Math.max(0, hPI - intB)); }
+      if (balPrepay > 0.01) { var intP = balPrepay * hR; balPrepay = Math.max(0, balPrepay - Math.max(0, hPI - intP) - (isHeld ? 0 : hXtra)); }}
+  }}
 return rows;
 }, [homeSaleP, homeDownPct, homeHasLoan, homeAnnRate, homeLoanYrs, appRate, wYears, userAge, modalXtra, alreadyBought, purchaseYear, homeFixed, homeCostGrowth]);
 
-const sec = () => ({ background: C.surface, borderRadius: 12, padding: “6px 10px”, marginBottom: 4, overflow: “hidden” });
+const sec = () => ({ background: C.surface, borderRadius: 12, padding: "6px 10px", marginBottom: 4, overflow: "hidden" });
 
-const overlay = { position: “fixed”, top: 0, left: 0, right: 0, bottom: 0, background: “rgba(0,0,0,0.3)”, zIndex: 10, display: “flex”, alignItems: “flex-start”, justifyContent: “center”, overflowY: “auto”, backdropFilter: “blur(20px)”, WebkitBackdropFilter: “blur(20px)” };
-const mBox = { background: C.surface, borderRadius: 14, padding: “14px 12px 10px”, width: “calc(100% - 24px)”, maxWidth: 400, margin: “50px 12px 20px” };
+const overlay = { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.3)", zIndex: 10, display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" };
+const mBox = { background: C.surface, borderRadius: 14, padding: "14px 12px 10px", width: "calc(100% - 24px)", maxWidth: 400, margin: "50px 12px 20px" };
 if (!showReport) {
-const fi = (label, val, setter, ph, pfx) => (
-<div style={{ marginBottom: 8, minWidth: 0 }}>
-<div style={{ fontSize: 10, fontWeight: 500, color: C.sub, marginBottom: 2, letterSpacing: “0.01em” }}>{label}</div>
-<div style={GOLD}>
-{pfx && <span style={{ color: C.muted, fontSize: 14, marginRight: 4, fontWeight: 500 }}>{pfx}</span>}
-<input type=“text” value={val} onChange={e => setter(e.target.value.replace(/,/g, “”))} placeholder={ph} style={{ flex: 1, minWidth: 0, background: “transparent”, border: “none”, outline: “none”, color: “#3E2723”, fontSize: 14, fontFamily: “inherit”, fontWeight: 600, boxSizing: “border-box” }} />
-</div></div>);
-const fs2 = (label, val, setter, opts) => (
-<div style={{ marginBottom: 8, flex: 1, minWidth: 0 }}>
-<div style={{ fontSize: 10, fontWeight: 500, color: C.sub, marginBottom: 2 }}>{label}</div>
-<select value={val} onChange={e => setter(e.target.value)} style={{ width: “100%”, height: 38, fontSize: 13, fontWeight: 600, fontFamily: “inherit”, border: “1px solid “ + C.border, borderRadius: 8, background: “#fff”, color: “#3E2723”, padding: “0 8px”, cursor: “pointer”, boxSizing: “border-box” }}>
-{opts.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
-</select></div>);
-return (
-<div className=“page-enter” style={{ maxWidth: 430, margin: “0 auto”, background: “#F0F4F8”, minHeight: “100vh”, fontFamily: ‘“SF Pro Display”,“SF Pro Text”,system-ui,sans-serif’, color: C.text, WebkitFontSmoothing: “antialiased”, padding: “0”, boxSizing: “border-box” }}>
-<style>{`@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } } @keyframes slideIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } } .sec-anim { animation: fadeUp 0.5s ease-out both; } .page-enter { animation: slideIn 0.35s ease-out both; } .btn3d { transition: transform 0.15s, box-shadow 0.15s; } .btn3d:active { transform: translateY(1px) scale(0.98); box-shadow: 0 2px 6px rgba(0,0,0,0.12) !important; }`}</style>
-{/* Hero Header — minimal */}
-<div style={{ position: “sticky”, top: 0, zIndex: 10, padding: “10px 16px 8px”, marginBottom: 10 }}>
-<div style={{ display: “flex”, alignItems: “center”, justifyContent: “space-between” }}>
-<div style={{ display: “flex”, alignItems: “center”, gap: 6 }}><Logo /><span style={{ fontSize: 9, color: C.muted, opacity: 0.6 }}>by JMJ Invest LLC</span></div>
-<div style={{ display: “flex”, alignItems: “center”, gap: 4 }}>
-<button onClick={() => { handleCopyExport(); setSaveMsg(“✅ 已保存到剪贴板”); setTimeout(() => setSaveMsg(””), 2000); }} style={{ padding: “2px 8px”, cursor: “pointer”, fontFamily: “inherit”, fontSize: 8, fontWeight: 700, border: “none”, borderRadius: 10, background: C.green, color: “#fff”, height: 22, display: “flex”, alignItems: “center”, gap: 2 }}>💾 存档</button>
-<button onClick={() => setSaveModal(“import”)} style={{ padding: “2px 8px”, cursor: “pointer”, fontFamily: “inherit”, fontSize: 8, fontWeight: 700, border: “none”, borderRadius: 10, background: C.blue, color: “#fff”, height: 22, display: “flex”, alignItems: “center”, gap: 2 }}>📂 读档</button>
-{saveMsg && <span style={{ fontSize: 7, fontWeight: 700, color: C.green, position: “absolute”, top: 32, right: 16, background: “#fff”, padding: “2px 6px”, borderRadius: 4, boxShadow: “0 1px 4px rgba(0,0,0,0.1)” }}>{saveMsg}</span>}
-<select value={currency} onChange={function(e) { setCurrency(e.target.value); }} style={{ height: 22, fontSize: 9, fontWeight: 600, fontFamily: “inherit”, border: “1px solid “ + C.border, borderRadius: 6, background: “#fff”, color: C.text, padding: “0 4px”, cursor: “pointer” }}>
-{Object.keys(FX).map(function(c) { return <option key={c} value={c}>{CUR_SYM[c]} {c}</option>; })}
-</select>
-<button onClick={autoDetectCity} style={{ height: 22, padding: “0 6px”, cursor: “pointer”, fontFamily: “inherit”, fontSize: 8, fontWeight: 700, border: “none”, borderRadius: 6, background: geoStatus === “done” ? “#E8F5E9” : geoStatus === “denied” ? “#FFEBEE” : “#E3F2FD”, color: geoStatus === “done” ? “#2E7D32” : geoStatus === “denied” ? “#C62828” : “#1565C0” }}>{geoStatus === “loading” ? “⏳” : geoStatus === “done” ? “📍” + city.split(” “)[0].slice(0,6) : geoStatus === “denied” ? “📍✗” : “📍定位”}</button></div></div></div>
-{/* Landing — choose mode */}
-{!introMode && <div className=“sec-anim” style={{ margin: “20px 14px”, animationDelay: “0.05s” }}>
-<div style={{ textAlign: “center”, marginBottom: 16 }}></div>
-<div style={FG8}>
-{[
-{ k: “fire”, icon: “🔥”, l: “FIRE\n财务自由”, c: “#00897B”, grad: “linear-gradient(135deg, #00B894 0%, #00897B 100%)” },
-{ k: “invest”, icon: “🏠”, l: “房产\n投资分析”, c: “#EE5A24”, grad: “linear-gradient(135deg, #FF6B6B 0%, #EE5A24 100%)” },
-{ k: “home”, icon: “🏡”, l: “自住房\n分析”, c: “#2F80ED”, grad: “linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%)” },
-].map(function(card) { return (
-<button key={card.k} onClick={function() { setIntroMode(card.k); if (card.k === “fire”) setWantFire(true); }} style={{ flex: 1, aspectRatio: “1”, padding: “12px 8px”, borderRadius: 16, cursor: “pointer”, fontFamily: “inherit”, border: “none”, background: card.grad, color: “#fff”, boxShadow: “0 4px 14px “ + card.c + “25”, display: “flex”, flexDirection: “column”, alignItems: “center”, justifyContent: “center”, gap: 6, position: “relative”, overflow: “hidden” }}>
-<div style={{ fontSize: 32 }}>{card.icon}</div>
-<div style={{ fontSize: 12, fontWeight: 800, textAlign: “center”, lineHeight: 1.3, whiteSpace: “pre-line” }}>{card.l}</div>
-</button>); })}
-</div></div>}
-{/* Back button when in a mode */}
-{introMode && <div style={{ margin: “0 14px 6px”, display: “flex”, gap: 4 }}>
-<button onClick={function() { setIntroMode(””); }} style={{ padding: “6px 14px”, borderRadius: 8, cursor: “pointer”, fontFamily: “inherit”, fontSize: 11, fontWeight: 600, border: “1px solid “ + C.border, background: “#fff”, color: C.sub, boxShadow: “0 1px 3px rgba(0,0,0,0.06)” }}>← 返回选择</button>
-<button onClick={function() { setIntroMode(””); setShowReport(false); }} style={{ padding: “6px 14px”, borderRadius: 8, cursor: “pointer”, fontFamily: “inherit”, fontSize: 11, fontWeight: 600, border: “1px solid “ + C.border, background: “#fff”, color: C.sub, boxShadow: “0 1px 3px rgba(0,0,0,0.06)” }}>🏠 主页</button>
-
+  const fi = (label, val, setter, ph, pfx) => (
+    <div style={{ marginBottom: 8, minWidth: 0 }}>
+      <div style={{ fontSize: 10, fontWeight: 500, color: C.sub, marginBottom: 2, letterSpacing: "0.01em" }}>{label}</div>
+      <div style={GOLD}>
+        {pfx && <span style={{ color: C.muted, fontSize: 14, marginRight: 4, fontWeight: 500 }}>{pfx}</span>}
+        <input type="text" value={val} onChange={e => setter(e.target.value.replace(/,/g, ""))} placeholder={ph} style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "#3E2723", fontSize: 14, fontFamily: "inherit", fontWeight: 600, boxSizing: "border-box" }} />
+      </div></div>);
+  const fs2 = (label, val, setter, opts) => (
+    <div style={{ marginBottom: 8, flex: 1, minWidth: 0 }}>
+      <div style={{ fontSize: 10, fontWeight: 500, color: C.sub, marginBottom: 2 }}>{label}</div>
+      <select value={val} onChange={e => setter(e.target.value)} style={{ width: "100%", height: 38, fontSize: 13, fontWeight: 600, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 8, background: "#fff", color: "#3E2723", padding: "0 8px", cursor: "pointer", boxSizing: "border-box" }}>
+        {opts.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
+      </select></div>);
+  return (
+    <div className="page-enter" style={{ maxWidth: 430, margin: "0 auto", background: "#F0F4F8", minHeight: "100vh", fontFamily: '"SF Pro Display","SF Pro Text",system-ui,sans-serif', color: C.text, WebkitFontSmoothing: "antialiased", padding: "0", boxSizing: "border-box" }}>
+      <style>{`
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+        .sec-anim { animation: fadeUp 0.5s ease-out both; }
+        .page-enter { animation: slideIn 0.35s ease-out both; }
+        .btn3d { transition: transform 0.15s, box-shadow 0.15s; }
+        .btn3d:active { transform: translateY(1px) scale(0.98); box-shadow: 0 2px 6px rgba(0,0,0,0.12) !important; }
+      `}</style>
+      {/* Hero Header — minimal */}
+      <div style={{ position: "sticky", top: 0, zIndex: 10, padding: "10px 16px 8px", marginBottom: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+     <div style={{ display: "flex", alignItems: "center", gap: 6 }}><Logo /><span style={{ fontSize: 9, color: C.muted, opacity: 0.6 }}>by JMJ Invest LLC</span></div>
+     <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+       <button onClick={() => { handleCopyExport(); setSaveMsg("✅ 已保存到剪贴板"); setTimeout(() => setSaveMsg(""), 2000); }} style={{ padding: "2px 8px", cursor: "pointer", fontFamily: "inherit", fontSize: 8, fontWeight: 700, border: "none", borderRadius: 10, background: C.green, color: "#fff", height: 22, display: "flex", alignItems: "center", gap: 2 }}>💾 存档</button>
+       <button onClick={() => setSaveModal("import")} style={{ padding: "2px 8px", cursor: "pointer", fontFamily: "inherit", fontSize: 8, fontWeight: 700, border: "none", borderRadius: 10, background: C.blue, color: "#fff", height: 22, display: "flex", alignItems: "center", gap: 2 }}>📂 读档</button>
+       {saveMsg && <span style={{ fontSize: 7, fontWeight: 700, color: C.green, position: "absolute", top: 32, right: 16, background: "#fff", padding: "2px 6px", borderRadius: 4, boxShadow: "0 1px 4px rgba(0,0,0,0.1)" }}>{saveMsg}</span>}
+       <select value={currency} onChange={function(e) { setCurrency(e.target.value); }} style={{ height: 22, fontSize: 9, fontWeight: 600, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 6, background: "#fff", color: C.text, padding: "0 4px", cursor: "pointer" }}>
+      {Object.keys(FX).map(function(c) { return <option key={c} value={c}>{CUR_SYM[c]} {c}</option>; })}
+     </select>
+       <button onClick={autoDetectCity} style={{ height: 22, padding: "0 6px", cursor: "pointer", fontFamily: "inherit", fontSize: 8, fontWeight: 700, border: "none", borderRadius: 6, background: geoStatus === "done" ? "#E8F5E9" : geoStatus === "denied" ? "#FFEBEE" : "#E3F2FD", color: geoStatus === "done" ? "#2E7D32" : geoStatus === "denied" ? "#C62828" : "#1565C0" }}>{geoStatus === "loading" ? "⏳" : geoStatus === "done" ? "📍" + city.split(" ")[0].slice(0,6) : geoStatus === "denied" ? "📍✗" : "📍定位"}</button></div></div></div>
+  {/* Landing — choose mode */}
+  {!introMode && <div className="sec-anim" style={{ margin: "20px 14px", animationDelay: "0.05s" }}>
+    <div style={{ textAlign: "center", marginBottom: 16 }}></div>
+    <div style={FG8}>
+    {[
+      { k: "home", icon: "🏡", l: "自住房\n分析", c: "#2F80ED", grad: "linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%)" },
+      { k: "invest", icon: "🏠", l: "房产\n投资分析", c: "#EE5A24", grad: "linear-gradient(135deg, #FF6B6B 0%, #EE5A24 100%)" },
+      { k: "fire", icon: "🔥", l: "FIRE\n财务自由", c: "#00897B", grad: "linear-gradient(135deg, #00B894 0%, #00897B 100%)" },
+    ].map(function(card) { return (
+      <button key={card.k} onClick={function() { setIntroMode(card.k); if (card.k === "fire") setWantFire(true); }} style={{ flex: 1, aspectRatio: "1", padding: "12px 8px", borderRadius: 16, cursor: "pointer", fontFamily: "inherit", border: "none", background: card.grad, color: "#fff", boxShadow: "0 4px 14px " + card.c + "25", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, position: "relative", overflow: "hidden" }}>
+        <div style={{ fontSize: 32 }}>{card.icon}</div>
+        <div style={{ fontSize: 12, fontWeight: 800, textAlign: "center", lineHeight: 1.3, whiteSpace: "pre-line" }}>{card.l}</div>
+      </button>); })}
+    </div></div>}
+  {/* Back button when in a mode */}
+  {introMode && <div style={{ margin: "0 14px 6px", display: "flex", gap: 4 }}>
+    <button onClick={function() { setIntroMode(""); }} style={{ padding: "6px 14px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 600, border: "1px solid " + C.border, background: "#fff", color: C.sub, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>← 返回选择</button>
+    <button onClick={function() { setIntroMode(""); setShowReport(false); }} style={{ padding: "6px 14px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 600, border: "1px solid " + C.border, background: "#fff", color: C.sub, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>🏠 主页</button>
   </div>}
   {/* FIRE Mode */}
   {introMode === "fire" && <>
@@ -1106,7 +1115,7 @@ return (
        <div style={{ flex: 1, minWidth: 0 }}>{fi("买入价 Purchase", homeSaleP, setHomeSaleP, "1050000", "$")}</div>
        <div style={{ flex: 1, minWidth: 0 }}>{fi("当前市值 Value", homeListP, setHomeListP, "1200000", "$")}</div></div>
       <div onClick={function() { setHomeHasLoan(!homeHasLoan); }} style={{ display: "flex", alignItems: "center", padding: "4px 0", cursor: "pointer", marginBottom: 4 }}>
-       <span style={{ flex: 1, fontSize: 10, fontWeight: 600, color: C.text }}>有房贷 Mortgage</span>
+       <span style={{ flex: 1, fontSize: 10, fontWeight: 600, color: homeHasLoan ? C.text : "#2E7D32" }}>{homeHasLoan ? "有房贷 Mortgage" : "无房贷 No Mortgage"}</span>
        <div style={{ width: 32, height: 18, borderRadius: 9, background: homeHasLoan ? C.blue : C.border, padding: 2, transition: "background 0.2s", flexShrink: 0 }}>
         <div style={{ width: 14, height: 14, borderRadius: 7, background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.15)", transform: homeHasLoan ? "translateX(14px)" : "translateX(0)", transition: "transform 0.2s" }}></div></div>
       </div>
@@ -1292,18 +1301,19 @@ return (
       <div className="sec-anim" style={{ background: "#fff", borderRadius: 16, padding: "14px 16px", margin: "0 14px 10px", boxShadow: "0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03)", animationDelay: "0.1s" }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 8 }}>🏡 自住房分析</div>
         <div style={{ display: "flex", gap: 4, marginBottom: 8 }}>
-     {[["🏠","独栋","sf","~$550K"],["🏘","联排","th","~$420K"],["🏢","Condo","condo","~$350K"],["🏛","Co-op","coop","~$380K"],["🏗","多户","mf","~$850K"]].map(function(t) { return (
-      <button key={t[2]} onClick={function() { setHomePropType(t[2]); var defaults = { sf: ["550000","600000"], th: ["420000","450000"], condo: ["350000","380000"], coop: ["350000","380000"], mf: ["850000","900000"] }; var d = defaults[t[2]]; if (d && (parseFloat(homeSaleP)||0) > 900000) { setHomeSaleP(d[0]); setHomeListP(d[1]); } }} style={{ flex: 1, padding: "4px 2px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: homePropType === t[2] ? "1.5px solid #1565C0" : "1px solid " + C.border, background: homePropType === t[2] ? "#E3F2FD" : "#fff", color: homePropType === t[2] ? "#1565C0" : C.sub, textAlign: "center" }}>
+     {[["🏠","独栋","sf","550000"],["🏘","联排","th","420000"],["🏢","Condo","condo","350000"],["🏛","Co-op","coop","380000"],["🏗","多户","mf","850000"]].map(function(t) { return (
+      <button key={t[2]} onClick={function() { setHomePropType(t[2]); setHomeSaleP(t[3]); setHomeListP(String(Math.round(parseFloat(t[3]) * 1.1))); if (t[2] === "coop") { var p = parseInt(t[3]); var maint = Math.round((p * 0.008 / 12 + 500) / 100) * 100; setHomeCoopMaint(String(maint)); setHomeInsurance("50"); setHomeUtils("100"); } }} style={{ flex: 1, padding: "4px 2px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: homePropType === t[2] ? "1.5px solid #1565C0" : "1px solid " + C.border, background: homePropType === t[2] ? "#E3F2FD" : "#fff", color: homePropType === t[2] ? "#1565C0" : C.sub, textAlign: "center" }}>
        <div style={{ fontSize: 14 }}>{t[0]}</div>
        <div>{t[1]}</div>
-       <div style={{ fontSize: 6.5, color: C.muted }}>{t[3]}</div>
+       <div style={{ fontSize: 6.5, color: C.muted }}>~{fmtMoney(parseInt(t[3]))}</div>
       </button>); })}
         </div>
         <div style={{ display: "flex", gap: 8, marginBottom: 4 }}>
-     <div style={{ flex: 1, minWidth: 0 }}>{fi(homePropType === "coop" ? "股份价" : "买入价", homeSaleP, setHomeSaleP, "1050000", "$")}</div>
-     <div style={{ flex: 1, minWidth: 0 }}>{fi("当前市值", homeListP, setHomeListP, "1200000", "$")}</div></div>
+     <div style={{ flex: 1, minWidth: 0 }}>{fi(homePropType === "coop" ? "股份价" : "买入价", homeSaleP, setHomeSaleP, "550000", "$")}</div>
+     {fs2("持股%", homeOwn, setHomeOwn, [25,50,60,70,80,90,100].map(function(v){return {v:String(v),l:v+"%"};}))}
+     {fs2("交割费", homeClosing, setHomeClosing, [0,10000,20000,30000,40000,50000,60000].map(v=>({v:String(v),l:fmtMoney(v)})))}</div>
         <div onClick={function() { setHomeHasLoan(!homeHasLoan); }} style={{ display: "flex", alignItems: "center", padding: "4px 0", cursor: "pointer", marginBottom: 4 }}>
-     <span style={{ flex: 1, fontSize: 10, fontWeight: 600, color: C.text }}>有房贷 Mortgage</span>
+     <span style={{ flex: 1, fontSize: 10, fontWeight: 600, color: homeHasLoan ? C.text : "#2E7D32" }}>{homeHasLoan ? "有房贷 Mortgage" : "无房贷 No Mortgage"}</span>
      <div style={{ width: 32, height: 18, borderRadius: 9, background: homeHasLoan ? C.blue : C.border, padding: 2, transition: "background 0.2s", flexShrink: 0 }}>
       <div style={{ width: 14, height: 14, borderRadius: 7, background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.15)", transform: homeHasLoan ? "translateX(14px)" : "translateX(0)", transition: "transform 0.2s" }}></div></div>
         </div>
@@ -1316,7 +1326,7 @@ return (
         {(parseFloat(homeDownPct)||20) < 20 && homeHasLoan && <div style={{ fontSize: 7, color: "#AD1457", marginBottom: 4, padding: "2px 6px", background: "#FCE4EC", borderRadius: 4 }}>⚠ 首付低于20%需缴PMI · 权益达20%后可申请取消 · 22%自动取消</div>}
         {homePropType === "coop" ? <>
      <div style={{ fontSize: 7, color: C.muted, marginBottom: 3, padding: "2px 6px", background: "#E8EAF6", borderRadius: 4 }}>Co-op管理费通常包含地税+保险+部分Utilities+人员+维修基金</div>
-     <div style={FG6}>{fs2("管理费/月", homeCoopMaint, setHomeCoopMaint, Array.from({length:37},function(_,i){var v=200+i*50; return {v:String(v),l:"$"+v};}))}
+     <div style={FG6}>{fs2("管理费/月", homeCoopMaint, setHomeCoopMaint, [500,600,700,800,900,1000,1100,1200,1400,1600,1800,2000,2500,3000].map(function(v){ return {v:String(v),l:"$"+v};}))}
       {fs2("个人保险/月", homeInsurance, setHomeInsurance, [0,25,50,75,100,150,200,300].map(v=>({v:String(v),l:"$"+v})))}
       {fs2("Utilities/月", homeUtils, setHomeUtils, [0,50,75,100,150,200,250,300].map(v=>({v:String(v),l:"$"+v})))}</div>
      <div style={FG6}>{fs2("成本涨幅/年", homeCostGrowth, setHomeCostGrowth, [0,1,2,3,4,5,6,7,8].map(function(v){return {v:String(v),l:v>0?v+"%":"不涨"};}))}
@@ -1327,7 +1337,7 @@ return (
       {fs2("Utilities/月", homeUtils, setHomeUtils, [0,50,100,150,200,250,300,400,500].map(v=>({v:String(v),l:"$"+v})))}
       {fs2("维修/月", homeMaint, setHomeMaint, [0,50,100,150,200,250,300,400,500].map(v=>({v:String(v),l:"$"+v})))}</div>
      <div style={FG6}>
-      {(homePropType === "condo" || homePropType === "th" || homePropType === "mf") && fs2(homePropType === "condo" ? "公共费/月" : "HOA/月", homeHoa, setHomeHoa, [0,100,200,300,400,500,600,800,1000,1500,2000].map(v=>({v:String(v),l:"$"+v})))}
+      {(homePropType === "th" || homePropType === "mf") && fs2("HOA/月", homeHoa, setHomeHoa, [0,100,200,300,400,500,600,800,1000,1500,2000].map(v=>({v:String(v),l:"$"+v})))}
       {homePropType === "mf" && fs2("租金收入/月", homeRentMo, setHomeRentMo, [0,500,1000,1500,2000,2500,3000,4000,5000].map(v=>({v:String(v),l:"$"+v})))}</div>
      <div style={FG6}>{fs2("成本涨幅/年", homeCostGrowth, setHomeCostGrowth, [0,1,2,3,4,5,6,7,8].map(function(v){return {v:String(v),l:v>0?v+"%":"不涨"};}))}
       {fs2("升值涨幅/年", appRate, setAppRate, [{v:"2",l:"保守2%"},{v:"3",l:"普通3%"},{v:"4",l:"4%"},{v:"5",l:"热门5%"},{v:"6",l:"6%"},{v:"7",l:"高速7%"},{v:"8",l:"8%"}])}</div>
@@ -1553,7 +1563,7 @@ return (
           <text x={cx2} y={cy2-10} textAnchor="middle" style={{ fontSize: 5, fill: C.muted, fontWeight: 600 }}>总价</text>
           <text x={cx2} y={cy2+2} textAnchor="middle" style={{ fontSize: 12, fill: C.text, fontWeight: 800 }}>{fmtMoney(total)}</text>
           <text x={cx2} y={cy2+13} textAnchor="middle" style={{ fontSize: 6, fill: "#C4956A", fontWeight: 700 }}>现金 {fmtMoney(tci)}</text>
-          <text x={cx2} y={cy2+22} textAnchor="middle" style={{ fontSize: 6, fill: "#5B8DAF", fontWeight: 700 }}>贷款 {fmtMoney(totalDebt)}</text>
+          <text x={cx2} y={cy2+22} textAnchor="middle" style={{ fontSize: 6, fill: totalDebt > 0 ? "#5B8DAF" : "#2E7D32", fontWeight: 700 }}>{totalDebt > 0 ? "贷款 " + fmtMoney(totalDebt) : "全款购入 ✓"}</text>
          </svg>
         )}</div></div>
      </div>);
@@ -1946,9 +1956,9 @@ return (
         const isYr = rentPeriod === "yr";
         const mul = isYr ? 12 : 1;
         const costItems = [
-     hPI > 0 && { l: "月供", v: hPI, c: "#B71C1C", xtra: modalXtra > 0 ? modalXtra : 0 },
+     hPI > 0 && { l: "月供", v: hPI, c: "#1565C0", xtra: modalXtra > 0 ? modalXtra : 0 },
      hPmiMo > 0 && { l: "PMI", v: hPmiMo, c: "#AD1457" },
-     homePropType === "coop" && useCoopM > 0 && { l: "管理费", v: useCoopM, c: "#4A148C", est: !pF(homeCoopMaint) },
+     homePropType === "coop" && useCoopM > 0 && { l: "管理", v: useCoopM, c: "#4A148C", est: !pF(homeCoopMaint) },
      homePropType !== "coop" && useTax > 0 && { l: "地税", v: useTax, c: "#0D47A1", est: !pF(homeTax) },
      useIns > 0 && { l: "保险", v: useIns, c: "#00695C", est: !pF(homeInsurance) },
      hHoa > 0 && { l: "HOA", v: hHoa, c: "#4A148C" },
@@ -1969,7 +1979,7 @@ return (
        {[
         ["当前市值", fmtMoney(hLP), "#1B5E20", "#E8F5E9"],
         ["净资产", fmtMoney(hEquity * hOwn), hEquity >= 0 ? "#1B5E20" : "#B71C1C", hEquity >= 0 ? "#E8F5E9" : "#FFEBEE"],
-        [isYr?"年持有成本":"月持有成本", fmtMoney(hTotalMo*mul), "#E65100", "#FFF3E0"],
+        [homeHasLoan && hPI > 0 ? (isYr?"年持有成本":"月持有成本") : "无房贷·" + (isYr?"年":"月") + "固定费", fmtMoney(hTotalMo*mul), homeHasLoan && hPI > 0 ? "#E65100" : "#2E7D32", homeHasLoan && hPI > 0 ? "#FFF3E0" : "#E8F5E9"],
         ["总投入 TCI", fmtMoney(hTCI), "#5D4037", "#FFF8E1"],
        ].map(function(item, i) { return (
         <div key={i} style={{ background: item[3], borderRadius: 5, padding: "4px 6px" }}>
@@ -1988,7 +1998,7 @@ return (
        var projItems = costItems.map(function(item) {
          if (item.l === "月供") {
            var actualPI = projPI + (projPI > 0 ? (modalXtra||0) : 0);
-           return { l: modalXtra > 0 ? "月供+提前" : "月供", v: actualPI, orig: hPI, c: item.c, changed: actualPI !== hPI };
+           return { l: modalXtra > 0 ? "供+提" : "月供", v: actualPI, orig: hPI, c: item.c, changed: actualPI !== hPI };
          }
          if (item.l === "PMI") return selRow && selRow.debt < 0.01 ? null : item;
          var projected = Math.round(item.v * projMul);
@@ -1997,57 +2007,40 @@ return (
        var projTotal = projItems.reduce(function(s, x) { return s + x.v; }, 0);
        var maxV = Math.max.apply(null, projItems.map(function(x) { return x.v; }));
        return <div style={{ background: "#FAF9F6", borderRadius: 8, padding: "5px 8px", border: selRow ? "1px solid #1565C030" : "1px solid #E8E4DE" }}>
-       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
-        <span style={{ fontSize: 7, fontWeight: 700, color: "#fff", background: selRow ? "#1565C0" : "#5D4037", borderRadius: 6, padding: "1px 6px" }}>{selRow ? projYr + "年" : ""}{isYr ? "年" : "月"}持有成本{yrsOut > 0 ? " +" + (pF(homeCostGrowth)||3) + "%×" + yrsOut + "yr" : ""}</span>
-        <span style={{ fontSize: 12, fontWeight: 800, color: "#BF360C" }}>{fmtMoney(projTotal * mul)}<span style={{ fontSize: 7, fontWeight: 500, color: "#90A4AE" }}>/{isYr ? "年" : "月"}</span></span>
+       {/* Cost bars */}
+       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 }}>
+        <span style={{ fontSize: 8, fontWeight: 700, color: "#fff", background: selRow ? "#1565C0" : "#5D4037", borderRadius: 6, padding: "2px 8px" }}>{isYr ? "年" : "月"}持有成本{!homeHasLoan ? " · 无房贷" : ""}{yrsOut > 0 ? " +" + (pF(homeCostGrowth)||3) + "%×" + yrsOut + "yr" : ""}</span>
+        <span style={{ fontSize: 14, fontWeight: 800, color: "#BF360C" }}>{fmtMoney(projTotal * mul)}<span style={{ fontSize: 8, fontWeight: 500, color: "#90A4AE" }}>/{isYr ? "年" : "月"}</span></span>
        </div>
-       <div style={{ display: "flex", gap: 6 }}>
-       <div style={{ flex: 7, minWidth: 0, overflow: "hidden" }}>
        {projItems.map(function(item, i) {
-        var showDual = item.changed;
-        var barW = maxV > 0 ? Math.max(3, Math.min(60, (showDual ? item.orig : item.v) / maxV * 60)) : 0;
-        var barW2 = maxV > 0 ? Math.min(60, item.v / maxV * 60) : 0;
+        var hasChange = item.changed;
+        var origW = maxV > 0 ? Math.max(4, Math.min(80, item.orig / maxV * 80)) : 0;
+        var projW = hasChange && maxV > 0 ? Math.min(80, item.v / maxV * 80) : 0;
         var isPayoff = item.l.includes("月供") && item.v === 0;
-        var diffLabel = item.l.includes("月供") ? (modalXtra > 0 ? "+$" + modalXtra : "") : "+" + (pF(homeCostGrowth)||3) + "%";
+        var displayVal = hasChange ? item.v : item.orig;
+        var pct = projTotal > 0 ? (item.v / projTotal * 100).toFixed(0) : "";
         return (
-        <div key={i} style={{ marginBottom: 1 }}>
-         <div style={{ display: "flex", alignItems: "center", height: showDual ? 13 : 16, gap: 2 }}>
-          <div style={{ width: 4, height: 4, borderRadius: 1, background: item.c, flexShrink: 0, opacity: item.est ? 0.5 : 1 }} />
-          <span style={{ fontSize: 6.5, color: item.est ? "#BDBDBD" : "#5D4037", width: 20, flexShrink: 0, overflow: "hidden" }}>{showDual ? "原" + (item.l.includes("月供") ? "供" : item.l) : item.l}{item.est ? "*" : ""}</span>
-          <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 2, minWidth: 0 }}>
-           <div style={{ width: barW + "%", height: 10, background: showDual ? item.c + "18" : item.est ? item.c + "18" : "linear-gradient(90deg, " + item.c + "70, " + item.c + "40)", borderRadius: 2, border: "0.5px solid " + item.c + (showDual || item.est ? "25" : "50"), flexShrink: 0, minWidth: 3 }} />
-           <span style={{ fontSize: 6.5, fontWeight: 700, color: showDual ? "#BDBDBD" : item.c, flexShrink: 0, whiteSpace: "nowrap", textDecoration: showDual ? "line-through" : "none" }}>{fmtMoney(item.orig * mul)}</span></div>
-          <span style={{ fontSize: 6, color: "#90A4AE", flexShrink: 0 }}>{!showDual && projTotal > 0 ? (item.v / projTotal * 100).toFixed(0) + "%" : ""}</span></div>
-         {showDual && <div style={{ display: "flex", alignItems: "center", height: 13, gap: 2 }}>
-          <div style={{ width: 4 }} />
-          <span style={{ fontSize: 6, color: item.l.includes("月供") ? "#E53935" : "#1565C0", width: 20, flexShrink: 0, fontWeight: 700 }}>{item.l.includes("月供") ? (isPayoff ? "还清" : "实付") : projYr + ""}</span>
-          <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 2, minWidth: 0 }}>
-           {!isPayoff && <div style={{ width: barW2 + "%", height: 10, background: item.l.includes("月供") ? "linear-gradient(90deg, #E5393560, #E5393530)" : "linear-gradient(90deg, " + item.c + "70, " + item.c + "40)", borderRadius: 2, border: "0.5px solid " + (item.l.includes("月供") ? "#E5393550" : item.c + "50"), flexShrink: 0, minWidth: 3 }} />}
-           <span style={{ fontSize: 6.5, fontWeight: 700, color: isPayoff ? "#2E7D32" : (item.l.includes("月供") ? "#E53935" : item.c), flexShrink: 0, whiteSpace: "nowrap" }}>{isPayoff ? "$0✓" : fmtMoney(item.v * mul)}</span></div>
-          <span style={{ fontSize: 6, color: item.l.includes("月供") ? "#E53935" : "#1565C0", flexShrink: 0 }}>{diffLabel}</span>
-         </div>}</div>
+        <div key={i} style={{ display: "flex", alignItems: "center", height: 17, gap: 3, marginBottom: 1 }}>
+          <span style={{ fontSize: 8, color: item.est ? "#BDBDBD" : item.c, width: 22, flexShrink: 0, overflow: "hidden", fontWeight: 700, whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{item.l}{item.est ? "*" : ""}</span>
+          <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 3, minWidth: 0 }}>
+           <div style={{ position: "relative", height: 12, width: (hasChange ? projW : origW) + "%", minWidth: 4, flexShrink: 0 }}>
+            {hasChange && <div style={{ position: "absolute", top: 0, left: 0, width: (origW > 0 ? origW / projW * 100 : 100) + "%", height: 12, background: item.c + "12", borderRadius: 2, border: "1px dashed " + item.c + "25" }} />}
+            <div style={{ width: "100%", height: 12, background: item.c, borderRadius: 2, opacity: item.est ? 0.25 : hasChange ? 0.85 : 0.55 }} />
+           </div>
+           <span style={{ fontSize: 8, fontWeight: 800, color: isPayoff ? "#2E7D32" : item.c, flexShrink: 0, whiteSpace: "nowrap" }}>{isPayoff ? "$0✓" : fmtMoney(displayVal * mul)}</span>
+           {pct && <span style={{ fontSize: 7, color: "#90A4AE", flexShrink: 0 }}>{pct}%</span>}
+          </div>
+        </div>
        ); })}
-       {hasEstimates && <div style={{ fontSize: 6, color: "#9E9E9E", marginTop: 1, fontStyle: "italic" }}>* 估算</div>}</div>
-       <div style={{ flex: 3, flexShrink: 0, background: selRow ? "#1565C008" : "#FAFAFA", borderRadius: 6, padding: "4px 5px", borderLeft: "2px solid " + (selRow ? "#1565C030" : "#E8E4DE") }}>
-        <div style={{ display: "inline-block", fontSize: 7, fontWeight: 800, color: "#fff", background: selRow ? "#1565C0" : "#5D4037", borderRadius: 6, padding: "1px 5px", marginBottom: 3 }}>{sel.calYr}年{selRow ? "" : " 当前"}</div>
-        {[
-          { l: "🏠房价", v: sel.homeVal, c: "#5D4037", bg: "#FFF8E1" },
-          { l: "📈净值", v: sel.equity, c: "#2E7D32", bg: "#E8F5E9" },
-          { l: "💳贷款", v: sel.debt, c: sel.debt > 0.01 ? "#D32F2F" : "#2E7D32", bg: sel.debt > 0.01 ? "#FFEBEE" : "#E8F5E9" },
-          { l: "📊月供", v: sel.cPI, c: "#B71C1C", bg: "#FFEBEE" },
-          { l: "🏷固定", v: sel.cFixed, c: "#E65100", bg: "#FFF3E0" },
-        ].map(function(r) { return <div key={r.l} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
-          <span style={{ fontSize: 6, color: r.c, background: r.bg, borderRadius: 4, padding: "0 3px", fontWeight: 600 }}>{r.l}</span>
-          <span style={{ fontSize: 7.5, fontWeight: 700, color: r.c }}>{fmtMoney(r.v)}</span></div>; })}
-        {selRow && <div onClick={() => setSelSimIdx(null)} style={{ fontSize: 6.5, color: "#1565C0", cursor: "pointer", textAlign: "center", marginTop: 2, fontWeight: 600 }}>✕ 取消</div>}
-       </div>
-       </div></div>;
+       {hasEstimates && <div style={{ fontSize: 6, color: "#9E9E9E", fontStyle: "italic" }}>* 估算</div>}
+       </div>;
       })()}</div>);
       })()}</div>
     <div style={{ background: "#FAF9F6", borderRadius: 12, padding: "6px 10px", marginBottom: 4, overflow: "hidden", borderLeft: "3px solid #C9A94E" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-        <SHdr zh={modalXtra > 0 ? "房价与加速还贷" : "房价与贷款预测"} en="Projection" />
+        <SHdr zh={!homeHasLoan ? "房价增值预测" : modalXtra > 0 ? "房价与加速还贷" : "房价与贷款预测"} en="Projection" />
         <div style={FAC}>
+     {selSimIdx !== null && homeSim[selSimIdx] && <div onClick={() => setSelSimIdx(null)} style={{ background: "#1565C0", borderRadius: 8, padding: "2px 8px", fontSize: 8, fontWeight: 800, color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}>{homeSim[selSimIdx].calYr}年 <span style={{ opacity: 0.6, fontSize: 10 }}>✕</span></div>}
      <div style={{ background: "#2E7D32", borderRadius: 8, padding: "2px 6px", fontSize: 7, fontWeight: 700, color: "#fff" }}>升值 ↑{appRate}%/年</div></div></div>
       {homeSim.length > 0 && (() => {
         const last = homeSim[homeSim.length - 1];
@@ -2086,27 +2079,45 @@ return (
         var selYrsFromNow = Math.max(0, selYr - 2026);
         var costGrowthMul = Math.pow(1 + (pF(homeCostGrowth) || 3) / 100, selYrsFromNow);
         return <>
-     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4, marginBottom: 5 }}>
+     <div style={{ display: "flex", gap: 3, marginBottom: 4 }}>
       {[
-        { label: sel.calYr + "年房价", val: sel.homeVal, color: "#5D4037", bg: "#FFF8E1" },
-        { label: sel.calYr + "年净资产", val: sel.equity, color: "#1B5E20", bg: "#E8F5E9" },
-        modalXtra > 0 && sel.debtBase > 0.01 && sel.debt !== sel.debtBase
-          ? { label: "原余额→加速", val: sel.debt, color: "#E53935", bg: "#FFEBEE", sub: fmtMoney(sel.debtBase) + "→" + fmtMoney(sel.debt) }
-          : { label: sel.calYr + "年贷款", val: sel.debt, color: sel.debt > 0 ? "#B71C1C" : "#1B5E20", bg: sel.debt > 0 ? "#FFEBEE" : "#E8F5E9" },
-      ].map((c, i) => (
-       <div key={i} style={{ background: c.bg, borderRadius: 6, padding: "3px 5px", cursor: "pointer", border: selSimIdx !== null ? "1px solid " + c.color + "30" : "1px solid transparent" }} onClick={() => setSelSimIdx(null)}>
-        <div style={{ fontSize: 7, color: "#78909C" }}>{c.label}</div>
-        <div style={{ fontSize: 12, fontWeight: 800, color: c.color }}>{fmtMoney(c.val)}</div>
-        {c.sub && <div style={{ fontSize: 6, color: "#E53935", marginTop: -1 }}>{c.sub}</div>}</div>
-      ))}</div>
-     <div style={{ background: C.surface, borderRadius: 6, border: "1px solid " + C.border, padding: "4px 4px 2px", position: "relative" }}>
-      <ResponsiveContainer width="100%" height={190}>
-       <ComposedChart data={homeSim} margin={{ top: 14, right: 4, left: -4, bottom: 18 }} onClick={function(e) { if (e && e.activeTooltipIndex !== undefined) setSelSimIdx(e.activeTooltipIndex); }}>
+        { l: "🏠", n: "房价", v: sel.homeVal, c: "#5D4037", bg: "#FFF8E1" },
+        { l: "📈", n: "净值", v: sel.equity, c: "#1B5E20", bg: "#E8F5E9" },
+        homeHasLoan && (modalXtra > 0 && sel.debtBase > 0.01 && sel.debt !== sel.debtBase
+          ? { l: "⚡", n: "加速", v: sel.debt, c: "#E53935", bg: "#FFEBEE" }
+          : { l: "💳", n: "贷款", v: sel.debt, c: sel.debt > 0 ? "#B71C1C" : "#1B5E20", bg: sel.debt > 0 ? "#FFEBEE" : "#E8F5E9" }),
+        homeHasLoan && sel.cPI > 0 && { l: "💰", n: "月供", v: sel.cPI, c: "#1565C0", bg: "#E3F2FD" },
+        { l: "🏷", n: "固定", v: sel.cFixed, c: "#6A1B9A", bg: "#F3E5F5" },
+        !homeHasLoan && { l: "✅", n: "全款", v: sel.homeVal, c: "#1B5E20", bg: "#E8F5E9" },
+      ].filter(Boolean).map(function(r, i) { return <div key={i} style={{ flex: 1, background: r.bg, borderRadius: 8, padding: "4px 3px", textAlign: "center", minWidth: 0, cursor: "pointer", border: selSimIdx !== null ? "1px solid " + r.c + "25" : "1px solid transparent" }} onClick={() => setSelSimIdx(null)}>
+        <div style={{ fontSize: 7, color: r.c, fontWeight: 600 }}>{r.l}{r.n}</div>
+        <div style={{ fontSize: 10, fontWeight: 800, color: r.c, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{fmtMoney(r.v)}</div></div>; })}
+     </div>
+     <div style={{ background: C.surface, borderRadius: 6, border: "1px solid " + C.border, padding: "4px 4px 2px", position: "relative", touchAction: "none" }}
+       onPointerDown={function(e) {
+         var el = e.currentTarget;
+         var rect = el.getBoundingClientRect();
+         var padL = 52, padR = 8;
+         var chartW = rect.width - padL - padR;
+         var calcIdx = function(cx) {
+           var rel = (cx - rect.left - padL) / chartW;
+           rel = Math.max(0, Math.min(1, rel));
+           return Math.round(rel * (homeSim.length - 1));
+         };
+         setSelSimIdx(calcIdx(e.clientX));
+         var onMove = function(ev) { ev.preventDefault(); setSelSimIdx(calcIdx(ev.clientX)); };
+         var onUp = function() { window.removeEventListener("pointermove", onMove); window.removeEventListener("pointerup", onUp); };
+         window.addEventListener("pointermove", onMove);
+         window.addEventListener("pointerup", onUp);
+       }}
+     >
+      <ResponsiveContainer width="100%" height={200}>
+       <ComposedChart data={homeSim} margin={{ top: 14, right: 4, left: -4, bottom: 18 }}>
         <CartesianGrid strokeDasharray="2 2" stroke="#E8E4DE" />
         <XAxis dataKey="calYr" tickFormatter={v => "'" + String(v).slice(-2)} tick={{ fill: C.muted, fontSize: 8 }} interval={Math.max(0, Math.ceil(homeSim.length / 7) - 1)} axisLine={{ stroke: C.border }} tickLine={false} />
         <YAxis yAxisId="left" tickFormatter={v => fmtMoney(v)} tick={{ fill: C.muted, fontSize: 8 }} width={48} axisLine={false} tickLine={false} />
         <YAxis yAxisId="right" orientation="right" hide={true} />
-        <Bar yAxisId="right" dataKey="cPI" stackId="cost" fill="#E53935" fillOpacity={0.1} barSize={8} />
+        {homeHasLoan && <Bar yAxisId="right" dataKey="cPI" stackId="cost" fill="#1565C0" fillOpacity={0.1} barSize={8} />}
         <Bar yAxisId="right" dataKey="cFixed" stackId="cost" fill="#FF9800" fillOpacity={0.12} barSize={8} radius={[1,1,0,0]} />
         {homeSim[0].held && <ReferenceArea yAxisId="left" x1={chartStart} x2={2026} fill="#9E9E9E" fillOpacity={0.18} />}
         {homeSim[0].held && <ReferenceLine yAxisId="left" x={2026} stroke="#616161" strokeDasharray="3 2" strokeWidth={1} />}
@@ -2120,40 +2131,72 @@ return (
         <Line yAxisId="left" dataKey="homeVal" stroke="#5D4037" dot={false} strokeWidth={2.5} />
         <Line yAxisId="left" dataKey="equity" stroke="#2E7D32" dot={false} strokeWidth={2} />
         {modalXtra > 0 && <Line yAxisId="left" dataKey="debtBase" stroke="#FFCDD2" dot={false} strokeWidth={2} strokeDasharray="6 3" />}
-        <Line yAxisId="left" dataKey="debt" stroke={modalXtra > 0 ? "#E53935" : "#D32F2F"} dot={false} strokeWidth={modalXtra > 0 ? 2.5 : 2} />
+        {homeHasLoan && <Line yAxisId="left" dataKey="debt" stroke={modalXtra > 0 ? "#E53935" : "#D32F2F"} dot={false} strokeWidth={modalXtra > 0 ? 2.5 : 2} />}
        </ComposedChart>
       </ResponsiveContainer>
-      {/* Milestone labels overlay - pill badges with smart dodging */}
+      {/* Selected year label + dismiss — bottom of chart above x-axis */}
+      {selSimIdx !== null && (() => {
+        var rng = (chartEnd - chartStart) || 1;
+        var pctX = (sel.calYr - chartStart) / rng;
+        var leftCalc = "calc(48px + (100% - 56px) * " + pctX + ")";
+        return <div onClick={() => setSelSimIdx(null)} style={{ position: "absolute", bottom: 28, left: leftCalc, transform: "translateX(-50%)", zIndex: 10, display: "flex", alignItems: "center", gap: 2, background: "#1565C0", borderRadius: 10, padding: "2px 8px 2px 10px", cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.3)", whiteSpace: "nowrap" }}>
+          <span style={{ fontSize: 10, fontWeight: 800, color: "#fff" }}>{sel.calYr}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "#fff", opacity: 0.6 }}>✕</span>
+        </div>;
+      })()}
+      {/* Milestone labels overlay - smart dodging including selected year */}
       {(() => {
         var range = chartEnd - chartStart || 1;
-        // Collect all labels with their positions first
         var rawLabels = [];
         if (homeSim[0].held) rawLabels.push({ yr: 2026, text: "📍当前", color: "#616161", bg: "#fff" });
         if (modalXtra > 0 && msCrossPrepay && msCrossPrepay <= chartEnd) rawLabels.push({ yr: msCrossPrepay, text: "⚡本>息", color: "#E53935", bg: "#FFEBEE" });
         if (msCrossover && msCrossover <= chartEnd) rawLabels.push({ yr: msCrossover, text: modalXtra > 0 ? "原本>息" : "📐本>息", color: modalXtra > 0 ? "#BDBDBD" : "#E65100", bg: modalXtra > 0 ? "#f5f5f5" : "#FFF3E0" });
         if (msPrepayOff && modalXtra > 0 && msPrepayOff <= chartEnd) rawLabels.push({ yr: msPrepayOff, text: "✅还清", color: "#E53935", bg: "#FFEBEE" });
         if (msBaseOff && msBaseOff <= chartEnd) rawLabels.push({ yr: msBaseOff, text: modalXtra > 0 ? "原" + homeLoanYrs + "yr" : "🏁" + homeLoanYrs + "yr", color: modalXtra > 0 ? "#BDBDBD" : "#EF9A9A", bg: modalXtra > 0 ? "#f5f5f5" : "#FCE4EC" });
-        // Sort by year, assign top/bottom alternating when close
         rawLabels.sort(function(a, b) { return a.yr - b.yr; });
-        var placed = []; // { leftPct, isBottom }
+        var occupied = [];
+        if (selSimIdx !== null) {
+          occupied.push({ pct: (sel.calYr - chartStart) / range * 100, slot: 1 });
+        }
         return rawLabels.map(function(lb, idx) {
-          var leftPct = (lb.yr - chartStart) / range * 100;
+          var pctRaw = (lb.yr - chartStart) / range;
+          var leftCalc = "calc(48px + (100% - 56px) * " + pctRaw + ")";
+          var leftPct = pctRaw * 100;
           var faded = isFaded(lb.yr);
-          // Check if any previous label is within 12% horizontal distance
-          var needBottom = false;
-          for (var pi = 0; pi < placed.length; pi++) {
-            if (Math.abs(placed[pi].leftPct - leftPct) < 12 && !placed[pi].isBottom) {
-              needBottom = true; break;
+          var useBottom = false;
+          for (var oi = 0; oi < occupied.length; oi++) {
+            if (Math.abs(occupied[oi].pct - leftPct) < 12 && occupied[oi].slot === 0) {
+              useBottom = true; break;
             }
           }
-          placed.push({ leftPct: leftPct, isBottom: needBottom });
-          return <div key={lb.text} style={{ position: "absolute", [needBottom ? "bottom" : "top"]: needBottom ? 20 : 2, left: leftPct + "%", transform: "translateX(-50%)", pointerEvents: "none", zIndex: 2 }}>
-            <div style={{ fontSize: 6, fontWeight: 700, color: faded ? "#ccc" : lb.color, background: faded ? "#f5f5f5" : lb.bg, borderRadius: 6, padding: "1px 5px", whiteSpace: "nowrap", border: "1px solid " + (faded ? "#e0e0e0" : lb.color + "30"), boxShadow: faded ? "none" : "0 1px 3px " + lb.color + "20" }}>{lb.text}</div></div>;
+          if (useBottom) {
+            for (var oj = 0; oj < occupied.length; oj++) {
+              if (Math.abs(occupied[oj].pct - leftPct) < 10 && occupied[oj].slot === 1) {
+                useBottom = false; break;
+              }
+            }
+          }
+          occupied.push({ pct: leftPct, slot: useBottom ? 1 : 0 });
+          return <div key={lb.text} style={{ position: "absolute", [useBottom ? "bottom" : "top"]: useBottom ? 20 : 2, left: leftCalc, transform: "translateX(-50%)", pointerEvents: "none", zIndex: 2 }}>
+            <div style={{ fontSize: 7, fontWeight: 700, color: faded ? "#ccc" : lb.color, background: faded ? "#f5f5f5" : lb.bg, borderRadius: 6, padding: "1px 5px", whiteSpace: "nowrap", border: "1px solid " + (faded ? "#e0e0e0" : lb.color + "30"), boxShadow: faded ? "none" : "0 1px 3px " + lb.color + "20" }}>{lb.text}</div></div>;
         });
       })()}
-      <div style={{ position: "absolute", bottom: 6, left: 48, right: 6, display: "flex", alignItems: "center", gap: 4 }}>
-       <div style={{ background: "#fff", borderRadius: 8, padding: "1px 5px", fontSize: 8, fontWeight: 700, color: "#5D4037", border: "1px solid #D7CCC8", whiteSpace: "nowrap", flexShrink: 0, boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}>{wYears}年</div>
-       <input type="range" min={5} max={50} step={1} value={wYears} onChange={e => setWYears(e.target.value)} style={{ flex: 1, height: 3, accentColor: "#5D4037", cursor: "pointer", opacity: 0.5 }} />
+      <div style={{ position: "absolute", bottom: 4, left: 4, right: 4, display: "flex", alignItems: "center", gap: 0 }}>
+       <div style={{ width: 44, flexShrink: 0, textAlign: "right", paddingRight: 4 }}>
+        <span style={{ fontSize: 9, fontWeight: 800, color: "#5D4037" }}>{wYears}年</span>
+       </div>
+       <div style={{ flex: 1, position: "relative", height: 14 }}>
+        {/* Gray unfilled track */}
+        <div style={{ position: "absolute", top: 5, left: 0, right: 0, height: 4, borderRadius: 2, background: "#E0E0E0" }}></div>
+        {/* Filled track - green to orange as years increase */}
+        {(() => {
+          var pct = (parseInt(wYears) - 5) / 45 * 100;
+          var filledColor = parseInt(wYears) <= 15 ? "#43A047" : parseInt(wYears) <= 25 ? "#F9A825" : parseInt(wYears) <= 35 ? "#EF6C00" : "#D32F2F";
+          return <div style={{ position: "absolute", top: 5, left: 0, width: pct + "%", height: 4, borderRadius: 2, background: filledColor, transition: "width 0.1s, background 0.3s" }}></div>;
+        })()}
+        <input type="range" min={5} max={50} step={1} value={wYears} onChange={e => setWYears(e.target.value)} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: 14, opacity: 0, cursor: "pointer", margin: 0 }} />
+        <div style={{ position: "absolute", top: 2, left: "calc(" + ((parseInt(wYears) - 5) / 45 * 100) + "% - 5px)", width: 10, height: 10, borderRadius: 5, background: "#fff", border: "2px solid #5D4037", boxShadow: "0 1px 3px rgba(0,0,0,0.2)", pointerEvents: "none", transition: "left 0.1s" }}></div>
+       </div>
       </div>
       {/* Legend overlay inside chart right */}
       </div>
@@ -2199,16 +2242,17 @@ return (
         </div>
         {modalXtra > 0 && <div style={{ display: "flex", gap: 3 }}>
      {[
-      { l: "原始还款", v: moToYrMo(moBase + heldMo), c: "#78909C" },
-      { l: "提前还清", v: moToYrMo(moPrep + heldMo), c: "#1565C0" },
-      { l: "节省时间", v: moSaved > 0 ? moToYrMo(moSaved) : "—", c: "#2E7D32" },
-      { l: "节省利息", v: intSaved > 0 ? fmtMoney(intSaved) : "—", c: "#2E7D32" },
-     ].map(function(s, si) { return <div key={si} style={{ flex: 1, background: s.c + "08", borderRadius: 4, padding: "2px 4px", textAlign: "center" }}>
-      <div style={{ fontSize: 6, color: "#90A4AE" }}>{s.l}</div>
-      <div style={{ fontSize: 8, fontWeight: 700, color: s.c }}>{s.v}</div></div>; })}
+      { l: "原始还款", v: moToYrMo(moBase + heldMo), c: "#78909C", bg: "#F5F5F5" },
+      { l: "提前还清", v: moToYrMo(moPrep + heldMo), c: "#1565C0", bg: "#E3F2FD" },
+      { l: "节省时间", v: moSaved > 0 ? moToYrMo(moSaved) : "—", c: "#2E7D32", bg: "#E8F5E9" },
+      { l: "节省利息", v: intSaved > 0 ? fmtMoney(intSaved) : "—", c: "#2E7D32", bg: "#E8F5E9" },
+     ].map(function(s, si) { return <div key={si} style={{ flex: 1, background: s.bg, borderRadius: 8, padding: "5px 4px", textAlign: "center", border: "1px solid " + s.c + "20" }}>
+      <div style={{ fontSize: 7, color: "#78909C", fontWeight: 600 }}>{s.l}</div>
+      <div style={{ fontSize: 11, fontWeight: 800, color: s.c }}>{s.v}</div></div>; })}
         </div>}
-        <div style={{ marginTop: 4 }}>
-     <button onClick={() => setModal("prepay")} style={{ width: "100%", padding: "6px 0", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, background: "#fff", border: "1px solid #1565C0", color: "#1565C0" }}>📋 完整摊销时间表</button>
+        <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
+     <button onClick={() => setModal("prepay")} style={{ flex: 1, padding: "6px 0", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, background: "#fff", border: "1px solid #1565C0", color: "#1565C0" }}>📋 摊销时间表</button>
+     <button onClick={() => { setRptStep(0); setRptYear(String(2026 + Math.min(parseInt(wYears)||30, 20))); setRptPrepay(modalXtra); setModal("homeReport"); }} style={{ flex: 1, padding: "6px 0", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, background: "#1565C0", border: "1px solid #1565C0", color: "#fff" }}>📊 自住房报告</button>
         </div></div>;
     })()}
   </>}
@@ -2796,6 +2840,281 @@ return { months: months, totalInterest: totalInt, annualRows: rows };
      <div style={{ fontSize: 7, color: C.muted, lineHeight: 1.4 }}>
       BRRRR = Buy · Rehab · Rent · Refinance · Repeat。低价买入→翻新增值→按ARV再融资取出现金→买下一套。现金回收率≥100% = "无限回报"。</div></div>
       </div>);
+  })()}
+  {modal === "homeReport" && (() => {
+    var overlay = { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.3)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 };
+    var closeModal = function() { setModal(null); setRptStep(0); };
+    // Step 0: Setup
+    if (rptStep === 0) {
+      var buyYr0 = alreadyBought && purchaseYear ? parseInt(purchaseYear)||2026 : 2026;
+      var yrOptions = []; for (var yi = 2026; yi <= buyYr0 + 50; yi++) yrOptions.push(yi);
+      return <div style={overlay} onClick={closeModal}>
+        <div onClick={function(e){e.stopPropagation();}} style={{ background: "#fff", borderRadius: 14, padding: "18px 20px", maxWidth: 340, width: "100%", boxShadow: "0 8px 32px rgba(0,0,0,0.25)" }}>
+         <div style={{ fontSize: 14, fontWeight: 800, color: "#1565C0", marginBottom: 4 }}>📊 报告设置</div>
+         <div style={{ fontSize: 8, color: "#90A4AE", marginBottom: 12 }}>选择报告基准年份和还贷方案</div>
+         <div style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#5D4037", marginBottom: 4 }}>📅 预测目标年份</div>
+          <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+           {[5,10,15,20,25,30].map(function(n) { var yr = 2026 + n; return <button key={yr} onClick={function(){setRptYear(String(yr));}} style={{ padding: "6px 10px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 700, border: parseInt(rptYear) === yr ? "2px solid #1565C0" : "1px solid #E0E0E0", background: parseInt(rptYear) === yr ? "#E3F2FD" : "#fff", color: parseInt(rptYear) === yr ? "#1565C0" : "#5D4037" }}>{yr}<span style={{ fontSize: 7, color: "#90A4AE" }}> ({n}yr)</span></button>; })}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
+           <span style={{ fontSize: 8, color: "#78909C" }}>自定义:</span>
+           <select value={rptYear} onChange={function(e){setRptYear(e.target.value);}} style={{ padding: "4px 6px", borderRadius: 6, border: "1px solid #E0E0E0", fontSize: 10, fontWeight: 600, fontFamily: "inherit", color: "#1565C0", cursor: "pointer" }}>
+            {yrOptions.map(function(y){return <option key={y} value={String(y)}>{y}年</option>;})}
+           </select>
+           <span style={{ fontSize: 8, color: "#90A4AE" }}>距今{parseInt(rptYear)-2026}年</span>
+          </div>
+         </div>
+         {homeHasLoan && <div style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#5D4037", marginBottom: 4 }}>⚡ 提前还贷方案</div>
+          <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 4 }}>
+           {[0,500,1000,1500,2000,3000,5000].map(function(v) { return <button key={v} onClick={function(){setRptPrepay(v);}} style={{ padding: "5px 8px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: rptPrepay === v ? "2px solid " + (v > 0 ? "#E53935" : "#78909C") : "1px solid #E0E0E0", background: rptPrepay === v ? (v > 0 ? "#FFEBEE" : "#F5F5F5") : "#fff", color: rptPrepay === v ? (v > 0 ? "#E53935" : "#5D4037") : "#78909C" }}>{v === 0 ? "不提前" : "$"+v+"/月"}</button>; })}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+           <span style={{ fontSize: 8, color: "#78909C" }}>自定义:</span>
+           <input type="range" min={0} max={5000} step={100} value={rptPrepay} onChange={function(e){setRptPrepay(parseInt(e.target.value));}} style={{ flex: 1, accentColor: rptPrepay > 0 ? "#E53935" : "#BDBDBD", cursor: "pointer" }} />
+           <span style={{ fontSize: 10, fontWeight: 800, color: rptPrepay > 0 ? "#E53935" : "#78909C" }}>{rptPrepay > 0 ? "$"+rptPrepay+"/月" : "无"}</span>
+          </div>
+         </div>}
+         <div style={{ marginBottom: 12 }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#5D4037", marginBottom: 4 }}>🎨 报告风格</div>
+          <div style={{ display: "flex", gap: 6 }}>
+           {[["list","📋 详细列表","传统表格"],["grid","📊 卡片看板","2×2可视化"]].map(function(s) { return <button key={s[0]} onClick={function(){setRptStyle(s[0]);}} style={{ flex: 1, padding: "8px 6px", borderRadius: 10, cursor: "pointer", fontFamily: "inherit", border: rptStyle === s[0] ? "2px solid #1565C0" : "1px solid #E0E0E0", background: rptStyle === s[0] ? "#E3F2FD" : "#fff", textAlign: "center" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: rptStyle === s[0] ? "#1565C0" : "#5D4037" }}>{s[1]}</div>
+            <div style={{ fontSize: 7, color: "#90A4AE" }}>{s[2]}</div></button>; })}
+          </div>
+         </div>
+         <button onClick={function(){setRptStep(1);}} style={{ width: "100%", padding: "10px 0", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700, background: "linear-gradient(135deg, #1565C0, #1976D2)", border: "none", color: "#fff", boxShadow: "0 2px 8px rgba(21,101,192,0.3)" }}>生成报告 →</button>
+         <button onClick={closeModal} style={{ width: "100%", padding: "6px 0", marginTop: 6, borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, background: "transparent", border: "none", color: "#90A4AE" }}>取消</button>
+        </div></div>;
+    }
+    // Step 1: Report
+    var hSP = parseFloat(homeSaleP)||0;
+    var hDP = (parseFloat(homeDownPct)||20)/100;
+    var hOwn = (parseFloat(homeOwn)||100)/100;
+    var hLoan = homeHasLoan ? hSP * (1 - hDP) : 0;
+    var hAR = (parseFloat(homeAnnRate)||6.75)/100/12;
+    var hN = (parseInt(homeLoanYrs)||30)*12;
+    var hPI = hLoan > 0 && hAR > 0 ? hLoan * hAR / (1 - Math.pow(1 + hAR, -hN)) : 0;
+    var buyYr = alreadyBought && purchaseYear ? parseInt(purchaseYear)||2026 : 2026;
+    var heldYrs = Math.max(0, 2026 - buyYr);
+    var appR = parseFloat(appRate)||3;
+    var tgtYr = parseInt(rptYear)||2036;
+    var totalYrs = tgtYr - buyYr;
+    var yrsFromNow = tgtYr - 2026;
+    var curVal = hSP * Math.pow(1 + appR/100, heldYrs);
+    var tgtVal = hSP * Math.pow(1 + appR/100, totalYrs);
+    var curBal = homeHasLoan && hLoan > 0 ? loanBal(hLoan, parseFloat(homeAnnRate)||6.75, parseInt(homeLoanYrs)||30, heldYrs) : 0;
+    var tgtBal = homeHasLoan && hLoan > 0 && totalYrs < parseInt(homeLoanYrs)||30 ? loanBal(hLoan, parseFloat(homeAnnRate)||6.75, parseInt(homeLoanYrs)||30, totalYrs) : 0;
+    var curEquity = curVal - curBal;
+    var tgtEquity = tgtVal - tgtBal;
+    var tci = (homeHasLoan ? hSP * hDP : hSP) + (parseFloat(homeClosing)||0) + (parseFloat(homeRenovation)||0);
+    var costGrow = parseFloat(homeCostGrowth)||3;
+    var fixedNow = homeFixed;
+    var fixedTgt = Math.round(fixedNow * Math.pow(1 + costGrow/100, yrsFromNow));
+    var totalAppreciation = tgtVal - hSP;
+    var roi = tci > 0 ? (tgtEquity * hOwn - tci) / tci : 0;
+    var annualizedRoi = totalYrs > 0 ? (Math.pow(1 + roi, 1/totalYrs) - 1) : 0;
+    // Principal & interest paid from buy to target
+    var totalPrinPaid = 0, totalIntPaid = 0, balTrack = hLoan;
+    if (homeHasLoan && hLoan > 0) {
+      for (var mp = 0; mp < Math.min(totalYrs * 12, hN) && balTrack > 0.01; mp++) { var ii = balTrack * hAR; var pp = Math.max(0, hPI - ii); totalPrinPaid += pp; totalIntPaid += ii; balTrack = Math.max(0, balTrack - pp); }
+    }
+    // Holding cost total
+    var totalHoldingCost = 0;
+    for (var yy = 0; yy < totalYrs; yy++) { totalHoldingCost += fixedNow * Math.pow(1 + costGrow/100, yy) * 12; }
+    totalHoldingCost += hPI * Math.min(totalYrs, parseInt(homeLoanYrs)||30) * 12;
+    // Prepay analysis
+    var baseMo = 0, prepMo = 0, intBase = 0, intPrep = 0;
+    if (homeHasLoan && hLoan > 0) {
+      var bB = hLoan, bP = hLoan;
+      for (var m = 0; m < hN && bB > 0.01; m++) { var i1 = bB * hAR; bB = Math.max(0, bB - Math.max(0, hPI - i1)); intBase += i1; baseMo = m + 1; }
+      for (var m2 = 0; m2 < hN && bP > 0.01; m2++) { var i2 = bP * hAR; bP = Math.max(0, bP - Math.max(0, hPI - i2) - rptPrepay); intPrep += i2; prepMo = m2 + 1; }
+    }
+    var intSaved = intBase - intPrep;
+    var moSaved = baseMo - prepMo;
+    // Break-even year (equity > TCI)
+    var breakEvenYr = null;
+    for (var be = 0; be <= 50; be++) {
+      var beVal = hSP * Math.pow(1 + appR/100, be);
+      var beBal = homeHasLoan && be < (parseInt(homeLoanYrs)||30) ? loanBal(hLoan, parseFloat(homeAnnRate)||6.75, parseInt(homeLoanYrs)||30, be) : 0;
+      if ((beVal - beBal) * hOwn >= tci) { breakEvenYr = buyYr + be; break; }
+    }
+    // Effective monthly cost (total cost - equity gain) / months
+    var effectiveMoCost = totalYrs > 0 ? (totalHoldingCost - totalAppreciation) / (totalYrs * 12) : 0;
+    var propLabel = homePropType === "sf" ? "独栋" : homePropType === "th" ? "联排" : homePropType === "condo" ? "Condo" : homePropType === "coop" ? "Co-op" : "多户";
+    var rSec = function(title, color) { return { fontSize: 10, fontWeight: 800, color: color, marginTop: 8, marginBottom: 4, paddingBottom: 2, borderBottom: "1px solid " + color + "30" }; };
+    var rRow = function(label, val, color) { return <div style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}><span style={{ fontSize: 9, color: "#5D4037" }}>{label}</span><span style={{ fontSize: 9, fontWeight: 700, color: color || "#3E2723" }}>{val}</span></div>; };
+    var rNote = function(text) { return <div style={{ fontSize: 7, color: "#90A4AE", marginTop: -1, marginBottom: 2 }}>{text}</div>; };
+    return <div style={overlay} onClick={closeModal}>
+      <div onClick={function(e){e.stopPropagation();}} style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", maxWidth: 400, width: "100%", maxHeight: "85vh", overflow: "auto", boxShadow: "0 8px 32px rgba(0,0,0,0.25)" }}>
+       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+        <div style={{ fontSize: 14, fontWeight: 800, color: "#1565C0" }}>📊 自住房分析报告</div>
+        <div style={{ display: "flex", gap: 4 }}>
+         <button onClick={function(){setRptStep(0);}} style={{ background: "#f5f5f5", border: "none", borderRadius: 5, color: "#1565C0", fontSize: 8, cursor: "pointer", padding: "2px 6px", fontFamily: "inherit", fontWeight: 600 }}>← 重选</button>
+         <button onClick={closeModal} style={{ background: "#f5f5f5", border: "none", borderRadius: 5, color: "#78909C", fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+        </div>
+       </div>
+       <div style={{ fontSize: 7, color: "#90A4AE", marginBottom: 6 }}>生成 {new Date().toLocaleDateString("zh-CN")} · 目标{tgtYr}年(距今{yrsFromNow}年) · 升值{appR}%/年{rptPrepay > 0 ? " · 提前还贷$"+rptPrepay+"/月" : ""}</div>
+
+       {rptStyle === "grid" ? <>
+       {/* === GRID STYLE: 2x2 cards === */}
+       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 6 }}>
+        {/* Card 1: Property & Appreciation */}
+        <div style={{ background: "linear-gradient(135deg, #FFF8E1, #FFFDE7)", borderRadius: 12, padding: "10px 10px 8px", border: "1px solid #F9A82530", position: "relative", overflow: "hidden" }}>
+         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}>🏠</div>
+         <div style={{ fontSize: 8, fontWeight: 800, color: "#5D4037", marginBottom: 6 }}>🏠 物业增值</div>
+         <div style={{ fontSize: 7, color: "#78909C" }}>买入价</div>
+         <div style={{ fontSize: 14, fontWeight: 800, color: "#5D4037", marginBottom: 2 }}>{fmtMoney(hSP)}</div>
+         <div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 4 }}>
+          <div style={{ flex: 1, height: 4, borderRadius: 2, background: "#E0E0E0" }}>
+           <div style={{ width: Math.min(100, totalAppreciation/hSP*100) + "%", height: 4, borderRadius: 2, background: "linear-gradient(90deg, #43A047, #1B5E20)" }}></div></div>
+          <span style={{ fontSize: 7, fontWeight: 700, color: "#1B5E20" }}>+{fmtPct(totalAppreciation/hSP*100)}</span>
+         </div>
+         <div style={{ fontSize: 7, color: "#78909C" }}>{tgtYr}年市值</div>
+         <div style={{ fontSize: 16, fontWeight: 800, color: "#1B5E20" }}>{fmtMoney(tgtVal)}</div>
+         <div style={{ fontSize: 6, color: "#90A4AE", marginTop: 2 }}>{propLabel} · {hOwn*100}%持股 · 增{fmtMoney(totalAppreciation)}</div>
+         {breakEvenYr && <div style={{ fontSize: 6, color: "#2E7D32", marginTop: 2, fontWeight: 600 }}>📍 {breakEvenYr}年回本(持有{breakEvenYr-buyYr}年)</div>}
+        </div>
+
+        {/* Card 2: Loan & Equity */}
+        <div style={{ background: homeHasLoan ? "linear-gradient(135deg, #E3F2FD, #E8EAF6)" : "linear-gradient(135deg, #E8F5E9, #C8E6C9)", borderRadius: 12, padding: "10px 10px 8px", border: "1px solid " + (homeHasLoan ? "#1565C020" : "#2E7D3220"), position: "relative", overflow: "hidden" }}>
+         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}>{homeHasLoan ? "💳" : "✅"}</div>
+         <div style={{ fontSize: 8, fontWeight: 800, color: homeHasLoan ? "#1565C0" : "#2E7D32", marginBottom: 6 }}>{homeHasLoan ? "💳 贷款 & 净资产" : "✅ 全款持有"}</div>
+         {homeHasLoan ? <>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+           <div><div style={{ fontSize: 6, color: "#78909C" }}>贷款额</div><div style={{ fontSize: 10, fontWeight: 800, color: "#1565C0" }}>{fmtMoney(hLoan)}</div></div>
+           <div style={{ textAlign: "right" }}><div style={{ fontSize: 6, color: "#78909C" }}>月供</div><div style={{ fontSize: 10, fontWeight: 800, color: "#1565C0" }}>{fmtMoney(hPI)}</div></div>
+          </div>
+          <div style={{ fontSize: 6, color: "#78909C" }}>{tgtYr}年余额</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: tgtBal > 0.01 ? "#D32F2F" : "#2E7D32" }}>{tgtBal > 0.01 ? fmtMoney(tgtBal) : "$0 ✓"}</div>
+          <div style={{ fontSize: 6, color: "#78909C", marginTop: 3 }}>累计利息</div>
+          <div style={{ fontSize: 9, fontWeight: 700, color: "#E65100" }}>{fmtMoney(totalIntPaid)}<span style={{ fontSize: 6, color: "#90A4AE" }}> / 本金{fmtMoney(totalPrinPaid)}</span></div>
+         </> : <>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#2E7D32", marginBottom: 2 }}>无房贷</div>
+          <div style={{ fontSize: 8, color: "#2E7D32" }}>全款购入 · 零负债</div>
+         </>}
+         <div style={{ fontSize: 6, color: "#1565C0", marginTop: 3, fontWeight: 700 }}>净资产 {fmtMoney(tgtEquity * hOwn)}</div>
+        </div>
+
+        {/* Card 3: ROI */}
+        <div style={{ background: "linear-gradient(135deg, #F3E5F5, #EDE7F6)", borderRadius: 12, padding: "10px 10px 8px", border: "1px solid #6A1B9A20", position: "relative", overflow: "hidden" }}>
+         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}>📊</div>
+         <div style={{ fontSize: 8, fontWeight: 800, color: "#6A1B9A", marginBottom: 6 }}>📊 投资回报</div>
+         <div style={{ fontSize: 6, color: "#78909C" }}>总投入 TCI</div>
+         <div style={{ fontSize: 10, fontWeight: 800, color: "#5D4037", marginBottom: 4 }}>{fmtMoney(tci)}</div>
+         <div style={{ display: "flex", gap: 6 }}>
+          <div><div style={{ fontSize: 6, color: "#78909C" }}>ROI</div><div style={{ fontSize: 16, fontWeight: 800, color: roi >= 0 ? "#2E7D32" : "#D32F2F" }}>{fmtPct(roi*100)}</div></div>
+          <div><div style={{ fontSize: 6, color: "#78909C" }}>年化</div><div style={{ fontSize: 16, fontWeight: 800, color: "#6A1B9A" }}>{fmtPct(annualizedRoi*100)}</div></div>
+         </div>
+         <div style={{ fontSize: 6, color: "#90A4AE", marginTop: 4 }}>{totalYrs}年 · 净赚{fmtMoney(tgtEquity*hOwn - tci)}</div>
+         {effectiveMoCost < 0 && <div style={{ fontSize: 6, color: "#2E7D32", fontWeight: 700, marginTop: 1 }}>🎉 增值覆盖全部持有成本!</div>}
+        </div>
+
+        {/* Card 4: Holding Cost OR Prepay */}
+        {rptPrepay > 0 && homeHasLoan ? (
+        <div style={{ background: "linear-gradient(135deg, #FFEBEE, #FCE4EC)", borderRadius: 12, padding: "10px 10px 8px", border: "1px solid #E5393520", position: "relative", overflow: "hidden" }}>
+         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}>⚡</div>
+         <div style={{ fontSize: 8, fontWeight: 800, color: "#E53935", marginBottom: 6 }}>⚡ 提前还贷</div>
+         <div style={{ fontSize: 7, color: "#78909C" }}>额外${rptPrepay}/月</div>
+         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, marginTop: 2 }}>
+          <div><div style={{ fontSize: 6, color: "#78909C" }}>节省时间</div><div style={{ fontSize: 12, fontWeight: 800, color: "#2E7D32" }}>{moSaved > 0 ? moToYrMo(moSaved) : "—"}</div></div>
+          <div style={{ textAlign: "right" }}><div style={{ fontSize: 6, color: "#78909C" }}>节省利息</div><div style={{ fontSize: 12, fontWeight: 800, color: "#2E7D32" }}>{intSaved > 0 ? fmtMoney(intSaved) : "—"}</div></div>
+         </div>
+         <div style={{ display: "flex", gap: 4, fontSize: 6 }}>
+          <span style={{ color: "#78909C" }}>原{moToYrMo(baseMo)}</span>
+          <span style={{ color: "#E53935" }}>→</span>
+          <span style={{ color: "#1565C0", fontWeight: 700 }}>{moToYrMo(prepMo)}</span>
+         </div>
+         {intBase > 0 && <div style={{ fontSize: 6, color: "#2E7D32", fontWeight: 600, marginTop: 2 }}>节省{fmtPct(intSaved/intBase*100)}利息</div>}
+        </div>
+        ) : (
+        <div style={{ background: "linear-gradient(135deg, #FFF3E0, #FBE9E7)", borderRadius: 12, padding: "10px 10px 8px", border: "1px solid #E6510020", position: "relative", overflow: "hidden" }}>
+         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}>🏷</div>
+         <div style={{ fontSize: 8, fontWeight: 800, color: "#E65100", marginBottom: 6 }}>🏷 持有成本</div>
+         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+          <div><div style={{ fontSize: 6, color: "#78909C" }}>月供P&I</div><div style={{ fontSize: 10, fontWeight: 800, color: "#1565C0" }}>{homeHasLoan ? fmtMoney(hPI) : "$0"}</div></div>
+          <div style={{ textAlign: "right" }}><div style={{ fontSize: 6, color: "#78909C" }}>月固定</div><div style={{ fontSize: 10, fontWeight: 800, color: "#6A1B9A" }}>{fmtMoney(fixedNow)}</div></div>
+         </div>
+         <div style={{ fontSize: 6, color: "#78909C" }}>{totalYrs}年累计</div>
+         <div style={{ fontSize: 14, fontWeight: 800, color: "#BF360C" }}>{fmtMoney(totalHoldingCost)}</div>
+         {yrsFromNow > 0 && <div style={{ fontSize: 6, color: "#E65100", marginTop: 2 }}>{tgtYr}年月固定预测: {fmtMoney(fixedTgt)}</div>}
+         {effectiveMoCost >= 0 ? <div style={{ fontSize: 6, color: "#78909C", marginTop: 1 }}>等效月成本(扣增值): {fmtMoney(effectiveMoCost)}</div>
+          : <div style={{ fontSize: 6, color: "#2E7D32", fontWeight: 600, marginTop: 1 }}>增值 &gt; 成本 · 等效免费住!</div>}
+        </div>
+        )}
+       </div>
+       </> : <>
+       {/* === LIST STYLE === */}
+       <div style={{ display: "flex", gap: 3, marginBottom: 6 }}>
+        <div style={{ flex: 1, background: "#FFF8E1", borderRadius: 8, padding: "4px 6px", textAlign: "center" }}>
+         <div style={{ fontSize: 7, color: "#5D4037" }}>🏠{propLabel}</div>
+         <div style={{ fontSize: 11, fontWeight: 800, color: "#5D4037" }}>{fmtMoney(hSP)}</div></div>
+        <div style={{ flex: 1, background: "#E8F5E9", borderRadius: 8, padding: "4px 6px", textAlign: "center" }}>
+         <div style={{ fontSize: 7, color: "#1B5E20" }}>📈{tgtYr}年市值</div>
+         <div style={{ fontSize: 11, fontWeight: 800, color: "#1B5E20" }}>{fmtMoney(tgtVal)}</div></div>
+        <div style={{ flex: 1, background: "#E3F2FD", borderRadius: 8, padding: "4px 6px", textAlign: "center" }}>
+         <div style={{ fontSize: 7, color: "#1565C0" }}>💰净资产</div>
+         <div style={{ fontSize: 11, fontWeight: 800, color: "#1565C0" }}>{fmtMoney(tgtEquity * hOwn)}</div></div>
+       </div>
+
+       <div style={rSec("🏠 物业概况", "#5D4037")}>物业概况</div>
+       {rRow("买入价 → " + tgtYr + "年", fmtMoney(hSP) + " → " + fmtMoney(tgtVal), "#1B5E20")}
+       {rNote(fmtMoney(hSP) + " × (1+" + appR + "%)^" + totalYrs + " · 增值" + fmtMoney(totalAppreciation) + " (+" + fmtPct(totalAppreciation/hSP*100) + ")")}
+       {rRow("持股 " + (hOwn*100) + "% · TCI", fmtMoney(tci))}
+       {heldYrs > 0 && rRow("购入", buyYr + "年 · 已持有" + heldYrs + "年")}
+       {rRow("当前市值(2026)", fmtMoney(curVal))}
+
+       {homeHasLoan ? <>
+        <div style={rSec("💳 贷款详情", "#1565C0")}>贷款</div>
+        {rRow("贷款", fmtMoney(hLoan) + " @ " + (parseFloat(homeAnnRate)||6.75) + "% × " + (parseInt(homeLoanYrs)||30) + "年")}
+        {rRow("月供 P&I", fmtMoney(hPI), "#1565C0")}
+        {rRow("当前余额(2026)", fmtMoney(curBal), "#D32F2F")}
+        {rRow(tgtYr + "年余额", fmtMoney(tgtBal), tgtBal > 0.01 ? "#D32F2F" : "#2E7D32")}
+        {tgtBal < 0.01 && rNote("🎉 " + tgtYr + "年已还清贷款!")}
+        {rRow("累计已付本金", fmtMoney(totalPrinPaid))}
+        {rRow("累计已付利息", fmtMoney(totalIntPaid), "#E65100")}
+        {rNote("利息占比: " + (totalPrinPaid + totalIntPaid > 0 ? fmtPct(totalIntPaid/(totalPrinPaid+totalIntPaid)*100) : "0%") + " · 本金占比: " + (totalPrinPaid + totalIntPaid > 0 ? fmtPct(totalPrinPaid/(totalPrinPaid+totalIntPaid)*100) : "0%"))}
+       </> : <>
+        <div style={rSec("✅ 全款购入", "#2E7D32")}>全款</div>
+        {rRow("状态", "无房贷 · 全款持有", "#2E7D32")}
+       </>}
+
+       <div style={rSec("📊 投资回报", "#6A1B9A")}>回报</div>
+       {rRow("总投入 TCI", fmtMoney(tci))}
+       {rRow(tgtYr + "年净资产", fmtMoney(tgtEquity * hOwn), "#1B5E20")}
+       {rRow("投资回报率 ROI", fmtPct(roi * 100), roi >= 0 ? "#2E7D32" : "#D32F2F")}
+       {rNote("(" + fmtMoney(tgtEquity * hOwn) + " - " + fmtMoney(tci) + ") ÷ " + fmtMoney(tci))}
+       {totalYrs > 0 && rRow("年化回报率", fmtPct(annualizedRoi * 100), "#6A1B9A")}
+       {breakEvenYr && rRow("回本年份", breakEvenYr + "年 (持有" + (breakEvenYr - buyYr) + "年)", "#2E7D32")}
+       {rNote("净资产 ≥ 总投入TCI的时间点")}
+
+       <div style={rSec("🏷 持有成本", "#E65100")}>成本</div>
+       {rRow("月固定(当前)", fmtMoney(fixedNow), "#6A1B9A")}
+       {yrsFromNow > 0 && rRow("月固定(" + tgtYr + "年预测)", fmtMoney(fixedTgt), "#E65100")}
+       {rRow("月总支出(当前)", fmtMoney(hPI + fixedNow), "#BF360C")}
+       {rRow(totalYrs + "年累计总持有成本", fmtMoney(totalHoldingCost), "#BF360C")}
+       {effectiveMoCost < 0 && rRow("等效月成本(扣增值)", fmtMoney(0) + " (增值>成本)", "#2E7D32")}
+       {effectiveMoCost >= 0 && rRow("等效月成本(扣增值)", fmtMoney(effectiveMoCost), "#E65100")}
+       {rNote("(总持有成本 - 房价增值) ÷ 总月数 · 负数=增值超过成本")}
+
+       {rptPrepay > 0 && homeHasLoan && <>
+        <div style={rSec("⚡ 提前还贷对比", "#E53935")}>提前还贷</div>
+        {rRow("每月额外还贷", "$" + rptPrepay + "/月", "#E53935")}
+        {rRow("原始还清", moToYrMo(baseMo) + " (" + (buyYr + Math.ceil(baseMo/12)) + "年)")}
+        {rRow("提前还清", moToYrMo(prepMo) + " (" + (buyYr + Math.ceil(prepMo/12)) + "年)", "#1565C0")}
+        {rRow("节省时间", moSaved > 0 ? moToYrMo(moSaved) : "—", "#2E7D32")}
+        {rRow("节省利息", intSaved > 0 ? fmtMoney(intSaved) : "—", "#2E7D32")}
+        {intBase > 0 && rNote("利息节省率: " + fmtPct(intSaved/intBase*100) + " · 原总利息" + fmtMoney(intBase) + " → " + fmtMoney(intPrep))}
+        {rRow("每月多付$" + rptPrepay + "的回报", intSaved > 0 ? fmtMoney(intSaved / (rptPrepay * prepMo) * rptPrepay) + "/月等值" : "—", "#6A1B9A")}
+       </>}
+       </>}
+
+       <div style={{ marginTop: 10, padding: "6px 8px", background: "#F5F5F5", borderRadius: 6, fontSize: 7, color: "#78909C", lineHeight: 1.5 }}>
+        💡 本报告基于固定利率{parseFloat(homeAnnRate)||6.75}%、年升值{appR}%、年成本涨幅{costGrow}%假设。实际回报受市场波动、利率变化、维护费用等因素影响。本工具不构成投资建议，请结合专业人士评估。
+       </div>
+       <div style={{ fontSize: 6, color: "#BDBDBD", textAlign: "center", marginTop: 6 }}>© JMJ Invest LLC · 钱景 FIRE Calculator</div>
+      </div></div>;
   })()}
   {modal === "fireReport" && (() => {
     const uAge = parseInt(userAge) || 30;
