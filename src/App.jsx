@@ -28,6 +28,7 @@ const a = Math.abs(n);
 if (a < 1000) return String(Math.round(a));
 if (a < 1000000) return (a / 1000).toFixed(1) + "K";
 return (a / 1000000).toFixed(2) + "M";}
+function fmtAxis(n) { const a = Math.abs(n), sg = n < 0 ? "-" : ""; if (a >= 1e6) return sg + "$" + (a / 1e6).toFixed(a >= 1e7 ? 0 : 1) + "M"; if (a >= 1e3) return sg + "$" + Math.round(a / 1e3) + "K"; return sg + "$" + Math.round(a); }
 function fmtPct(n) { return n.toFixed(2) + "%"; }
 function moToYrMo(mo) { return Math.floor(mo / 12) + "yr " + (mo % 12) + "mo"; }
 function getAgeSavings(age) {
@@ -48,28 +49,29 @@ const pct = fiGoal > 0 ? Math.min((payload.monthlyTotalPsv || 0) / fiGoal, 1) : 
 const fillOp = inFire ? 0.12 + pct * 0.28 : pct * 0.15;
 return (
 <g>
-<rect x={x} y={y} width={Math.max(width, 1)} height={height} fill="#E07830" fillOpacity={fillOp} rx={1} />
-{!inFire && <rect x={x} y={y} width={Math.max(width, 1)} height={height} fill="none" stroke="#E07830" strokeWidth={0.8} strokeDasharray="3 3" opacity={0.35} rx={1} />}
+<rect x={x} y={y} width={Math.max(width, 1)} height={height} fill="#C66A2C" fillOpacity={fillOp} rx={0} />
+{!inFire && <rect x={x} y={y} width={Math.max(width, 1)} height={height} fill="none" stroke="#C66A2C" strokeWidth={0.8} strokeDasharray="3 3" opacity={0.35} rx={0} />}
 </g>
 );}
 
 const pF = v => parseFloat(v) || 0;
 const pI = v => parseInt(v) || 0;
 const C = {
-bg: "#FAF9F6", surface: "#FFFFFF", inset: "#F0EDE8",
-border: "#D1D1D6", borderIn: "#C7C7CC", accent: "#8B6F5E",
-text: "#1C1C1E", sub: "#636366", muted: "#8E8E93",
-blue: "#007AFF", green: "#34C759", orange: "#FF9500", red: "#FF3B30",
-cta: "#8B6F5E",
+bg: "#FFFFFF", surface: "#FFFFFF", inset: "#F7F7F7",
+border: "#DFDFDF", borderIn: "#C7C7C7", accent: "#121212",
+text: "#121212", sub: "#333333", muted: "#727272",
+blue: "#326891", green: "#2A7A4B", orange: "#B35C1E", red: "#B8312F",
+cta: "#121212", rule: "#121212",
+serif: "var(--nyt-serif)", sans: "var(--nyt-sans)",
 };
 const FG6 = { display: "flex", gap: 6 };
 const FG4 = { display: "flex", gap: 4 };
 const FG8 = { display: "flex", gap: 8 };
 const FAC = { display: "flex", alignItems: "center", gap: 3 };
 const FACB = (mb) => ({ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: mb || 4 });
-const GOLD = { display: "flex", alignItems: "center", height: 38, background: "#fff", borderRadius: 8, padding: "0 10px", border: "1px solid " + C.border, boxSizing: "border-box" };
-const PILL = (bg) => ({ display: "inline-flex", alignItems: "center", gap: 3, background: bg, borderRadius: 10, padding: "2px 8px", marginBottom: 4 });
-const SEC = (border) => ({ background: "#FAF9F6", borderRadius: 12, padding: "6px 10px", marginBottom: 4, overflow: "hidden", borderLeft: "3px solid " + border });
+const GOLD = { display: "flex", alignItems: "center", height: 38, background: "#fff", borderRadius: 0, padding: "0 10px", border: "1px solid " + C.border, boxSizing: "border-box" };
+const PILL = (bg) => ({ display: "inline-flex", alignItems: "center", gap: 3, background: "transparent", borderRadius: 0, padding: "0 0 1px", marginBottom: 5, borderBottom: "2px solid " + (bg || "#121212") });
+const SEC = (border) => ({ background: "#FFFFFF", borderRadius: 0, padding: "8px 2px 8px", marginBottom: 6, overflow: "hidden", borderTop: "1px solid #121212" });
 const EXP_RATIOS = [0.30, 0.35, 0.40, 0.45];
 const EXP_LABELS = ["30% \u81ea\u7ba1\u00b7\u4e0d\u5305", "35% \u81ea\u7ba1\u00b7\u5305", "40% \u6258\u7ba1\u00b7\u4e0d\u5305", "45% \u6258\u7ba1\u00b7\u5305", "\u81ea\u5b9a\u4e49"];
 
@@ -82,62 +84,62 @@ else if (decimals !== null) { const n = parseFloat(val); displayVal = isNaN(n) ?
 else displayVal = val;
 return (
 <div style={style}>
-{label && <div style={{ fontSize: 9.5, color: C.muted, fontWeight: 500, marginBottom: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{label}</div>}
-<div style={{ display: "flex", alignItems: "center", height: 32, background: C.inset, borderRadius: 8, padding: "0 8px" }}>
-{prefix && <span style={{ color: C.muted, fontSize: 12.5, paddingLeft: 6, flexShrink: 0 }}>{prefix}</span>}
-<input type="text" value={displayVal}
+{label && <div style={{ fontSize: 10, color: C.sub, fontWeight: 600, marginBottom: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{label}</div>}
+<div style={{ display: "flex", alignItems: "center", height: 32, background: "#FFFFFF", border: "1px solid " + C.borderIn, borderRadius: 0, padding: "0 6px" }}>
+{prefix && <span style={{ color: C.muted, fontSize: 12.5, paddingLeft: 2, flexShrink: 0 }}>{prefix}</span>}
+<input type="text" inputMode="decimal" aria-label={typeof label === "string" ? label : undefined} value={displayVal}
 onFocus={() => setEditing(true)}
 onChange={e => setVal(e.target.value.replace(/,/g, ""))}
 onBlur={() => { setEditing(false); const v = parseFloat((val + "").replace(/,/g, "")); if (!isNaN(v)) setVal(v.toString()); }}
-style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: C.text, fontSize: 12.5, padding: "0 5px", width: 0, minWidth: 0 }} />
-{suffix && <span style={{ color: C.muted, fontSize: 12.5, paddingRight: 6, flexShrink: 0 }}>{suffix}</span>}</div></div>
+style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: C.text, fontSize: 13, fontWeight: 500, padding: "0 4px", width: 0, minWidth: 0 }} />
+{suffix && <span style={{ color: C.muted, fontSize: 12.5, paddingRight: 2, flexShrink: 0 }}>{suffix}</span>}</div></div>
 );}
 function InfoCell({ label, val, color, style: st = {} }) {
 return (
 <div style={{ flex: 1, minWidth: 0, ...st }}>
-<div style={{ fontSize: 9.5, color: C.muted, fontWeight: 500, marginBottom: 1, whiteSpace: "nowrap", overflow: "hidden" }}>{label}</div>
-<div style={{ height: 26, display: "flex", alignItems: "center", paddingLeft: 6, background: C.inset, border: "1px solid " + C.border, borderRadius: 4, overflow: "hidden" }}>
-<span style={{ fontSize: 12.5, fontWeight: 600, color: color || C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{val}</span></div></div>
+<div style={{ fontSize: 10, color: C.muted, fontWeight: 500, marginBottom: 1, whiteSpace: "nowrap", overflow: "hidden" }}>{label}</div>
+<div style={{ height: 26, display: "flex", alignItems: "center", paddingLeft: 0, background: "transparent", borderBottom: "1px solid " + C.border, overflow: "hidden" }}>
+<span style={{ fontSize: 13, fontWeight: 700, color: color || C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{val}</span></div></div>
 );}
 function Card({ label, val, color, style: st = {} }) {
 return (
-<div style={{ padding: "3px 5px", background: C.inset, border: "1px solid " + C.border, borderRadius: 4, flex: 1, minWidth: 0, overflow: "hidden", ...st }}>
-<div style={{ fontSize: 9.5, color: C.muted, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden" }}>{label}</div>
-<div style={{ fontSize: 12.5, fontWeight: 600, color: color || C.text, whiteSpace: "nowrap", overflow: "hidden" }}>{val}</div></div>
+<div style={{ padding: "3px 0 4px", background: "transparent", borderTop: "1px solid " + C.border, flex: 1, minWidth: 0, overflow: "hidden", ...st }}>
+<div style={{ fontSize: 10, color: C.muted, fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden" }}>{label}</div>
+<div style={{ fontSize: 13, fontWeight: 700, color: color || C.text, whiteSpace: "nowrap", overflow: "hidden" }}>{val}</div></div>
 );}
 function FeatCard({ label, val, sub, color, style: st = {} }) {
 return (
-<div style={{ padding: "6px 8px", flex: 1, minWidth: 0, overflow: "hidden", background: color + "16", border: "1.5px solid " + color + "55", borderRadius: 6, ...st }}>
-<div style={{ fontSize: 9.5, color: color, fontWeight: 600, marginBottom: 2, whiteSpace: "nowrap" }}>{label}</div>
-<div style={{ fontSize: 18, fontWeight: 700, color: color, letterSpacing: "-0.02em", lineHeight: 1.2 }}>{val}</div>
-{sub && <div style={{ fontSize: 9.5, color: color, opacity: 0.65, marginTop: 3, whiteSpace: "nowrap" }}>{sub}</div>}</div>
+<div style={{ padding: "6px 0 4px", flex: 1, minWidth: 0, overflow: "hidden", background: "transparent", borderTop: "2px solid " + color, ...st }}>
+<div style={{ fontSize: 10, color: C.sub, fontWeight: 700, marginBottom: 2, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.04em" }}>{label}</div>
+<div style={{ fontSize: 22, fontWeight: 700, color: color, fontFamily: C.serif, letterSpacing: "-0.01em", lineHeight: 1.15 }}>{val}</div>
+{sub && <div style={{ fontSize: 10, color: C.muted, marginTop: 3, whiteSpace: "nowrap" }}>{sub}</div>}</div>
 );}
 function SHdr({ zh, en }) {
 return (
-<div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 3 }}>
-<span style={{ fontSize: 13, fontWeight: 600, color: C.text, letterSpacing: "-0.01em" }}>{zh}</span>
-{en && <span style={{ fontSize: 9, fontWeight: 400, color: C.muted }}>{en}</span>}</div>
+<div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 5 }}>
+<span style={{ fontSize: 15, fontWeight: 700, color: C.text, fontFamily: C.serif, letterSpacing: "0", whiteSpace: "nowrap", flexShrink: 0 }}>{zh}</span>
+{en && <span style={{ fontSize: 9, fontWeight: 700, color: C.muted, textTransform: "uppercase", letterSpacing: "0.08em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", minWidth: 0 }}>{en}</span>}</div>
 );}
 function CustomTooltip({ active, payload }) {
 if (!active || !payload?.length) return null;
 const d = payload[0].payload;
 return (
-<div style={{ background: "#fffF", border: "1px solid " + C.border, padding: "4px 6px", borderRadius: 6, boxShadow: "0 2px 8px rgba(0,0,0,0.10)", fontSize: 9, lineHeight: 1.5, maxWidth: 170, pointerEvents: "none" }}>
-<div style={{ fontWeight: 700, color: C.accent, fontSize: 9.5 }}>{d.age}岁 · 第{d.yr}年</div>
+<div style={{ background: "#fffF", border: "1px solid " + C.border, padding: "4px 6px", borderRadius: 0, boxShadow: "none", fontSize: 10, lineHeight: 1.5, maxWidth: 170, pointerEvents: "none" }}>
+<div style={{ fontWeight: 700, color: C.accent, fontSize: 10.5 }}>{d.age}岁 · 第{d.yr}年</div>
 <div>净资产 <b style={{ color: C.blue }}>{fmtMoney(d.netWorth)}</b></div>
-{d.nwReal != null && d.nwReal !== d.netWorth && <div style={{ color: "#E65100", fontSize: 8 }}>↳ 按今日物价值 <b>{fmtMoney(d.nwReal)}</b></div>}
+{d.nwReal != null && d.nwReal !== d.netWorth && <div style={{ color: "#B35C1E", fontSize: 9.5 }}>↳ 按今日物价值 <b>{fmtMoney(d.nwReal)}</b></div>}
 <div>被动收入 <b style={{ color: C.orange }}>{fmtMoney(d.monthlyTotalPsv)}/月</b></div>
-{d.psvReal != null && d.psvReal !== d.monthlyTotalPsv && d.monthlyTotalPsv > 0 && <div style={{ color: "#E65100", fontSize: 8 }}>↳ 按今日物价值 <b>{fmtMoney(d.psvReal)}/月</b></div>}
-<div style={{ color: "#78909C" }}>流动现金 <b style={{ color: C.green }}>{fmtMoney(d.cashPool)}</b></div>
-{d.units > 0 && <div style={{ color: "#78909C" }}>持有 <b style={{ color: C.blue }}>{d.units}</b> 套投资房</div>}
-{d.events && d.events.length > 0 && <div style={{ borderTop: "1px dashed #E0E0E0", marginTop: 2, paddingTop: 2 }}>
-{d.events.map(function(e, i) { return <div key={i} style={{ fontSize: 7.5, color: "#2E7D32", fontWeight: 600 }}>{e}</div>; })}
+{d.psvReal != null && d.psvReal !== d.monthlyTotalPsv && d.monthlyTotalPsv > 0 && <div style={{ color: "#B35C1E", fontSize: 9.5 }}>↳ 按今日物价值 <b>{fmtMoney(d.psvReal)}/月</b></div>}
+<div style={{ color: "#727272" }}>流动现金 <b style={{ color: C.green }}>{fmtMoney(d.cashPool)}</b></div>
+{d.units > 0 && <div style={{ color: "#727272" }}>持有 <b style={{ color: C.blue }}>{d.units}</b> 套投资房</div>}
+{d.events && d.events.length > 0 && <div style={{ borderTop: "1px dashed #DFDFDF", marginTop: 2, paddingTop: 2 }}>
+{d.events.map(function(e, i) { return <div key={i} style={{ fontSize: 9, color: "#2A7A4B", fontWeight: 600 }}>{e}</div>; })}
 </div>}</div>
 );}
 function Logo({ small }) {
-  return <div style={{ display: "inline-flex", alignItems: "center", gap: small ? 3 : 4, background: "linear-gradient(135deg, #4CAF50 0%, #2E7D32 60%, #1B5E20 100%)", borderRadius: small ? 6 : 8, padding: small ? "2px 6px 2px 4px" : "3px 8px 3px 6px", boxShadow: "0 2px 6px rgba(46,125,50,0.3)" }}>
-    <div style={{ width: small ? 13 : 16, height: small ? 13 : 16, borderRadius: small ? 3 : 4, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: small ? 8 : 10, fontWeight: 800, color: "#fff" }}>Q</div>
-    <span style={{ fontSize: small ? 9 : 12, fontWeight: 800, color: "#fff", letterSpacing: "0.05em" }}>钱景</span></div>;}
+  return <span style={{ display: "inline-flex", alignItems: "baseline", gap: small ? 4 : 6, color: "#121212", lineHeight: 1 }}>
+    <span style={{ fontFamily: C.serif, fontWeight: 900, fontSize: small ? 17 : 22, letterSpacing: "0.02em" }}>钱景</span>
+    <span style={{ fontFamily: "UnifrakturMaguntia, 'Old English Text MT', serif", fontSize: small ? 13 : 16 }}>QianJing</span></span>;}
 export default function App() {
 const [listP, setListP] = useState("500000"); const [saleP, setSaleP] = useState("450000"); const [portfolioMode, setPortfolioMode] = useState(false); const [propType, setPropType] = useState("sf"); const [mfUnits, setMfUnits] = useState("2"); const [unitRents, setUnitRents] = useState(["5000"]); const [homeListP, setHomeListP] = useState("600000"); const [homeSaleP, setHomeSaleP] = useState("550000"); const [homePropType, setHomePropType] = useState("sf"); const [homeMfUnits, setHomeMfUnits] = useState("2"); const [homeUnitRents, setHomeUnitRents] = useState(["10000"]); const [rentPeriod, setRentPeriod] = useState("mo");
 const [portfolio, setPortfolio] = useState([
@@ -375,13 +377,13 @@ const handleCopyExport = useCallback(() => {
   const text = JSON.stringify(snap);
   try {
     navigator.clipboard.writeText(text).then(() => {
-      setSaveMsg("✅ 已复制！粘贴到备忘录保存");
+      setSaveMsg("✓ 已复制！粘贴到备忘录保存");
       setTimeout(() => setSaveMsg(""), 3000);
     }).catch(() => {
       // fallback: select textarea content
-      setSaveMsg("⬆️ 请长按上方文本框 → 全选 → 拷贝");});
+      setSaveMsg("↑ 请长按上方文本框 → 全选 → 拷贝");});
   } catch(e) {
-    setSaveMsg("⬆️ 请长按上方文本框 → 全选 → 拷贝");}
+    setSaveMsg("↑ 请长按上方文本框 → 全选 → 拷贝");}
 }, [listP, saleP, propType, mfUnits, unitRents, homeListP, homeSaleP, downPct, annRate, loanYrs, closing, annualIncome, savingsRate, bankSavings, stockAccount, k401Balance, currency, calcMode, compoundMode, birthYear, birthMonth, expIdx, hmAmt, hmRate, capRate, investOwn, homeOwn, hmEnabled, investOther, compoundYears, ffMode, ffIncomeTgt, ffWealthTgt, effectiveTax, inflRate, savREPct, savStockPct, savBankPct, sav401Pct, incomeGrowth, retireAge]);
 
 const handleApplyImport = useCallback(() => {
@@ -389,14 +391,14 @@ const handleApplyImport = useCallback(() => {
     const saved = JSON.parse(importText.trim());
     setSaveModal(null);
     setImportText("");
-    setSaveMsg("⏳ 正在恢复...");
+    setSaveMsg("正在恢复...");
     startTransition(() => {
       applyState(saved);
-      setSaveMsg("✅ 已恢复");
+      setSaveMsg("✓ 已恢复");
       setTimeout(() => setSaveMsg(""), 2000);
     });
   } catch (err) {
-    setSaveMsg("❌ 格式错误，请检查粘贴内容");
+    setSaveMsg("✗ 格式错误，请检查粘贴内容");
     setTimeout(() => setSaveMsg(""), 3000);}
 }, [importText]);
 
@@ -693,12 +695,12 @@ const inRetirement = userRetired;
 const inflD = Math.pow(1 + (parseFloat(inflRate)||2)/100, yr);
 var evts = [];
 var prevU = yr > 1 && rows.length > 0 ? rows[rows.length-1].units || 1 : (isIndexMode ? 0 : 1);
-if (units > prevU) evts.push("🏠 购入第"+units+"套房");
-if (wantInvest && yr === Math.ceil(investPayoffYrs - investHeld) && investPayoffYrs < 90) evts.push("🔓 投资房清贷·被动收入↑");
-if (wantHome && homeHasLoan && yr === Math.ceil(homePayoffYrs - homeHeld) && homePayoffYrs < 90) evts.push("🏡 自住房清贷·月支出↓");
-if (age === (parseInt(k401DrawAge)||60)) evts.push("💰 "+retLabel+"可提取");
-if (age === (parseInt(ssClaimAge)||67)) evts.push("🏛 "+ssLabel+"开始领取");
-if (freedomYear === yr) evts.push("🔥 FIRE达成");
+if (units > prevU) evts.push("购入第"+units+"套房");
+if (wantInvest && yr === Math.ceil(investPayoffYrs - investHeld) && investPayoffYrs < 90) evts.push("投资房清贷·被动收入↑");
+if (wantHome && homeHasLoan && yr === Math.ceil(homePayoffYrs - homeHeld) && homePayoffYrs < 90) evts.push("自住房清贷·月支出↓");
+if (age === (parseInt(k401DrawAge)||60)) evts.push(""+retLabel+"可提取");
+if (age === (parseInt(ssClaimAge)||67)) evts.push(""+ssLabel+"开始领取");
+if (freedomYear === yr) evts.push("FIRE达成");
 rows.push({ yr, age, units, cashPool, cashReal: cashPool / inflD, k401Val, netWorth: nwWithHome, cumulativeCF, stockValue, monthlyRE, k401AnnIncome, ssAnnIncome, monthlyTotalPsv: effectivePsv, annPsv: effectivePsv * 12, psvReal: effectivePsv / inflD, annPsvReal: effectivePsv * 12 / inflD, inRetirement, netWorthPre: !userRetired ? nwWithHome : null, netWorthPost: userRetired ? nwWithHome : null, nwReal: nwWithHome / inflD, homeMonthlyBurden: dynHomeBurden, events: evts });
 }
 let theoFireYear = null;
@@ -738,7 +740,7 @@ const dealScores = [norm(coc, 0, 0.12), norm(dscr0, 0.8, 1.5), norm(eqAdj, 0, 0.
 const dealAvg = Math.round(dealScores.reduce((a, b) => a + b, 0) / 6);
 const dealGrade = dealAvg >= 90 ? "A+" : dealAvg >= 80 ? "A" : dealAvg >= 70 ? "A-" : dealAvg >= 60 ? "B+" : dealAvg >= 50 ? "B" : dealAvg >= 40 ? "B-" : dealAvg >= 25 ? "C" : "D";
 const dealDesc = dealAvg >= 90 ? "极品 Excellent" : dealAvg >= 80 ? "优质 Great" : dealAvg >= 70 ? "良好 Good" : dealAvg >= 60 ? "可考虑 Fair" : dealAvg >= 50 ? "一般 Average" : dealAvg >= 40 ? "偏弱 Weak" : dealAvg >= 25 ? "谨慎 Caution" : "高风险 Risky";
-const dealColor = dealAvg >= 80 ? C.green : dealAvg >= 70 ? "#43A047" : dealAvg >= 60 ? "#8B6914" : dealAvg >= 50 ? C.orange : dealAvg >= 40 ? "#E65100" : C.red;
+const dealColor = dealAvg >= 80 ? C.green : dealAvg >= 70 ? "#4E9A6A" : dealAvg >= 60 ? "#8A6D1F" : dealAvg >= 50 ? C.orange : dealAvg >= 40 ? "#B35C1E" : C.red;
 const { rows: wealthRows, freedomYear, freedomAge, ssEstimate } = wealthSim;
 const lastW = wealthRows[wealthRows.length - 1] || null;
 const fireRow = freedomYear ? wealthRows.find(d => d.yr === freedomYear) : null;
@@ -800,120 +802,146 @@ for (var yr = 0; yr <= totalYrs; yr++) {
 return rows;
 }, [homeSaleP, homeDownPct, homeHasLoan, homeAnnRate, homeLoanYrs, appRate, wYears, userAge, modalXtra, alreadyBought, purchaseYear, homeFixed, homeCostGrowth]);
 
-const sec = () => ({ background: C.surface, borderRadius: 12, padding: "6px 10px", marginBottom: 4, overflow: "hidden" });
+const sec = () => ({ background: C.surface, borderRadius: 0, padding: "8px 2px 8px", marginBottom: 6, overflow: "hidden", borderTop: "1px solid " + C.rule });
 
-const overlay = { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.3)", zIndex: 10, display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" };
-const mBox = { background: C.surface, borderRadius: 14, padding: "14px 12px 10px", width: "calc(100% - 24px)", maxWidth: 400, margin: "50px 12px 20px" };
+const overlay = { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.3)", zIndex: 10, display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", backdropFilter: "none", WebkitBackdropFilter: "none" };
+const mBox = { background: C.surface, borderRadius: 0, padding: "14px 12px 10px", width: "calc(100% - 24px)", maxWidth: 400, margin: "50px 12px 20px" };
 if (!showReport) {
   const fi = (label, val, setter, ph, pfx) => (
     <div style={{ marginBottom: 8, minWidth: 0 }}>
       <div style={{ fontSize: 10, fontWeight: 500, color: C.sub, marginBottom: 2, letterSpacing: "0.01em" }}>{label}</div>
       <div style={GOLD}>
         {pfx && <span style={{ color: C.muted, fontSize: 14, marginRight: 4, fontWeight: 500 }}>{pfx}</span>}
-        <input type="text" value={val} onChange={e => setter(e.target.value.replace(/,/g, ""))} placeholder={ph} style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "#3E2723", fontSize: 14, fontFamily: "inherit", fontWeight: 600, boxSizing: "border-box" }} />
+        <input type="text" value={val} onChange={e => setter(e.target.value.replace(/,/g, ""))} placeholder={ph} style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "#121212", fontSize: 14, fontFamily: "inherit", fontWeight: 600, boxSizing: "border-box" }} />
       </div></div>);
   const fs2 = (label, val, setter, opts) => (
     <div style={{ marginBottom: 8, flex: 1, minWidth: 0 }}>
       <div style={{ fontSize: 10, fontWeight: 500, color: C.sub, marginBottom: 2 }}>{label}</div>
-      <select value={val} onChange={e => setter(e.target.value)} style={{ width: "100%", height: 38, fontSize: 13, fontWeight: 600, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 8, background: "#fff", color: "#3E2723", padding: "0 8px", cursor: "pointer", boxSizing: "border-box" }}>
+      <select value={val} onChange={e => setter(e.target.value)} style={{ width: "100%", height: 38, fontSize: 13, fontWeight: 600, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 0, background: "#fff", color: "#121212", padding: "0 8px", cursor: "pointer", boxSizing: "border-box" }}>
         {opts.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
       </select></div>);
   return (
-    <div className="page-enter" style={{ maxWidth: 430, margin: "0 auto", background: "#F0F4F8", minHeight: "100vh", fontFamily: '"SF Pro Display","SF Pro Text",system-ui,sans-serif', color: C.text, WebkitFontSmoothing: "antialiased", padding: "0", boxSizing: "border-box" }}>
+    <div className={"page-enter" + (introMode ? "" : " qj-landing")} style={{ maxWidth: introMode ? 430 : undefined, margin: "0 auto", background: "#FFFFFF", minHeight: "100vh", fontFamily: 'var(--nyt-sans)', color: C.text, WebkitFontSmoothing: "antialiased", padding: "0", boxSizing: "border-box" }}>
       <style>{`
         @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
         @keyframes slideIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
         .sec-anim { animation: fadeUp 0.5s ease-out both; }
         .page-enter { animation: slideIn 0.35s ease-out both; }
         .btn3d { transition: transform 0.15s, box-shadow 0.15s; }
-        .btn3d:active { transform: translateY(1px) scale(0.98); box-shadow: 0 2px 6px rgba(0,0,0,0.12) !important; }
+        .btn3d:active { transform: translateY(1px); }
+        .btn3d:hover { background: #333333 !important; }
+        .qj-story:hover h2 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+        .qj-landing { max-width: 430px; }
+        @media (min-width: 880px) {
+          .qj-landing { max-width: 980px; }
+          .qj-mast-title { font-size: 64px !important; }
+          .qj-stories { display: grid; grid-template-columns: 2fr 1fr; column-gap: 28px; }
+          .qj-stories article:first-child { grid-row: span 2; border-right: 1px solid #DFDFDF; padding-right: 28px !important; }
+          .qj-stories article:nth-child(2) { border-top: none !important; padding-top: 4px !important; }
+          .qj-stories article:first-child h2 { font-size: 36px !important; }
+          .qj-stories article:first-child p { font-size: 17px !important; }
+        }
       `}</style>
-      {/* Hero Header — minimal */}
-      <div style={{ position: "sticky", top: 0, zIndex: 10, padding: "10px 16px 8px", marginBottom: 10 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-     <div style={{ display: "flex", alignItems: "center", gap: 6 }}><Logo /><span style={{ fontSize: 9, color: C.muted, opacity: 0.6 }}>by JMJ Invest LLC</span></div>
-     <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-       <button onClick={() => { handleCopyExport(); setSaveMsg("✅ 已保存到剪贴板"); setTimeout(() => setSaveMsg(""), 2000); }} style={{ padding: "2px 8px", cursor: "pointer", fontFamily: "inherit", fontSize: 8, fontWeight: 700, border: "none", borderRadius: 10, background: C.green, color: "#fff", height: 22, display: "flex", alignItems: "center", gap: 2 }}>💾 存档</button>
-       <button onClick={() => setSaveModal("import")} style={{ padding: "2px 8px", cursor: "pointer", fontFamily: "inherit", fontSize: 8, fontWeight: 700, border: "none", borderRadius: 10, background: C.blue, color: "#fff", height: 22, display: "flex", alignItems: "center", gap: 2 }}>📂 读档</button>
-       {saveMsg && <span style={{ fontSize: 7, fontWeight: 700, color: C.green, position: "absolute", top: 32, right: 16, background: "#fff", padding: "2px 6px", borderRadius: 4, boxShadow: "0 1px 4px rgba(0,0,0,0.1)" }}>{saveMsg}</span>}
-       <select value={currency} onChange={function(e) { setCurrency(e.target.value); }} style={{ height: 22, fontSize: 9, fontWeight: 600, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 6, background: "#fff", color: C.text, padding: "0 4px", cursor: "pointer" }}>
-      {Object.keys(FX).map(function(c) { return <option key={c} value={c}>{CUR_SYM[c]} {c}</option>; })}
-     </select>
-       <button onClick={autoDetectCity} style={{ height: 22, padding: "0 6px", cursor: "pointer", fontFamily: "inherit", fontSize: 8, fontWeight: 700, border: "none", borderRadius: 6, background: geoStatus === "done" ? "#E8F5E9" : geoStatus === "denied" ? "#FFEBEE" : "#E3F2FD", color: geoStatus === "done" ? "#2E7D32" : geoStatus === "denied" ? "#C62828" : "#1565C0" }}>{geoStatus === "loading" ? "⏳" : geoStatus === "done" ? "📍" + city.split(" ")[0].slice(0,6) : geoStatus === "denied" ? "📍✗" : "📍定位"}</button></div></div></div>
-  {/* Landing — choose mode */}
-  {!introMode && <div className="sec-anim" style={{ margin: "20px 14px", animationDelay: "0.05s" }}>
-    <div style={{ textAlign: "center", marginBottom: 16 }}></div>
-    <div style={FG8}>
+      {/* Masthead — NYT style */}
+      {(() => { const _d = new Date(); const dateStr = _d.getFullYear() + "年" + (_d.getMonth() + 1) + "月" + _d.getDate() + "日 星期" + "日一二三四五六"[_d.getDay()];
+      const tBtn = { background: "transparent", border: "none", padding: "0 0 0 10px", cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 600, color: C.sub, height: 24 };
+      return <header style={{ padding: "8px 14px 0", marginBottom: 14, position: "relative" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 11, color: C.sub, fontWeight: 600, paddingBottom: 6 }}>
+          <span>{dateStr}</span>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <button onClick={() => { handleCopyExport(); setSaveMsg("✓ 已保存到剪贴板"); setTimeout(() => setSaveMsg(""), 2000); }} style={tBtn}>存档</button>
+            <button onClick={() => setSaveModal("import")} style={tBtn}>读档</button>
+            <button onClick={autoDetectCity} style={{ ...tBtn, color: geoStatus === "done" ? C.green : geoStatus === "denied" ? C.red : C.sub }}>{geoStatus === "loading" ? "定位中…" : geoStatus === "done" ? city.split(" ")[0].slice(0, 8) : geoStatus === "denied" ? "定位失败" : "定位"}</button>
+            <select aria-label="货币" value={currency} onChange={function(e) { setCurrency(e.target.value); }} style={{ marginLeft: 8, height: 24, fontSize: 11, fontWeight: 600, fontFamily: "inherit", border: "1px solid " + C.borderIn, borderRadius: 0, background: "#fff", color: C.text, padding: "0 2px", cursor: "pointer" }}>
+              {Object.keys(FX).map(function(c) { return <option key={c} value={c}>{CUR_SYM[c]} {c}</option>; })}
+            </select></div></div>
+        {saveMsg && <span role="status" style={{ fontSize: 11, fontWeight: 600, color: C.green, position: "absolute", top: 36, right: 14, background: "#fff", padding: "3px 8px", border: "1px solid " + C.border }}>{saveMsg}</span>}
+        <div onClick={function() { setIntroMode(""); }} style={{ textAlign: "center", borderTop: "1px solid " + C.border, paddingTop: introMode ? 8 : 16, paddingBottom: introMode ? 6 : 10, cursor: introMode ? "pointer" : "default" }}>
+          <div className={introMode ? "" : "qj-mast-title"} style={{ fontFamily: C.serif, fontWeight: 900, fontSize: introMode ? 28 : 46, lineHeight: 1, letterSpacing: "0.06em", color: C.text }}>钱景</div>
+          <div style={{ fontFamily: "UnifrakturMaguntia, 'Old English Text MT', serif", fontSize: introMode ? 15 : 22, lineHeight: 1.3, color: C.text, marginTop: introMode ? 2 : 6 }}>The QianJing</div>
+          {!introMode && <div style={{ fontFamily: C.serif, fontStyle: "italic", fontSize: 12, color: C.sub, marginTop: 6 }}>财务自由规划 · 房产投资分析 · 自住房分析</div>}
+        </div>
+        <div style={{ borderTop: "1px solid " + C.rule, borderBottom: "3px double " + C.rule, display: "flex", justifyContent: "center" }}>
+          {[["home", "自住房"], ["invest", "房产投资"], ["fire", "FIRE 财务自由"]].map(function(t, i) { var on = introMode === t[0]; return (
+            <button key={t[0]} onClick={function() { setIntroMode(t[0]); if (t[0] === "fire") setWantFire(true); }} style={{ background: "transparent", border: "none", borderLeft: i ? "1px solid " + C.border : "none", padding: "0 14px", height: 32, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: on ? 800 : 600, color: C.text, textDecoration: on ? "underline" : "none", textUnderlineOffset: 5, textDecorationThickness: 2 }}>{t[1]}</button>); })}
+        </div>
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10, color: C.muted, paddingTop: 4 }}>
+          <span>by JMJ Invest LLC</span><span>{introMode ? "" : "三个工具 · 免费使用"}</span></div>
+      </header>; })()}
+  {/* Landing — story list */}
+  {!introMode && <main className="sec-anim qj-stories" style={{ margin: "0 14px 8px" }}>
     {[
-      { k: "home", icon: "🏡", l: "自住房\n分析", c: "#2F80ED", grad: "linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%)" },
-      { k: "invest", icon: "🏠", l: "房产\n投资分析", c: "#EE5A24", grad: "linear-gradient(135deg, #FF6B6B 0%, #EE5A24 100%)" },
-      { k: "fire", icon: "🔥", l: "FIRE\n财务自由", c: "#00897B", grad: "linear-gradient(135deg, #00B894 0%, #00897B 100%)" },
-    ].map(function(card) { return (
-      <button key={card.k} onClick={function() { setIntroMode(card.k); if (card.k === "fire") setWantFire(true); }} style={{ flex: 1, aspectRatio: "1", padding: "12px 8px", borderRadius: 16, cursor: "pointer", fontFamily: "inherit", border: "none", background: card.grad, color: "#fff", boxShadow: "0 4px 14px " + card.c + "25", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, position: "relative", overflow: "hidden" }}>
-        <div style={{ fontSize: 32 }}>{card.icon}</div>
-        <div style={{ fontSize: 12, fontWeight: 800, textAlign: "center", lineHeight: 1.3, whiteSpace: "pre-line" }}>{card.l}</div>
-      </button>); })}
-    </div></div>}
-  {/* Back button when in a mode */}
-  {introMode && <div style={{ margin: "0 14px 6px", display: "flex", gap: 4 }}>
-    <button onClick={function() { setIntroMode(""); }} style={{ padding: "6px 14px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 600, border: "1px solid " + C.border, background: "#fff", color: C.sub, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>← 返回选择</button>
-    <button onClick={function() { setIntroMode(""); setShowReport(false); }} style={{ padding: "6px 14px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 600, border: "1px solid " + C.border, background: "#fff", color: C.sub, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>🏠 主页</button>
+      { k: "fire", kicker: "FIRE 财务自由", h: "离财务自由还有几年？把收入、存款、股票和房产放进同一张时间表", d: "按你的年龄、储蓄率和资产配置逐年推演净资产与被动收入，看被动收入哪一年能盖过生活开支。", lead: true },
+      { k: "invest", kicker: "房产投资", h: "这套房值不值得买？现金流与回报率一页算清", d: "输入挂牌价、租金与贷款条件，得到每月现金流、Cap Rate、现金回报率和持有多年后的总回报。" },
+      { k: "home", kicker: "自住房", h: "买房自住，每月到底花多少？", d: "月供、地税、保险、维修与机会成本一起算，再看房价增值之后的净资产变化。" },
+    ].map(function(st, i) { return (
+      <article key={st.k} className="qj-story" role="link" tabIndex={0} onKeyDown={function(e) { if (e.key === "Enter") { setIntroMode(st.k); if (st.k === "fire") setWantFire(true); } }} onClick={function() { setIntroMode(st.k); if (st.k === "fire") setWantFire(true); }} style={{ cursor: "pointer", padding: st.lead ? "4px 0 14px" : "12px 0", borderTop: i ? "1px solid " + C.border : "none" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: C.sub, marginBottom: 4 }}>{st.kicker}</div>
+        <h2 style={{ fontFamily: C.serif, fontWeight: 700, fontSize: st.lead ? 24 : 18, lineHeight: 1.25, color: C.text, margin: 0 }}>{st.h}</h2>
+        <p style={{ fontFamily: C.serif, fontSize: st.lead ? 14 : 13, lineHeight: 1.55, color: C.sub, margin: "6px 0 6px" }}>{st.d}</p>
+        <span style={{ fontSize: 12, fontWeight: 700, color: C.blue }}>开始分析 →</span>
+        {st.lead && <ul style={{ listStyle: "none", margin: "12px 0 0", padding: 0 }}>
+          {["薪资、股票、存款、401K 与社保五条收入线逐年合并", "可选把投资房的正现金流滚动复投", "支持 9 种货币与各地退休金制度名称"].map(function(t) { return <li key={t} style={{ fontFamily: C.serif, fontSize: 13, lineHeight: 1.5, color: C.sub, padding: "7px 0", borderTop: "1px solid " + C.border }}>{t}</li>; })}
+        </ul>}
+      </article>); })}
+  </main>}
+  {/* Back link when in a mode */}
+  {introMode && <div style={{ margin: "-6px 14px 10px" }}>
+    <button onClick={function() { setIntroMode(""); setShowReport(false); }} style={{ padding: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700, border: "none", background: "transparent", color: C.blue }}>← 返回首页</button>
   </div>}
   {/* FIRE Mode */}
   {introMode === "fire" && <>
-      <div className="sec-anim" style={{ background: "#fff", borderRadius: 16, padding: "14px 16px", margin: "0 14px 10px", boxShadow: "0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03)", animationDelay: "0.1s" }}>
+      <div className="sec-anim" style={{ background: "#fff", borderRadius: 0, padding: "4px 0 8px", margin: "0 14px 10px", boxShadow: "none", animationDelay: "0.1s" }}>
         {/* Investment Path Selection */}
-        <div style={{ fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 6 }}>投资路径</div>
+        <h2 style={{ fontSize: 20, fontWeight: 700, fontFamily: C.serif, color: C.text, margin: "0 0 10px" }}>投资路径</h2>
         <div style={FG8}>
-          <div onClick={function() { setWantInvest(false); }} style={{ flex: 1, aspectRatio: "1", borderRadius: 12, cursor: "pointer", padding: "10px 8px", border: wantInvest ? "1.5px solid " + C.border : "2px solid #1565C0", background: wantInvest ? "#fff" : "#E3F2FD", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, opacity: wantInvest ? 0.6 : 1, transition: "all 0.2s" }}>
-            <div style={{ fontSize: 28 }}>📈</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: wantInvest ? C.sub : "#1565C0", textAlign: "center" }}>纯股票+存款</div>
-            <div style={{ fontSize: 9, color: C.muted, textAlign: "center", lineHeight: 1.5 }}>薪资储蓄 → 股票复利<br/>+ 银行存款利息<br/>+ 401K/退休账户</div>
-            {!wantInvest && <div style={{ fontSize: 8, fontWeight: 700, color: "#1565C0", background: "#1565C018", borderRadius: 4, padding: "1px 6px" }}>当前选择</div>}
+          <div onClick={function() { setWantInvest(false); }} style={{ flex: 1, aspectRatio: "1", borderRadius: 0, cursor: "pointer", padding: "10px 8px", border: wantInvest ? "1px solid " + C.border : "2px solid #121212", background: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, opacity: wantInvest ? 0.6 : 1, transition: "all 0.2s" }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, fontFamily: C.serif, color: wantInvest ? C.sub : C.text, textAlign: "center" }}>纯股票+存款</div>
+            <div style={{ fontSize: 10, color: C.muted, textAlign: "center", lineHeight: 1.5 }}>薪资储蓄 → 股票复利<br/>+ 银行存款利息<br/>+ 401K/退休账户</div>
+            {!wantInvest && <div style={{ fontSize: 9.5, fontWeight: 700, color: "#fff", background: "#121212", borderRadius: 0, padding: "1px 6px" }}>当前选择</div>}
           </div>
-          <div onClick={function() { setWantInvest(true); }} style={{ flex: 1, aspectRatio: "1", borderRadius: 12, cursor: "pointer", padding: "10px 8px", border: !wantInvest ? "1.5px solid " + C.border : "2px solid #2E7D32", background: !wantInvest ? "#fff" : "#E8F5E9", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, opacity: !wantInvest ? 0.6 : 1, transition: "all 0.2s" }}>
-            <div style={{ fontSize: 28 }}>🏠📈</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: !wantInvest ? C.sub : "#2E7D32", textAlign: "center" }}>股票+房地产</div>
-            <div style={{ fontSize: 9, color: C.muted, textAlign: "center", lineHeight: 1.5 }}>股票复利 + 投资房<br/>正现金流复投买房<br/>被动收入加速FIRE</div>
-            {wantInvest && <div style={{ fontSize: 8, fontWeight: 700, color: "#2E7D32", background: "#2E7D3218", borderRadius: 4, padding: "1px 6px" }}>当前选择</div>}
+          <div onClick={function() { setWantInvest(true); }} style={{ flex: 1, aspectRatio: "1", borderRadius: 0, cursor: "pointer", padding: "10px 8px", border: !wantInvest ? "1px solid " + C.border : "2px solid #121212", background: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, opacity: !wantInvest ? 0.6 : 1, transition: "all 0.2s" }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, fontFamily: C.serif, color: !wantInvest ? C.sub : C.text, textAlign: "center" }}>股票+房地产</div>
+            <div style={{ fontSize: 10, color: C.muted, textAlign: "center", lineHeight: 1.5 }}>股票复利 + 投资房<br/>正现金流复投买房<br/>被动收入加速FIRE</div>
+            {wantInvest && <div style={{ fontSize: 9.5, fontWeight: 700, color: "#fff", background: "#121212", borderRadius: 0, padding: "1px 6px" }}>当前选择</div>}
           </div>
         </div>
         {wantInvest ? <div style={{ marginTop: 8 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-     <div style={{ display: "inline-flex", alignItems: "center", gap: 3, background: "#2E7D32", borderRadius: 10, padding: "2px 8px", marginBottom: 4 }}>
-      <span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>🏠 房产基本信息</span></div>
+     <div style={PILL("#2A7A4B")}>
+      <span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>房产基本信息</span></div>
      <div style={{ display: "flex", alignItems: "center", gap: 2, marginBottom: 4 }}>
-      <span style={{ fontSize: 8, color: C.muted }}>持股</span>
-      <select value={investOwn} onChange={function(e) { setInvestOwn(e.target.value); }} style={{ height: 20, fontSize: 9, fontWeight: 700, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 6, background: "#fff", color: "#3E2723", padding: "0 4px", cursor: "pointer" }}>
+      <span style={{ fontSize: 9.5, color: C.muted }}>持股</span>
+      <select value={investOwn} onChange={function(e) { setInvestOwn(e.target.value); }} style={{ height: 20, fontSize: 10, fontWeight: 700, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 0, background: "#fff", color: "#121212", padding: "0 4px", cursor: "pointer" }}>
        {[25,30,40,50,60,70,80,90,100].map(function(v) { return <option key={v} value={String(v)}>{v}%</option>; })}
       </select></div></div>
         <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
-          {[["🏠","独栋","sf"],["🏘","多家庭","mf"],["📦","房产组合","portfolio"]].map(function(t) { return (
-            <button key={t[2]} onClick={function() { setPropType(t[2]); if (t[2] === "portfolio") setPortfolioMode(true); else setPortfolioMode(false); }} style={{ flex: 1, padding: "4px 2px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "1.5px solid #2E7D32" : "1px solid " + C.border, background: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "#E8F5E9" : "#fff", color: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "#2E7D32" : C.sub, textAlign: "center" }}>
+          {[["","独栋","sf"],["","多家庭","mf"],["","房产组合","portfolio"]].map(function(t) { return (
+            <button key={t[2]} onClick={function() { setPropType(t[2]); if (t[2] === "portfolio") setPortfolioMode(true); else setPortfolioMode(false); }} style={{ flex: 1, padding: "4px 2px", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, border: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "2px solid #121212" : "1px solid " + C.border, background: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "#FFFFFF" : "#fff", color: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "#2A7A4B" : C.sub, textAlign: "center" }}>
               <div style={{ fontSize: 14 }}>{t[0]}</div>
               <div>{t[1]}</div>
             </button>
           ); })}
         </div>
-        {portfolioMode && <div style={{ fontSize: 7.5, color: "#E65100", marginBottom: 6, padding: "3px 6px", background: "#FFF3E0", borderRadius: 4, lineHeight: 1.5 }}>📦 房产组合模式: 请输入所有房产的<b>总成交价</b>、<b>总月租金</b>、<b>总过户费</b>，系统将按组合整体分析回报率。单独分析请切换至独栋/多家庭模式。</div>}
+        {portfolioMode && <div style={{ fontSize: 9, color: "#B35C1E", marginBottom: 6, padding: "3px 6px", background: "#F7F7F7", borderRadius: 0, lineHeight: 1.5 }}>房产组合模式: 请输入所有房产的<b>总成交价</b>、<b>总月租金</b>、<b>总过户费</b>，系统将按组合整体分析回报率。单独分析请切换至独栋/多家庭模式。</div>}
         {propType === "mf" && <div style={FG6}>{fs2("单元数", mfUnits, setMfUnits, [2,3,4,5,6,8,10,12,16,20].map(v=>({v:String(v),l:v+"户"})))}</div>}
         <div style={FG8}>
      <div style={{ flex: 1, minWidth: 0 }}>{fi(portfolioMode ? "总成交价" : "成交价", saleP, setSaleP, portfolioMode ? "1500000" : "450000", "$")}</div>
      <div style={{ flex: 1, minWidth: 0 }}>{fi(portfolioMode ? "总月租金" : (propType === "mf" ? "总月租金" : "月租金"), activeUnitRents[0], function(v) { setActiveUnitRents([v]); }, propType === "mf" ? "8000" : "5000", "$")}</div></div>
-        <div style={PILL("#1565C0")}>
-     <span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>💳 贷款与过户</span></div>
+        <div style={PILL("#326891")}>
+     <span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>贷款与过户</span></div>
         <div style={FG6}>
      <div style={{ flex: 1, minWidth: 0, marginBottom: 8 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 2 }}>
        <span style={{ fontSize: 10, fontWeight: 500, color: C.sub }}>首付</span>
-       <div style={{ display: "flex", borderRadius: 4, overflow: "hidden", border: "1px solid #2E7D32" }}>
-        <button onClick={function() { setDownMode("pct"); }} style={{ padding: "2px 6px", fontSize: 9, fontWeight: 600, border: "none", cursor: "pointer", fontFamily: "inherit", background: downMode === "pct" ? "#2E7D32" : "transparent", color: downMode === "pct" ? "#fff" : "#2E7D32" }}>%</button>
-        <button onClick={function() { setDownMode("amt"); }} style={{ padding: "2px 6px", fontSize: 9, fontWeight: 600, border: "none", cursor: "pointer", fontFamily: "inherit", background: downMode === "amt" ? "#2E7D32" : "transparent", color: downMode === "amt" ? "#fff" : "#2E7D32" }}>$</button>
+       <div style={{ display: "flex", borderRadius: 0, overflow: "hidden", border: "1px solid #2A7A4B" }}>
+        <button onClick={function() { setDownMode("pct"); }} style={{ padding: "2px 6px", fontSize: 10, fontWeight: 600, border: "none", cursor: "pointer", fontFamily: "inherit", background: downMode === "pct" ? "#2A7A4B" : "transparent", color: downMode === "pct" ? "#fff" : "#2A7A4B" }}>%</button>
+        <button onClick={function() { setDownMode("amt"); }} style={{ padding: "2px 6px", fontSize: 10, fontWeight: 600, border: "none", cursor: "pointer", fontFamily: "inherit", background: downMode === "amt" ? "#2A7A4B" : "transparent", color: downMode === "amt" ? "#fff" : "#2A7A4B" }}>$</button>
        </div></div>
       <div style={GOLD}>
        {downMode === "amt" && <span style={{ color: C.muted, fontSize: 14, marginRight: 4 }}>$</span>}
-       <input type="text" inputMode="decimal" value={downMode === "pct" ? downPct : downAmt} onChange={function(e) { var v = e.target.value; if (downMode === "pct") { setDownPct(v); setDownAmt(""); } else { setDownAmt(v); var sp = parseFloat(saleP) || 1; setDownPct(String(Math.round((parseFloat(v) || 0) / sp * 1000) / 10)); } }} placeholder={downMode === "pct" ? "20" : "90000"} style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "#3E2723", fontSize: 14, fontFamily: "inherit", fontWeight: 600 }} />
-       <span style={{ fontSize: 9, color: C.muted, flexShrink: 0 }}>{downMode === "pct" ? "=" + fmtMoney((parseFloat(saleP)||0) * (parseFloat(downPct)||0) / 100) : downPct + "%"}</span></div></div>
+       <input type="text" inputMode="decimal" value={downMode === "pct" ? downPct : downAmt} onChange={function(e) { var v = e.target.value; if (downMode === "pct") { setDownPct(v); setDownAmt(""); } else { setDownAmt(v); var sp = parseFloat(saleP) || 1; setDownPct(String(Math.round((parseFloat(v) || 0) / sp * 1000) / 10)); } }} placeholder={downMode === "pct" ? "20" : "90000"} style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "#121212", fontSize: 14, fontFamily: "inherit", fontWeight: 600 }} />
+       <span style={{ fontSize: 10, color: C.muted, flexShrink: 0 }}>{downMode === "pct" ? "=" + fmtMoney((parseFloat(saleP)||0) * (parseFloat(downPct)||0) / 100) : downPct + "%"}</span></div></div>
      <div style={{ flex: 1, minWidth: 0 }}>{fi("利率 %", annRate, setAnnRate, "6.875")}</div></div>
         <div style={FG6}>{fs2("贷款年限", loanYrs, setLoanYrs, ["15","20","25","30"].map(function(y) { return {v:y, l:y+"年"}; }))}
      {fs2("过户费", closing, setClosing, [0,5000,10000,15000,20000,30000,50000,60000].map(function(v) { return {v:String(v), l:fmtMoney(v)}; }))}</div>
@@ -927,20 +955,20 @@ if (!showReport) {
        </div>
        <div style={GOLD}>
         <span style={{ color: C.muted, fontSize: 14, marginRight: 4 }}>$</span>
-        <input type="text" value={ext.amt} onChange={function(e) { var n = investExtras.slice(); n[ei] = { name: ext.name, amt: e.target.value.replace(/,/g,"") }; setInvestExtras(n); }} placeholder="0" style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "#3E2723", fontSize: 14, fontFamily: "inherit", fontWeight: 600 }} />
+        <input type="text" value={ext.amt} onChange={function(e) { var n = investExtras.slice(); n[ei] = { name: ext.name, amt: e.target.value.replace(/,/g,"") }; setInvestExtras(n); }} placeholder="0" style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "#121212", fontSize: 14, fontFamily: "inherit", fontWeight: 600 }} />
        </div></div>); })}
-     <button onClick={function() { setInvestExtras(investExtras.concat([{ name: "", amt: "0" }])); }} style={{ width: 38, height: 38, borderRadius: 8, border: "1px dashed " + C.border, background: "#FAFAFA", color: C.muted, fontSize: 18, cursor: "pointer", fontFamily: "inherit", flexShrink: 0, marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+     <button onClick={function() { setInvestExtras(investExtras.concat([{ name: "", amt: "0" }])); }} style={{ width: 38, height: 38, borderRadius: 0, border: "1px dashed " + C.border, background: "#F7F7F7", color: C.muted, fontSize: 18, cursor: "pointer", fontFamily: "inherit", flexShrink: 0, marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-          <div style={PILL("#E65100")}><span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>📊 运营费用</span></div>
+          <div style={PILL("#B35C1E")}><span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>运营费用</span></div>
           <div onClick={function() { setExpDetail(!expDetail); if (!expDetail) setExpIdx(4); else setExpIdx(5); }} style={{ display: "flex", alignItems: "center", gap: 3, cursor: "pointer" }}>
-            <span style={{ fontSize: 7.5, fontWeight: 600, color: expDetail ? C.muted : "#E65100" }}>默认%</span>
-            <div style={{ width: 28, height: 16, borderRadius: 8, background: expDetail ? "#E65100" : "#BDBDBD", padding: 2, transition: "background 0.2s" }}>
-              <div style={{ width: 12, height: 12, borderRadius: 6, background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.15)", transform: expDetail ? "translateX(12px)" : "translateX(0)", transition: "transform 0.2s" }} /></div>
-            <span style={{ fontSize: 7.5, fontWeight: 600, color: expDetail ? "#E65100" : C.muted }}>自定义</span></div></div>
+            <span style={{ fontSize: 9, fontWeight: 600, color: expDetail ? C.muted : "#B35C1E" }}>默认%</span>
+            <div style={{ width: 28, height: 16, borderRadius: 0, background: expDetail ? "#B35C1E" : "#999999", padding: 2, transition: "background 0.2s" }}>
+              <div style={{ width: 12, height: 12, borderRadius: 0, background: "#fff", boxShadow: "none", transform: expDetail ? "translateX(12px)" : "translateX(0)", transition: "transform 0.2s" }} /></div>
+            <span style={{ fontSize: 9, fontWeight: 600, color: expDetail ? "#B35C1E" : C.muted }}>自定义</span></div></div>
         {!expDetail ? <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
             <div style={{ width: 70, flexShrink: 0 }}>{fs2("费率%", expSlider, setExpSlider, [20,25,30,35,40,45,50,55,60].map(function(v) { return {v:String(v), l:v+"%"}; }))}</div>
-            <div style={{ flex: 1, marginBottom: 10, padding: "4px 6px", background: "#FFF3E0", borderRadius: 6, fontSize: 7.5, color: "#E65100", lineHeight: 1.4 }}>{parseInt(expSlider) <= 25 ? "🤝 NNN净租约 · 租客承担税险Utilities维修" : parseInt(expSlider) <= 30 ? "👤 房东自管 · 不含Utilities · 新手小型" : parseInt(expSlider) <= 35 ? "👤 房东自管 · 包Utilities · 中西部多家庭" : parseInt(expSlider) <= 40 ? "🏢 委托物管 · 不含Utilities · 管理费8-10%" : parseInt(expSlider) <= 45 ? "🏢 委托物管 · 全包Utilities · 远程投资" : parseInt(expSlider) <= 50 ? "🏙 高维护物业 · 老旧建筑 · 大城市" : "⚠ 高费率 · 大修/高空置/高管理成本"}</div></div>
+            <div style={{ flex: 1, marginBottom: 10, padding: "4px 6px", background: "#F7F7F7", borderRadius: 0, fontSize: 9, color: "#B35C1E", lineHeight: 1.4 }}>{parseInt(expSlider) <= 25 ? "NNN净租约 · 租客承担税险Utilities维修" : parseInt(expSlider) <= 30 ? "房东自管 · 不含Utilities · 新手小型" : parseInt(expSlider) <= 35 ? "房东自管 · 包Utilities · 中西部多家庭" : parseInt(expSlider) <= 40 ? "委托物管 · 不含Utilities · 管理费8-10%" : parseInt(expSlider) <= 45 ? "委托物管 · 全包Utilities · 远程投资" : parseInt(expSlider) <= 50 ? "高维护物业 · 老旧建筑 · 大城市" : "注意 高费率 · 大修/高空置/高管理成本"}</div></div>
         : (() => {
           var gri = (parseFloat(activeUnitRents[0])||0) * 12;
           var items = [
@@ -958,18 +986,18 @@ if (!showReport) {
           var maxV = Math.max.apply(null, items.map(function(x){return x.v;}))||1;
           return <div>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:4, padding:"2px 0" }}>
-              <span style={{ fontSize:8, color:"#E65100", fontWeight:700 }}>年运营费 {fmtMoney(total)}</span>
-              <span style={{ fontSize:9, fontWeight:800, color:"#E65100" }}>{pctOfGri}%<span style={{ fontSize:7, color:"#90A4AE" }}> of GRI</span></span></div>
+              <span style={{ fontSize:9.5, color:"#B35C1E", fontWeight:700 }}>年运营费 {fmtMoney(total)}</span>
+              <span style={{ fontSize:10, fontWeight:800, color:"#B35C1E" }}>{pctOfGri}%<span style={{ fontSize:8.5, color:"#767676" }}> of GRI</span></span></div>
             {(() => {
               var expCats = [
-                { k:"vac", l:"🏚 空置", v:parseFloat(vacancyPct)||0, set:setVacancyPct, c:"#9C27B0", max:20, unit:"%", mo: gri*(parseFloat(vacancyPct)||0)/100/12 },
-                { k:"mgmt", l:"👔 管理", v:parseFloat(mgmtPct)||0, set:setMgmtPct, c:"#1565C0", max:20, unit:"%", mo: gri*(parseFloat(mgmtPct)||0)/100/12 },
-                { k:"tax", l:"🏛 地税", v:parseFloat(taxMo)||0, set:setTaxMo, c:"#0D47A1", max:1500, unit:"$", mo: parseFloat(taxMo)||0 },
-                { k:"ins", l:"🛡 保险", v:parseFloat(insuranceMo)||0, set:setInsuranceMo, c:"#00695C", max:1000, unit:"$", mo: parseFloat(insuranceMo)||0 },
-                { k:"mnt", l:"🔧 维修", v:parseFloat(maintMo)||0, set:setMaintMo, c:"#E65100", max:1000, unit:"$", mo: parseFloat(maintMo)||0 },
-                { k:"utl", l:"⚡ 杂费", v:parseFloat(utilitiesMo)||0, set:setUtilitiesMo, c:"#F57C00", max:500, unit:"$", mo: parseFloat(utilitiesMo)||0 },
-                { k:"hoa", l:"🏢 HOA", v:parseFloat(hoaMo)||0, set:setHoaMo, c:"#4A148C", max:1000, unit:"$", mo: parseFloat(hoaMo)||0 },
-                { k:"oth", l:"📋 其他", v:parseFloat(otherMo)||0, set:setOtherMo, c:"#546E7A", max:500, unit:"$", mo: parseFloat(otherMo)||0 },
+                { k:"vac", l:"空置", v:parseFloat(vacancyPct)||0, set:setVacancyPct, c:"#8A4F9E", max:20, unit:"%", mo: gri*(parseFloat(vacancyPct)||0)/100/12 },
+                { k:"mgmt", l:"管理", v:parseFloat(mgmtPct)||0, set:setMgmtPct, c:"#326891", max:20, unit:"%", mo: gri*(parseFloat(mgmtPct)||0)/100/12 },
+                { k:"tax", l:"地税", v:parseFloat(taxMo)||0, set:setTaxMo, c:"#1A4B6E", max:1500, unit:"$", mo: parseFloat(taxMo)||0 },
+                { k:"ins", l:"保险", v:parseFloat(insuranceMo)||0, set:setInsuranceMo, c:"#1D5536", max:1000, unit:"$", mo: parseFloat(insuranceMo)||0 },
+                { k:"mnt", l:"维修", v:parseFloat(maintMo)||0, set:setMaintMo, c:"#B35C1E", max:1000, unit:"$", mo: parseFloat(maintMo)||0 },
+                { k:"utl", l:"杂费", v:parseFloat(utilitiesMo)||0, set:setUtilitiesMo, c:"#C47526", max:500, unit:"$", mo: parseFloat(utilitiesMo)||0 },
+                { k:"hoa", l:"HOA", v:parseFloat(hoaMo)||0, set:setHoaMo, c:"#4A3563", max:1000, unit:"$", mo: parseFloat(hoaMo)||0 },
+                { k:"oth", l:"其他", v:parseFloat(otherMo)||0, set:setOtherMo, c:"#4F5B63", max:500, unit:"$", mo: parseFloat(otherMo)||0 },
               ];
               return expCats.map(function(cat) {
                 var barPct = cat.max > 0 ? cat.v / cat.max * 100 : 0;
@@ -977,8 +1005,8 @@ if (!showReport) {
                 var griPct = gri > 0 ? (annV / gri * 100).toFixed(1) : 0;
                 var step = cat.unit === "%" ? 1 : (cat.max >= 1000 ? 50 : 10);
                 return <div key={cat.k} style={{ display:"flex", alignItems:"center", gap:3, marginBottom:3 }}>
-                  <div style={{ width:46, fontSize:7.5, fontWeight:600, color:cat.c, flexShrink:0 }}>{cat.l}</div>
-                  <div style={{ flex:1, position:"relative", height:20, background:C.inset, borderRadius:10, overflow:"hidden", cursor:"pointer", border:"1px solid "+C.border }}
+                  <div style={{ width:46, fontSize:9, fontWeight:600, color:cat.c, flexShrink:0 }}>{cat.l}</div>
+                  <div style={{ flex:1, position:"relative", height:20, background:C.inset, borderRadius:0, overflow:"hidden", cursor:"pointer", border:"1px solid "+C.border }}
                     onPointerDown={function(e) {
                       e.preventDefault();
                       var bar = e.currentTarget; var rect = bar.getBoundingClientRect();
@@ -988,27 +1016,27 @@ if (!showReport) {
                       var onU = function() { window.removeEventListener("pointermove", onM); window.removeEventListener("pointerup", onU); };
                       window.addEventListener("pointermove", onM); window.addEventListener("pointerup", onU);
                     }}>
-                    <div style={{ position:"absolute", top:0, bottom:0, left:0, width:barPct+"%", background:cat.c+"20", borderRadius:10, transition:"width 0.1s", display:"flex", alignItems:"center", justifyContent:"flex-end", paddingRight: barPct >= 25 ? 8 : 0 }}>
-                      {barPct >= 25 && <span style={{ fontSize:7, fontWeight:700, color:cat.c, pointerEvents:"none" }}>{cat.unit==="$" ? "$"+cat.v+"/月" : cat.v+"%"}</span>}
-                      <div style={{ position:"absolute", right:0, top:2, bottom:2, width:6, borderRadius:3, background:cat.c, boxShadow:"0 0 4px "+cat.c+"40" }} /></div></div>
+                    <div style={{ position:"absolute", top:0, bottom:0, left:0, width:barPct+"%", background:cat.c+"20", borderRadius:0, transition:"width 0.1s", display:"flex", alignItems:"center", justifyContent:"flex-end", paddingRight: barPct >= 25 ? 8 : 0 }}>
+                      {barPct >= 25 && <span style={{ fontSize:8.5, fontWeight:700, color:cat.c, pointerEvents:"none" }}>{cat.unit==="$" ? "$"+cat.v+"/月" : cat.v+"%"}</span>}
+                      <div style={{ position:"absolute", right:0, top:2, bottom:2, width:6, borderRadius:0, background:cat.c, boxShadow:"none"}} /></div></div>
                   <div style={{ display:"flex", alignItems:"center", gap:2, flexShrink:0 }}>
-                    <div style={{ display:"flex", alignItems:"center", height:20, background:"#fff", borderRadius:5, border:"1px solid "+C.border, padding:"0 3px", width:46 }}>
-                      {cat.unit==="$" && <span style={{ fontSize:7, color:C.muted }}>$</span>}
-                      <input type="text" inputMode="decimal" value={cat.v} onChange={function(e){ cat.set(e.target.value.replace(/[^0-9.]/g,"")); }} style={{ width:"100%", background:"transparent", border:"none", outline:"none", fontSize:8, fontWeight:700, color:cat.c, fontFamily:"inherit", textAlign:"right", padding:0 }} />
-                      {cat.unit==="%" && <span style={{ fontSize:7, color:C.muted }}>%</span>}
+                    <div style={{ display:"flex", alignItems:"center", height:20, background:"#fff", borderRadius:0, border:"1px solid "+C.border, padding:"0 3px", width:46 }}>
+                      {cat.unit==="$" && <span style={{ fontSize:8.5, color:C.muted }}>$</span>}
+                      <input type="text" inputMode="decimal" value={cat.v} onChange={function(e){ cat.set(e.target.value.replace(/[^0-9.]/g,"")); }} style={{ width:"100%", background:"transparent", border:"none", outline:"none", fontSize:9.5, fontWeight:700, color:cat.c, fontFamily:"inherit", textAlign:"right", padding:0 }} />
+                      {cat.unit==="%" && <span style={{ fontSize:8.5, color:C.muted }}>%</span>}
                     </div>
-                    <span style={{ fontSize:6, color:"#90A4AE", width:22, textAlign:"right" }}>{griPct}%</span></div></div>;
+                    <span style={{ fontSize:7.5, color:"#767676", width:22, textAlign:"right" }}>{griPct}%</span></div></div>;
               });
             })()}
           </div>;
         })()}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-     <div style={PILL("#546E7A")}>
-      <span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>📅 购入时间</span></div>
+     <div style={PILL("#4F5B63")}>
+      <span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>购入时间</span></div>
      <div onClick={function() { setAlreadyBought(!alreadyBought); if (alreadyBought) setPurchaseYear(""); }} style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}>
-      <span style={{ fontSize: 8, fontWeight: 600, color: alreadyBought ? "#2E7D32" : C.muted }}>{alreadyBought ? "已购入" : "尚未购入"}</span>
-      <div style={{ width: 28, height: 16, borderRadius: 8, background: alreadyBought ? "#2E7D32" : "#BDBDBD", padding: 2, transition: "background 0.2s" }}>
-       <div style={{ width: 12, height: 12, borderRadius: 6, background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.15)", transform: alreadyBought ? "translateX(12px)" : "translateX(0)", transition: "transform 0.2s" }} />
+      <span style={{ fontSize: 9.5, fontWeight: 600, color: alreadyBought ? "#2A7A4B" : C.muted }}>{alreadyBought ? "已购入" : "尚未购入"}</span>
+      <div style={{ width: 28, height: 16, borderRadius: 0, background: alreadyBought ? "#2A7A4B" : "#999999", padding: 2, transition: "background 0.2s" }}>
+       <div style={{ width: 12, height: 12, borderRadius: 0, background: "#fff", boxShadow: "none", transform: alreadyBought ? "translateX(12px)" : "translateX(0)", transition: "transform 0.2s" }} />
       </div></div></div>
         {alreadyBought && <div style={FG6}>
      {fs2("购入年", purchaseYear, setPurchaseYear, Array.from({length:20},(_,i)=>({v:String(2026-i),l:String(2026-i)})))}
@@ -1017,28 +1045,28 @@ if (!showReport) {
         </div>}
         </div> : null}</div>
   {/* FIRE inputs - always shown in fire mode */}
-      <div className="sec-anim" style={{ background: "#fff", borderRadius: 16, padding: "12px 16px", margin: "0 14px 10px", boxShadow: "0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03)", animationDelay: "0.3s" }}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 8 }}>🔥 FIRE 财务自由规划</div>
+      <div className="sec-anim" style={{ background: "#fff", borderRadius: 0, padding: "4px 0 8px", margin: "0 14px 10px", boxShadow: "none", animationDelay: "0.3s" }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, fontFamily: C.serif, color: C.text, margin: "0 0 10px" }}>FIRE 财务自由规划</h2>
         <div style={{ paddingTop: 0 }}>
-     <div style={PILL("#1565C0")}>
-      <span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>💰 收入与储蓄</span></div>
+     <div style={PILL("#326891")}>
+      <span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>收入与储蓄</span></div>
      <div style={{ display: "flex", gap: 8, marginBottom: 4 }}>
       <div style={{ flex: 1, minWidth: 0 }}>{fi("年收入 Income", annualIncome, setAnnualIncome, "120000", "$")}</div>
       <div style={{ flex: 1, minWidth: 0 }}>{fi("储蓄率 Savings %", savingsRate, setSavingsRate, "30")}</div></div>
-     <div style={{ display: "inline-flex", alignItems: "center", gap: 3, background: "#00897B", borderRadius: 10, padding: "2px 8px", marginBottom: 4 }}>
-      <span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>🏦 现有资产</span></div>
+     <div style={PILL("#2B7A78")}>
+      <span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>现有资产</span></div>
      <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
       {fs2(bankLabel, bankSavings, setBankSavings, [0,10000,20000,30000,50000,80000,100000,150000,200000,500000].map(v=>({v:String(v),l:fmtMoney(v)})))}
       {fs2(stockLabel, stockAccount, setStockAccount, [0,10000,20000,30000,50000,80000,100000,200000,500000].map(v=>({v:String(v),l:fmtMoney(v)})))}
       {fs2(retLabel, k401Balance, setK401Balance, [0,10000,20000,40000,60000,80000,100000,200000,500000].map(v=>({v:String(v),l:fmtMoney(v)})))}</div>
-     <div style={PILL("#E65100")}>
-      <span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>🎯 退休目标</span></div>
+     <div style={PILL("#B35C1E")}>
+      <span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>退休目标</span></div>
      <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
       {fs2("月收入目标", ffIncomeTgt, setFfIncomeTgt, [3000,5000,6000,7000,8000,10000,12000,15000,20000].map(v=>({v:String(v),l:fmtMoney(v)})))}
       {fs2("净值目标", ffWealthTgt, setFfWealthTgt, [1000000,2000000,3000000,5000000,8000000,10000000,15000000,20000000].map(v=>({v:String(v),l:fmtMoney(v)})))}
       {fs2("有效税率", effectiveTax, setEffectiveTax, [0,5,10,12,15,18,20,22,24,28,32,37].map(function(v){return {v:String(v),l:v+"%"};}))}</div>
-     <div style={{ display: "inline-flex", alignItems: "center", gap: 3, background: "#546E7A", borderRadius: 10, padding: "2px 8px", marginBottom: 4 }}>
-      <span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>⚙️ 基本设置</span></div>
+     <div style={PILL("#4F5B63")}>
+      <span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>基本设置</span></div>
      <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
       {fs2("通胀率", inflRate, setInflRate, [0,1,1.5,2,2.5,3,3.5,4,5].map(function(v){return {v:String(v),l:v>0?v+"%":"不考虑"};}))}
       {fs2("出生年", birthYear, setBirthYear, Array.from({length:60},function(_,i){var y=2010-i; return {v:String(y),l:String(y)};}))}
@@ -1046,19 +1074,19 @@ if (!showReport) {
      <div style={{ display: "flex", gap: 6, marginBottom: 6, alignItems: "flex-end" }}>
       {fs2("所在城市", city, setCity, cityList.map(function(c){return {v:c,l:c};}))}
       <div style={{ marginBottom: 8 }}>
-        <button onClick={autoDetectCity} style={{ height: 38, padding: "0 10px", cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 700, border: "none", borderRadius: 8, background: geoStatus === "done" ? "#E8F5E9" : geoStatus === "denied" ? "#FFEBEE" : "linear-gradient(135deg, #E3F2FD, #BBDEFB)", color: geoStatus === "done" ? "#2E7D32" : geoStatus === "denied" ? "#C62828" : "#1565C0", whiteSpace: "nowrap" }}>{geoStatus === "loading" ? "⏳ 定位中..." : geoStatus === "done" ? "📍 " + city.split(" ")[0].slice(0,4) : geoStatus === "denied" ? "📍 失败" : "📍 自动定位"}</button>
+        <button onClick={autoDetectCity} style={{ height: 38, padding: "0 10px", cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 700, border: "none", borderRadius: 0, background: geoStatus === "done" ? "#FFFFFF" : geoStatus === "denied" ? "#FFFFFF" : "#C9D8E4", color: geoStatus === "done" ? "#2A7A4B" : geoStatus === "denied" ? "#B8312F" : "#326891", whiteSpace: "nowrap" }}>{geoStatus === "loading" ? "定位中..." : geoStatus === "done" ? "" + city.split(" ")[0].slice(0,4) : geoStatus === "denied" ? "失败" : "自动定位"}</button>
       </div></div>
      {/* Savings Equalizer */}
-     <div style={{ background: "#fff", borderRadius: 10, padding: "8px 10px", marginBottom: 6, boxShadow: "0 1px 4px rgba(0,0,0,0.04)", border: "1px solid " + C.border }}>
-      <div style={{ fontSize: 8, fontWeight: 600, color: C.sub, marginBottom: 6 }}>储蓄分配 · 总计100% <span style={{ fontWeight: 400, color: C.muted }}>· 年储蓄{fmtMoney(annSavAmt)}</span></div>
+     <div style={{ background: "#fff", borderRadius: 0, padding: "8px 10px", marginBottom: 6, boxShadow: "none", border: "1px solid " + C.border }}>
+      <div style={{ fontSize: 9.5, fontWeight: 600, color: C.sub, marginBottom: 6 }}>储蓄分配 · 总计100% <span style={{ fontWeight: 400, color: C.muted }}>· 年储蓄{fmtMoney(annSavAmt)}</span></div>
       {(() => {
        var cats = [];
-       if (wantInvest) cats.push({ k: "re", l: "🏠 房产", v: parseInt(savREPct)||0, set: setSavREPct, c: "#2E7D32" });
-       cats.push({ k: "st", l: "📈 股票", v: parseInt(savStockPct)||0, set: setSavStockPct, c: "#7B1FA2" });
-       cats.push({ k: "bk", l: "🏦 存款", v: parseInt(savBankPct)||0, set: setSavBankPct, c: "#1565C0" });
-       cats.push({ k: "rt", l: "🎯 " + retLabel, v: parseInt(sav401Pct)||0, set: setSav401Pct, c: "#C2185B" });
-       if (wantInvest) cats.push({ k: "ip", l: "⚡ 投资提前还贷", v: parseInt(savInvestPrepay)||0, set: setSavInvestPrepay, c: "#E65100" });
-       if (wantHome && homeHasLoan) cats.push({ k: "hp", l: "🏡 自住提前还贷", v: parseInt(savHomePrepay)||0, set: setSavHomePrepay, c: "#00897B" });
+       if (wantInvest) cats.push({ k: "re", l: "房产", v: parseInt(savREPct)||0, set: setSavREPct, c: "#2A7A4B" });
+       cats.push({ k: "st", l: "股票", v: parseInt(savStockPct)||0, set: setSavStockPct, c: "#7D3C8C" });
+       cats.push({ k: "bk", l: "存款", v: parseInt(savBankPct)||0, set: setSavBankPct, c: "#326891" });
+       cats.push({ k: "rt", l: "" + retLabel, v: parseInt(sav401Pct)||0, set: setSav401Pct, c: "#A8385F" });
+       if (wantInvest) cats.push({ k: "ip", l: "投资提前还贷", v: parseInt(savInvestPrepay)||0, set: setSavInvestPrepay, c: "#B35C1E" });
+       if (wantHome && homeHasLoan) cats.push({ k: "hp", l: "自住提前还贷", v: parseInt(savHomePrepay)||0, set: setSavHomePrepay, c: "#2B7A78" });
        var adjust = function(idx, newVal) {
         var lockedTotal = 0;
         cats.forEach(function(c, i) { if (i !== idx && eqLock[c.k]) lockedTotal += c.v; });
@@ -1082,9 +1110,9 @@ if (!showReport) {
         var moAmt = Math.round(annSavAmt * cat.v / 100 / 12);
         var locked = eqLock[cat.k];
         return <div key={cat.k} style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 3 }}>
-         <div onClick={function() { var n = {}; for (var k in eqLock) n[k]=eqLock[k]; n[cat.k] = !locked; setEqLock(n); }} style={{ width: 14, height: 14, borderRadius: 3, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, background: locked ? cat.c + "15" : "transparent", border: "1px solid " + (locked ? cat.c + "40" : C.border), color: locked ? cat.c : C.muted, flexShrink: 0 }}>{locked ? "🔒" : "·"}</div>
-         <div style={{ width: 50, fontSize: 7.5, fontWeight: 600, color: cat.c, flexShrink: 0 }}>{cat.l}</div>
-         <div style={{ flex: 1, position: "relative", height: 20, background: C.inset, borderRadius: 10, overflow: "hidden", cursor: locked ? "default" : "pointer", border: "1px solid " + C.border, opacity: locked ? 0.6 : 1 }}
+         <div onClick={function() { var n = {}; for (var k in eqLock) n[k]=eqLock[k]; n[cat.k] = !locked; setEqLock(n); }} style={{ width: 14, height: 14, borderRadius: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9.5, background: locked ? cat.c + "15" : "transparent", border: "1px solid " + (locked ? cat.c + "40" : C.border), color: locked ? cat.c : C.muted, flexShrink: 0 }}>{locked ? "" : "·"}</div>
+         <div style={{ width: 50, fontSize: 9, fontWeight: 600, color: cat.c, flexShrink: 0 }}>{cat.l}</div>
+         <div style={{ flex: 1, position: "relative", height: 20, background: C.inset, borderRadius: 0, overflow: "hidden", cursor: locked ? "default" : "pointer", border: "1px solid " + C.border, opacity: locked ? 0.6 : 1 }}
           onPointerDown={locked ? undefined : function(e) {
            e.preventDefault();
            var bar = e.currentTarget;
@@ -1096,28 +1124,28 @@ if (!showReport) {
            window.addEventListener("pointermove", onM);
            window.addEventListener("pointerup", onU);
           }}>
-          <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: cat.v+"%", background: cat.c + "20", borderRadius: 10, transition: "width 0.1s", display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: cat.v >= 20 ? 8 : 0 }}>
-           {cat.v >= 20 && <span style={{ fontSize: 7, fontWeight: 700, color: cat.c, pointerEvents: "none" }}>${moAmt}/月</span>}
-           <div style={{ position: "absolute", right: 0, top: 2, bottom: 2, width: 6, borderRadius: 3, background: cat.c, boxShadow: "0 0 4px " + cat.c + "40" }} /></div></div>
-         <div style={{ width: 48, textAlign: "right", fontSize: 9, fontWeight: 700, color: cat.c, flexShrink: 0 }}>{cat.v}% <span style={{ fontSize: 6, fontWeight: 500, color: cat.c + "90" }}>${moAmt}</span></div></div>;
+          <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: cat.v+"%", background: cat.c + "20", borderRadius: 0, transition: "width 0.1s", display: "flex", alignItems: "center", justifyContent: "flex-end", paddingRight: cat.v >= 20 ? 8 : 0 }}>
+           {cat.v >= 20 && <span style={{ fontSize: 8.5, fontWeight: 700, color: cat.c, pointerEvents: "none" }}>${moAmt}/月</span>}
+           <div style={{ position: "absolute", right: 0, top: 2, bottom: 2, width: 6, borderRadius: 0, background: cat.c, boxShadow: "none"}} /></div></div>
+         <div style={{ width: 48, textAlign: "right", fontSize: 10, fontWeight: 700, color: cat.c, flexShrink: 0 }}>{cat.v}% <span style={{ fontSize: 7.5, fontWeight: 500, color: cat.c + "90" }}>${moAmt}</span></div></div>;
        });
       })()}</div>
      {/* Sub-option: include primary home */}
-     <div onClick={function() { setWantHome(!wantHome); }} style={{ display: "flex", alignItems: "center", padding: "6px 8px", cursor: "pointer", background: wantHome ? C.green + "08" : C.inset, borderRadius: 8, border: "1px solid " + (wantHome ? C.green + "25" : C.border) }}>
+     <div onClick={function() { setWantHome(!wantHome); }} style={{ display: "flex", alignItems: "center", padding: "6px 8px", cursor: "pointer", background: wantHome ? C.green + "08" : C.inset, borderRadius: 0, border: "1px solid " + (wantHome ? C.green + "25" : C.border) }}>
       <div style={{ flex: 1 }}>
        <div style={{ fontSize: 11, fontWeight: 600, color: wantHome ? C.text : C.muted }}>将自住房纳入净值计算</div>
-       <div style={{ fontSize: 8, color: C.muted }}>房产增值计入总资产 · 持有成本纳入支出</div></div>
-      <div style={{ width: 32, height: 18, borderRadius: 9, background: wantHome ? C.green : C.border, padding: 2, transition: "background 0.2s", flexShrink: 0 }}>
-       <div style={{ width: 14, height: 14, borderRadius: 7, background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.15)", transform: wantHome ? "translateX(14px)" : "translateX(0)", transition: "transform 0.2s" }}></div></div>
+       <div style={{ fontSize: 9.5, color: C.muted }}>房产增值计入总资产 · 持有成本纳入支出</div></div>
+      <div style={{ width: 32, height: 18, borderRadius: 0, background: wantHome ? C.green : C.border, padding: 2, transition: "background 0.2s", flexShrink: 0 }}>
+       <div style={{ width: 14, height: 14, borderRadius: 0, background: "#fff", boxShadow: "none", transform: wantHome ? "translateX(14px)" : "translateX(0)", transition: "transform 0.2s" }}></div></div>
      </div>
      {wantHome && <div style={{ paddingTop: 6 }}>
       <div style={{ display: "flex", gap: 8, marginBottom: 4 }}>
        <div style={{ flex: 1, minWidth: 0 }}>{fi("买入价 Purchase", homeSaleP, setHomeSaleP, "1050000", "$")}</div>
        <div style={{ flex: 1, minWidth: 0 }}>{fi("当前市值 Value", homeListP, setHomeListP, "1200000", "$")}</div></div>
       <div onClick={function() { setHomeHasLoan(!homeHasLoan); }} style={{ display: "flex", alignItems: "center", padding: "4px 0", cursor: "pointer", marginBottom: 4 }}>
-       <span style={{ flex: 1, fontSize: 10, fontWeight: 600, color: homeHasLoan ? C.text : "#2E7D32" }}>{homeHasLoan ? "有房贷 Mortgage" : "无房贷 No Mortgage"}</span>
-       <div style={{ width: 32, height: 18, borderRadius: 9, background: homeHasLoan ? C.blue : C.border, padding: 2, transition: "background 0.2s", flexShrink: 0 }}>
-        <div style={{ width: 14, height: 14, borderRadius: 7, background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.15)", transform: homeHasLoan ? "translateX(14px)" : "translateX(0)", transition: "transform 0.2s" }}></div></div>
+       <span style={{ flex: 1, fontSize: 10, fontWeight: 600, color: homeHasLoan ? C.text : "#2A7A4B" }}>{homeHasLoan ? "有房贷 Mortgage" : "无房贷 No Mortgage"}</span>
+       <div style={{ width: 32, height: 18, borderRadius: 0, background: homeHasLoan ? C.blue : C.border, padding: 2, transition: "background 0.2s", flexShrink: 0 }}>
+        <div style={{ width: 14, height: 14, borderRadius: 0, background: "#fff", boxShadow: "none", transform: homeHasLoan ? "translateX(14px)" : "translateX(0)", transition: "transform 0.2s" }}></div></div>
       </div>
       {homeHasLoan && <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
        {fs2("首付%", homeDownPct, setHomeDownPct, [0,3,5,10,15,20,25,30,40,50].map(function(v){return {v:String(v),l:v+"%"};}))}
@@ -1125,7 +1153,7 @@ if (!showReport) {
        {fs2("年限", homeLoanYrs, setHomeLoanYrs, ["10","15","20","25","30"].map(function(y){return {v:y,l:y+"yr"};}))}
        {(parseFloat(homeDownPct)||20) < 20 && fs2("PMI%", homePmiRate, setHomePmiRate, [0.3,0.4,0.5,0.6,0.7,0.8,1.0,1.2,1.5,2.0].map(function(v){return {v:String(v),l:v+"%/yr"};}))}
       </div>}
-      {(parseFloat(homeDownPct)||20) < 20 && homeHasLoan && <div style={{ fontSize: 7, color: "#AD1457", marginBottom: 4, padding: "2px 6px", background: "#FCE4EC", borderRadius: 4 }}>⚠ 首付低于20%需缴PMI · 权益达20%后可申请取消 · 22%自动取消</div>}
+      {(parseFloat(homeDownPct)||20) < 20 && homeHasLoan && <div style={{ fontSize: 8.5, color: "#A8385F", marginBottom: 4, padding: "2px 6px", background: "#F7F7F7", borderRadius: 0}}>注意 首付低于20%需缴PMI · 权益达20%后可申请取消 · 22%自动取消</div>}
       <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
        {fs2("交割费", homeClosing, setHomeClosing, [0,10000,20000,30000,40000,50000,60000].map(v=>({v:String(v),l:fmtMoney(v)})))}
        {fs2("装修", homeRenovation, setHomeRenovation, [0,10000,20000,30000,50000,80000,100000].map(v=>({v:String(v),l:fmtMoney(v)})))}
@@ -1140,56 +1168,56 @@ if (!showReport) {
       </div></div>}</div></div>
   {/* FIRE Action */}
       <div className="sec-anim" style={{ margin: "0 14px 8px", animationDelay: "0.4s", display: "flex", gap: 6 }}>
-        <button className="btn3d" onClick={function() { setShowReport(true); setCalcMode("overview"); setWantFire(true); trackEvent("overview"); }} style={{ flex: 2, padding: "14px 0", borderRadius: 12, cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 700, border: "none", background: "linear-gradient(135deg, #00B894, #00897B)", color: "#fff", boxSizing: "border-box", boxShadow: "0 4px 14px rgba(0,184,148,0.3), inset 0 1px 0 rgba(255,255,255,0.25)", textShadow: "0 1px 2px rgba(0,0,0,0.15)" }}>
-     🔥 FIRE规划
+        <button className="btn3d" onClick={function() { setShowReport(true); setCalcMode("overview"); setWantFire(true); trackEvent("overview"); }} style={{ flex: 2, padding: "14px 0", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 700, border: "none", background: "#121212", color: "#fff", boxSizing: "border-box", boxShadow: "none", textShadow: "none" }}>
+     FIRE规划
         </button>
-        {wantInvest && <button className="btn3d" onClick={function() { setShowReport(true); setCalcMode("invest"); setWantFire(true); trackEvent("invest"); }} style={{ flex: 1, padding: "14px 0", borderRadius: 12, cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 700, border: "none", background: "linear-gradient(135deg, #FF6B6B, #EE5A24)", color: "#fff", boxSizing: "border-box", boxShadow: "0 4px 14px rgba(238,90,36,0.25), inset 0 1px 0 rgba(255,255,255,0.25)", textShadow: "0 1px 2px rgba(0,0,0,0.15)" }}>
-     🏠 房产投资分析
+        {wantInvest && <button className="btn3d" onClick={function() { setShowReport(true); setCalcMode("invest"); setWantFire(true); trackEvent("invest"); }} style={{ flex: 1, padding: "14px 0", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 700, border: "none", background: "#121212", color: "#fff", boxSizing: "border-box", boxShadow: "none", textShadow: "none" }}>
+     房产投资分析
         </button>}
-        {wantHome && <button className="btn3d" onClick={function() { setShowReport(true); setCalcMode("home"); setWantFire(true); trackEvent("home"); }} style={{ flex: 1, padding: "14px 0", borderRadius: 12, cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 700, border: "none", background: "linear-gradient(135deg, #56CCF2, #2F80ED)", color: "#fff", boxSizing: "border-box", boxShadow: "0 4px 14px rgba(47,128,237,0.25), inset 0 1px 0 rgba(255,255,255,0.25)", textShadow: "0 1px 2px rgba(0,0,0,0.15)" }}>
-     🏡 自住分析
+        {wantHome && <button className="btn3d" onClick={function() { setShowReport(true); setCalcMode("home"); setWantFire(true); trackEvent("home"); }} style={{ flex: 1, padding: "14px 0", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 700, border: "none", background: "#121212", color: "#fff", boxSizing: "border-box", boxShadow: "none", textShadow: "none" }}>
+     自住分析
         </button>}</div>
   </>}
   {/* Standalone Invest Mode */}
   {introMode === "invest" && <>
-      <div className="sec-anim" style={{ background: "#fff", borderRadius: 16, padding: "14px 16px", margin: "0 14px 10px", boxShadow: "0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03)", animationDelay: "0.1s" }}>
+      <div className="sec-anim" style={{ background: "#fff", borderRadius: 0, padding: "4px 0 8px", margin: "0 14px 10px", boxShadow: "none", animationDelay: "0.1s" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-     <div style={{ fontSize: 12, fontWeight: 700, color: C.text }}>🏠 投资房交易分析</div>
+     <h2 style={{ fontSize: 20, fontWeight: 700, fontFamily: C.serif, color: C.text, margin: 0 }}>投资房交易分析</h2>
      <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-      <span style={{ fontSize: 8, color: C.muted }}>持股</span>
-      <select value={investOwn} onChange={function(e) { setInvestOwn(e.target.value); }} style={{ height: 20, fontSize: 9, fontWeight: 700, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 6, background: "#fff", color: "#3E2723", padding: "0 4px", cursor: "pointer" }}>
+      <span style={{ fontSize: 9.5, color: C.muted }}>持股</span>
+      <select value={investOwn} onChange={function(e) { setInvestOwn(e.target.value); }} style={{ height: 20, fontSize: 10, fontWeight: 700, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 0, background: "#fff", color: "#121212", padding: "0 4px", cursor: "pointer" }}>
        {[25,30,40,50,60,70,80,90,100].map(function(v) { return <option key={v} value={String(v)}>{v}%</option>; })}
       </select></div></div>
         <div>
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 3, background: "#2E7D32", borderRadius: 10, padding: "2px 8px", marginBottom: 4 }}>
-     <span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>🏠 房产基本信息</span></div>
+        <div style={PILL("#2A7A4B")}>
+     <span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>房产基本信息</span></div>
         <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
-          {[["🏠","独栋","sf"],["🏘","多家庭","mf"],["📦","房产组合","portfolio"]].map(function(t) { return (
-            <button key={t[2]} onClick={function() { setPropType(t[2]); if (t[2] === "portfolio") setPortfolioMode(true); else setPortfolioMode(false); }} style={{ flex: 1, padding: "4px 2px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "1.5px solid #2E7D32" : "1px solid " + C.border, background: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "#E8F5E9" : "#fff", color: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "#2E7D32" : C.sub, textAlign: "center" }}>
+          {[["","独栋","sf"],["","多家庭","mf"],["","房产组合","portfolio"]].map(function(t) { return (
+            <button key={t[2]} onClick={function() { setPropType(t[2]); if (t[2] === "portfolio") setPortfolioMode(true); else setPortfolioMode(false); }} style={{ flex: 1, padding: "4px 2px", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, border: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "2px solid #121212" : "1px solid " + C.border, background: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "#FFFFFF" : "#fff", color: (propType === t[2] || (t[2] === "portfolio" && portfolioMode)) ? "#2A7A4B" : C.sub, textAlign: "center" }}>
               <div style={{ fontSize: 14 }}>{t[0]}</div>
               <div>{t[1]}</div>
             </button>
           ); })}
         </div>
-        {portfolioMode && <div style={{ fontSize: 7.5, color: "#E65100", marginBottom: 6, padding: "3px 6px", background: "#FFF3E0", borderRadius: 4, lineHeight: 1.5 }}>📦 房产组合模式: 请输入所有房产的<b>总成交价</b>、<b>总月租金</b>、<b>总过户费</b>，系统将按组合整体分析回报率。</div>}
+        {portfolioMode && <div style={{ fontSize: 9, color: "#B35C1E", marginBottom: 6, padding: "3px 6px", background: "#F7F7F7", borderRadius: 0, lineHeight: 1.5 }}>房产组合模式: 请输入所有房产的<b>总成交价</b>、<b>总月租金</b>、<b>总过户费</b>，系统将按组合整体分析回报率。</div>}
         {propType === "mf" && <div style={FG6}>{fs2("单元数", mfUnits, setMfUnits, [2,3,4,5,6,8,10,12,16,20].map(v=>({v:String(v),l:v+"户"})))}</div>}
         <div style={FG8}>
      <div style={{ flex: 1, minWidth: 0 }}>{fi(portfolioMode ? "总成交价" : "成交价", saleP, setSaleP, portfolioMode ? "1500000" : "450000", "$")}</div>
      <div style={{ flex: 1, minWidth: 0 }}>{fi(portfolioMode ? "总月租金" : (propType === "mf" ? "总月租金" : "月租金"), activeUnitRents[0], function(v) { setActiveUnitRents([v]); }, propType === "mf" ? "8000" : "5000", "$")}</div></div>
-        <div style={PILL("#1565C0")}>
-     <span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>💳 贷款与过户</span></div>
+        <div style={PILL("#326891")}>
+     <span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>贷款与过户</span></div>
         <div style={FG6}>
      <div style={{ flex: 1, minWidth: 0, marginBottom: 8 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 2 }}>
        <span style={{ fontSize: 10, fontWeight: 500, color: C.sub }}>首付</span>
-       <div style={{ display: "flex", borderRadius: 4, overflow: "hidden", border: "1px solid #2E7D32" }}>
-        <button onClick={function() { setDownMode("pct"); }} style={{ padding: "2px 6px", fontSize: 9, fontWeight: 600, border: "none", cursor: "pointer", fontFamily: "inherit", background: downMode === "pct" ? "#2E7D32" : "transparent", color: downMode === "pct" ? "#fff" : "#2E7D32" }}>%</button>
-        <button onClick={function() { setDownMode("amt"); }} style={{ padding: "2px 6px", fontSize: 9, fontWeight: 600, border: "none", cursor: "pointer", fontFamily: "inherit", background: downMode === "amt" ? "#2E7D32" : "transparent", color: downMode === "amt" ? "#fff" : "#2E7D32" }}>$</button>
+       <div style={{ display: "flex", borderRadius: 0, overflow: "hidden", border: "1px solid #2A7A4B" }}>
+        <button onClick={function() { setDownMode("pct"); }} style={{ padding: "2px 6px", fontSize: 10, fontWeight: 600, border: "none", cursor: "pointer", fontFamily: "inherit", background: downMode === "pct" ? "#2A7A4B" : "transparent", color: downMode === "pct" ? "#fff" : "#2A7A4B" }}>%</button>
+        <button onClick={function() { setDownMode("amt"); }} style={{ padding: "2px 6px", fontSize: 10, fontWeight: 600, border: "none", cursor: "pointer", fontFamily: "inherit", background: downMode === "amt" ? "#2A7A4B" : "transparent", color: downMode === "amt" ? "#fff" : "#2A7A4B" }}>$</button>
        </div></div>
       <div style={GOLD}>
        {downMode === "amt" && <span style={{ color: C.muted, fontSize: 14, marginRight: 4 }}>$</span>}
-       <input type="text" inputMode="decimal" value={downMode === "pct" ? downPct : downAmt} onChange={function(e) { var v = e.target.value; if (downMode === "pct") { setDownPct(v); setDownAmt(""); } else { setDownAmt(v); var sp = parseFloat(saleP) || 1; setDownPct(String(Math.round((parseFloat(v) || 0) / sp * 1000) / 10)); } }} placeholder={downMode === "pct" ? "20" : "90000"} style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "#3E2723", fontSize: 14, fontFamily: "inherit", fontWeight: 600 }} />
-       <span style={{ fontSize: 9, color: C.muted, flexShrink: 0 }}>{downMode === "pct" ? "=" + fmtMoney((parseFloat(saleP)||0) * (parseFloat(downPct)||0) / 100) : downPct + "%"}</span></div></div>
+       <input type="text" inputMode="decimal" value={downMode === "pct" ? downPct : downAmt} onChange={function(e) { var v = e.target.value; if (downMode === "pct") { setDownPct(v); setDownAmt(""); } else { setDownAmt(v); var sp = parseFloat(saleP) || 1; setDownPct(String(Math.round((parseFloat(v) || 0) / sp * 1000) / 10)); } }} placeholder={downMode === "pct" ? "20" : "90000"} style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "#121212", fontSize: 14, fontFamily: "inherit", fontWeight: 600 }} />
+       <span style={{ fontSize: 10, color: C.muted, flexShrink: 0 }}>{downMode === "pct" ? "=" + fmtMoney((parseFloat(saleP)||0) * (parseFloat(downPct)||0) / 100) : downPct + "%"}</span></div></div>
      <div style={{ flex: 1, minWidth: 0 }}>{fi("利率 %", annRate, setAnnRate, "6.875")}</div></div>
         <div style={FG6}>{fs2("贷款年限", loanYrs, setLoanYrs, ["15","20","25","30"].map(function(y) { return {v:y, l:y+"年"}; }))}
      {fs2("过户费", closing, setClosing, [0,5000,10000,15000,20000,30000,50000,60000].map(function(v) { return {v:String(v), l:fmtMoney(v)}; }))}</div>
@@ -1203,20 +1231,20 @@ if (!showReport) {
        </div>
        <div style={GOLD}>
         <span style={{ color: C.muted, fontSize: 14, marginRight: 4 }}>$</span>
-        <input type="text" value={ext.amt} onChange={function(e) { var n = investExtras.slice(); n[ei] = { name: ext.name, amt: e.target.value.replace(/,/g,"") }; setInvestExtras(n); }} placeholder="0" style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "#3E2723", fontSize: 14, fontFamily: "inherit", fontWeight: 600 }} />
+        <input type="text" value={ext.amt} onChange={function(e) { var n = investExtras.slice(); n[ei] = { name: ext.name, amt: e.target.value.replace(/,/g,"") }; setInvestExtras(n); }} placeholder="0" style={{ flex: 1, minWidth: 0, background: "transparent", border: "none", outline: "none", color: "#121212", fontSize: 14, fontFamily: "inherit", fontWeight: 600 }} />
        </div></div>); })}
-     <button onClick={function() { setInvestExtras(investExtras.concat([{ name: "", amt: "0" }])); }} style={{ width: 38, height: 38, borderRadius: 8, border: "1px dashed " + C.border, background: "#FAFAFA", color: C.muted, fontSize: 18, cursor: "pointer", fontFamily: "inherit", flexShrink: 0, marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+     <button onClick={function() { setInvestExtras(investExtras.concat([{ name: "", amt: "0" }])); }} style={{ width: 38, height: 38, borderRadius: 0, border: "1px dashed " + C.border, background: "#F7F7F7", color: C.muted, fontSize: 18, cursor: "pointer", fontFamily: "inherit", flexShrink: 0, marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-          <div style={PILL("#E65100")}><span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>📊 运营费用</span></div>
+          <div style={PILL("#B35C1E")}><span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>运营费用</span></div>
           <div onClick={function() { setExpDetail(!expDetail); if (!expDetail) setExpIdx(4); else setExpIdx(5); }} style={{ display: "flex", alignItems: "center", gap: 3, cursor: "pointer" }}>
-            <span style={{ fontSize: 7.5, fontWeight: 600, color: expDetail ? C.muted : "#E65100" }}>默认%</span>
-            <div style={{ width: 28, height: 16, borderRadius: 8, background: expDetail ? "#E65100" : "#BDBDBD", padding: 2, transition: "background 0.2s" }}>
-              <div style={{ width: 12, height: 12, borderRadius: 6, background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.15)", transform: expDetail ? "translateX(12px)" : "translateX(0)", transition: "transform 0.2s" }} /></div>
-            <span style={{ fontSize: 7.5, fontWeight: 600, color: expDetail ? "#E65100" : C.muted }}>自定义</span></div></div>
+            <span style={{ fontSize: 9, fontWeight: 600, color: expDetail ? C.muted : "#B35C1E" }}>默认%</span>
+            <div style={{ width: 28, height: 16, borderRadius: 0, background: expDetail ? "#B35C1E" : "#999999", padding: 2, transition: "background 0.2s" }}>
+              <div style={{ width: 12, height: 12, borderRadius: 0, background: "#fff", boxShadow: "none", transform: expDetail ? "translateX(12px)" : "translateX(0)", transition: "transform 0.2s" }} /></div>
+            <span style={{ fontSize: 9, fontWeight: 600, color: expDetail ? "#B35C1E" : C.muted }}>自定义</span></div></div>
         {!expDetail ? <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
             <div style={{ width: 70, flexShrink: 0 }}>{fs2("费率%", expSlider, setExpSlider, [20,25,30,35,40,45,50,55,60].map(function(v) { return {v:String(v), l:v+"%"}; }))}</div>
-            <div style={{ flex: 1, marginBottom: 10, padding: "4px 6px", background: "#FFF3E0", borderRadius: 6, fontSize: 7.5, color: "#E65100", lineHeight: 1.4 }}>{parseInt(expSlider) <= 25 ? "🤝 NNN净租约 · 租客承担税险Utilities维修" : parseInt(expSlider) <= 30 ? "👤 房东自管 · 不含Utilities · 新手小型" : parseInt(expSlider) <= 35 ? "👤 房东自管 · 包Utilities · 中西部多家庭" : parseInt(expSlider) <= 40 ? "🏢 委托物管 · 不含Utilities · 管理费8-10%" : parseInt(expSlider) <= 45 ? "🏢 委托物管 · 全包Utilities · 远程投资" : parseInt(expSlider) <= 50 ? "🏙 高维护物业 · 老旧建筑 · 大城市" : "⚠ 高费率 · 大修/高空置/高管理成本"}</div></div>
+            <div style={{ flex: 1, marginBottom: 10, padding: "4px 6px", background: "#F7F7F7", borderRadius: 0, fontSize: 9, color: "#B35C1E", lineHeight: 1.4 }}>{parseInt(expSlider) <= 25 ? "NNN净租约 · 租客承担税险Utilities维修" : parseInt(expSlider) <= 30 ? "房东自管 · 不含Utilities · 新手小型" : parseInt(expSlider) <= 35 ? "房东自管 · 包Utilities · 中西部多家庭" : parseInt(expSlider) <= 40 ? "委托物管 · 不含Utilities · 管理费8-10%" : parseInt(expSlider) <= 45 ? "委托物管 · 全包Utilities · 远程投资" : parseInt(expSlider) <= 50 ? "高维护物业 · 老旧建筑 · 大城市" : "注意 高费率 · 大修/高空置/高管理成本"}</div></div>
         : (() => {
           var gri = (parseFloat(activeUnitRents[0])||0) * 12;
           var items = [
@@ -1234,18 +1262,18 @@ if (!showReport) {
           var maxV = Math.max.apply(null, items.map(function(x){return x.v;}))||1;
           return <div>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:4, padding:"2px 0" }}>
-              <span style={{ fontSize:8, color:"#E65100", fontWeight:700 }}>年运营费 {fmtMoney(total)}</span>
-              <span style={{ fontSize:9, fontWeight:800, color:"#E65100" }}>{pctOfGri}%<span style={{ fontSize:7, color:"#90A4AE" }}> of GRI</span></span></div>
+              <span style={{ fontSize:9.5, color:"#B35C1E", fontWeight:700 }}>年运营费 {fmtMoney(total)}</span>
+              <span style={{ fontSize:10, fontWeight:800, color:"#B35C1E" }}>{pctOfGri}%<span style={{ fontSize:8.5, color:"#767676" }}> of GRI</span></span></div>
             {(() => {
               var expCats = [
-                { k:"vac", l:"🏚 空置", v:parseFloat(vacancyPct)||0, set:setVacancyPct, c:"#9C27B0", max:20, unit:"%", mo: gri*(parseFloat(vacancyPct)||0)/100/12 },
-                { k:"mgmt", l:"👔 管理", v:parseFloat(mgmtPct)||0, set:setMgmtPct, c:"#1565C0", max:20, unit:"%", mo: gri*(parseFloat(mgmtPct)||0)/100/12 },
-                { k:"tax", l:"🏛 地税", v:parseFloat(taxMo)||0, set:setTaxMo, c:"#0D47A1", max:1500, unit:"$", mo: parseFloat(taxMo)||0 },
-                { k:"ins", l:"🛡 保险", v:parseFloat(insuranceMo)||0, set:setInsuranceMo, c:"#00695C", max:1000, unit:"$", mo: parseFloat(insuranceMo)||0 },
-                { k:"mnt", l:"🔧 维修", v:parseFloat(maintMo)||0, set:setMaintMo, c:"#E65100", max:1000, unit:"$", mo: parseFloat(maintMo)||0 },
-                { k:"utl", l:"⚡ 杂费", v:parseFloat(utilitiesMo)||0, set:setUtilitiesMo, c:"#F57C00", max:500, unit:"$", mo: parseFloat(utilitiesMo)||0 },
-                { k:"hoa", l:"🏢 HOA", v:parseFloat(hoaMo)||0, set:setHoaMo, c:"#4A148C", max:1000, unit:"$", mo: parseFloat(hoaMo)||0 },
-                { k:"oth", l:"📋 其他", v:parseFloat(otherMo)||0, set:setOtherMo, c:"#546E7A", max:500, unit:"$", mo: parseFloat(otherMo)||0 },
+                { k:"vac", l:"空置", v:parseFloat(vacancyPct)||0, set:setVacancyPct, c:"#8A4F9E", max:20, unit:"%", mo: gri*(parseFloat(vacancyPct)||0)/100/12 },
+                { k:"mgmt", l:"管理", v:parseFloat(mgmtPct)||0, set:setMgmtPct, c:"#326891", max:20, unit:"%", mo: gri*(parseFloat(mgmtPct)||0)/100/12 },
+                { k:"tax", l:"地税", v:parseFloat(taxMo)||0, set:setTaxMo, c:"#1A4B6E", max:1500, unit:"$", mo: parseFloat(taxMo)||0 },
+                { k:"ins", l:"保险", v:parseFloat(insuranceMo)||0, set:setInsuranceMo, c:"#1D5536", max:1000, unit:"$", mo: parseFloat(insuranceMo)||0 },
+                { k:"mnt", l:"维修", v:parseFloat(maintMo)||0, set:setMaintMo, c:"#B35C1E", max:1000, unit:"$", mo: parseFloat(maintMo)||0 },
+                { k:"utl", l:"杂费", v:parseFloat(utilitiesMo)||0, set:setUtilitiesMo, c:"#C47526", max:500, unit:"$", mo: parseFloat(utilitiesMo)||0 },
+                { k:"hoa", l:"HOA", v:parseFloat(hoaMo)||0, set:setHoaMo, c:"#4A3563", max:1000, unit:"$", mo: parseFloat(hoaMo)||0 },
+                { k:"oth", l:"其他", v:parseFloat(otherMo)||0, set:setOtherMo, c:"#4F5B63", max:500, unit:"$", mo: parseFloat(otherMo)||0 },
               ];
               return expCats.map(function(cat) {
                 var barPct = cat.max > 0 ? cat.v / cat.max * 100 : 0;
@@ -1253,8 +1281,8 @@ if (!showReport) {
                 var griPct = gri > 0 ? (annV / gri * 100).toFixed(1) : 0;
                 var step = cat.unit === "%" ? 1 : (cat.max >= 1000 ? 50 : 10);
                 return <div key={cat.k} style={{ display:"flex", alignItems:"center", gap:3, marginBottom:3 }}>
-                  <div style={{ width:46, fontSize:7.5, fontWeight:600, color:cat.c, flexShrink:0 }}>{cat.l}</div>
-                  <div style={{ flex:1, position:"relative", height:20, background:C.inset, borderRadius:10, overflow:"hidden", cursor:"pointer", border:"1px solid "+C.border }}
+                  <div style={{ width:46, fontSize:9, fontWeight:600, color:cat.c, flexShrink:0 }}>{cat.l}</div>
+                  <div style={{ flex:1, position:"relative", height:20, background:C.inset, borderRadius:0, overflow:"hidden", cursor:"pointer", border:"1px solid "+C.border }}
                     onPointerDown={function(e) {
                       e.preventDefault();
                       var bar = e.currentTarget; var rect = bar.getBoundingClientRect();
@@ -1264,27 +1292,27 @@ if (!showReport) {
                       var onU = function() { window.removeEventListener("pointermove", onM); window.removeEventListener("pointerup", onU); };
                       window.addEventListener("pointermove", onM); window.addEventListener("pointerup", onU);
                     }}>
-                    <div style={{ position:"absolute", top:0, bottom:0, left:0, width:barPct+"%", background:cat.c+"20", borderRadius:10, transition:"width 0.1s", display:"flex", alignItems:"center", justifyContent:"flex-end", paddingRight: barPct >= 25 ? 8 : 0 }}>
-                      {barPct >= 25 && <span style={{ fontSize:7, fontWeight:700, color:cat.c, pointerEvents:"none" }}>{cat.unit==="$" ? "$"+cat.v+"/月" : cat.v+"%"}</span>}
-                      <div style={{ position:"absolute", right:0, top:2, bottom:2, width:6, borderRadius:3, background:cat.c, boxShadow:"0 0 4px "+cat.c+"40" }} /></div></div>
+                    <div style={{ position:"absolute", top:0, bottom:0, left:0, width:barPct+"%", background:cat.c+"20", borderRadius:0, transition:"width 0.1s", display:"flex", alignItems:"center", justifyContent:"flex-end", paddingRight: barPct >= 25 ? 8 : 0 }}>
+                      {barPct >= 25 && <span style={{ fontSize:8.5, fontWeight:700, color:cat.c, pointerEvents:"none" }}>{cat.unit==="$" ? "$"+cat.v+"/月" : cat.v+"%"}</span>}
+                      <div style={{ position:"absolute", right:0, top:2, bottom:2, width:6, borderRadius:0, background:cat.c, boxShadow:"none"}} /></div></div>
                   <div style={{ display:"flex", alignItems:"center", gap:2, flexShrink:0 }}>
-                    <div style={{ display:"flex", alignItems:"center", height:20, background:"#fff", borderRadius:5, border:"1px solid "+C.border, padding:"0 3px", width:46 }}>
-                      {cat.unit==="$" && <span style={{ fontSize:7, color:C.muted }}>$</span>}
-                      <input type="text" inputMode="decimal" value={cat.v} onChange={function(e){ cat.set(e.target.value.replace(/[^0-9.]/g,"")); }} style={{ width:"100%", background:"transparent", border:"none", outline:"none", fontSize:8, fontWeight:700, color:cat.c, fontFamily:"inherit", textAlign:"right", padding:0 }} />
-                      {cat.unit==="%" && <span style={{ fontSize:7, color:C.muted }}>%</span>}
+                    <div style={{ display:"flex", alignItems:"center", height:20, background:"#fff", borderRadius:0, border:"1px solid "+C.border, padding:"0 3px", width:46 }}>
+                      {cat.unit==="$" && <span style={{ fontSize:8.5, color:C.muted }}>$</span>}
+                      <input type="text" inputMode="decimal" value={cat.v} onChange={function(e){ cat.set(e.target.value.replace(/[^0-9.]/g,"")); }} style={{ width:"100%", background:"transparent", border:"none", outline:"none", fontSize:9.5, fontWeight:700, color:cat.c, fontFamily:"inherit", textAlign:"right", padding:0 }} />
+                      {cat.unit==="%" && <span style={{ fontSize:8.5, color:C.muted }}>%</span>}
                     </div>
-                    <span style={{ fontSize:6, color:"#90A4AE", width:22, textAlign:"right" }}>{griPct}%</span></div></div>;
+                    <span style={{ fontSize:7.5, color:"#767676", width:22, textAlign:"right" }}>{griPct}%</span></div></div>;
               });
             })()}
           </div>;
         })()}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-     <div style={PILL("#546E7A")}>
-      <span style={{ fontSize: 8, fontWeight: 700, color: "#fff" }}>📅 购入时间</span></div>
+     <div style={PILL("#4F5B63")}>
+      <span style={{ fontSize: 9.5, fontWeight: 700, color: C.text, textTransform: "uppercase", letterSpacing: "0.06em" }}>购入时间</span></div>
      <div onClick={function() { setAlreadyBought(!alreadyBought); if (alreadyBought) setPurchaseYear(""); }} style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}>
-      <span style={{ fontSize: 8, fontWeight: 600, color: alreadyBought ? "#2E7D32" : C.muted }}>{alreadyBought ? "已购入" : "尚未购入"}</span>
-      <div style={{ width: 28, height: 16, borderRadius: 8, background: alreadyBought ? "#2E7D32" : "#BDBDBD", padding: 2, transition: "background 0.2s" }}>
-       <div style={{ width: 12, height: 12, borderRadius: 6, background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.15)", transform: alreadyBought ? "translateX(12px)" : "translateX(0)", transition: "transform 0.2s" }} />
+      <span style={{ fontSize: 9.5, fontWeight: 600, color: alreadyBought ? "#2A7A4B" : C.muted }}>{alreadyBought ? "已购入" : "尚未购入"}</span>
+      <div style={{ width: 28, height: 16, borderRadius: 0, background: alreadyBought ? "#2A7A4B" : "#999999", padding: 2, transition: "background 0.2s" }}>
+       <div style={{ width: 12, height: 12, borderRadius: 0, background: "#fff", boxShadow: "none", transform: alreadyBought ? "translateX(12px)" : "translateX(0)", transition: "transform 0.2s" }} />
       </div></div></div>
         {alreadyBought && <div style={FG6}>
      {fs2("购入年", purchaseYear, setPurchaseYear, Array.from({length:20},(_,i)=>({v:String(2026-i),l:String(2026-i)})))}
@@ -1292,20 +1320,20 @@ if (!showReport) {
      {fs2("日", purchaseDay, setPurchaseDay, Array.from({length:31},(_,i)=>({v:String(i+1),l:(i+1)+"日"})))}
         </div>}</div></div>
       <div className="sec-anim" style={{ margin: "0 14px 8px", animationDelay: "0.2s" }}>
-        <button className="btn3d" onClick={function() { setShowReport(true); setCalcMode("invest"); setWantInvest(true); trackEvent("invest"); }} style={{ width: "100%", padding: "14px 0", borderRadius: 12, cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 700, border: "none", background: "linear-gradient(135deg, #FF6B6B, #EE5A24)", color: "#fff", boxSizing: "border-box", boxShadow: "0 4px 14px rgba(238,90,36,0.3), inset 0 1px 0 rgba(255,255,255,0.25)", textShadow: "0 1px 2px rgba(0,0,0,0.15)" }}>
-     🏠 房产投资分析
+        <button className="btn3d" onClick={function() { setShowReport(true); setCalcMode("invest"); setWantInvest(true); trackEvent("invest"); }} style={{ width: "100%", padding: "14px 0", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 700, border: "none", background: "#121212", color: "#fff", boxSizing: "border-box", boxShadow: "none", textShadow: "none" }}>
+     房产投资分析
         </button></div>
   </>}
   {/* Standalone Home Mode */}
   {introMode === "home" && <>
-      <div className="sec-anim" style={{ background: "#fff", borderRadius: 16, padding: "14px 16px", margin: "0 14px 10px", boxShadow: "0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.03)", animationDelay: "0.1s" }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 8 }}>🏡 自住房分析</div>
+      <div className="sec-anim" style={{ background: "#fff", borderRadius: 0, padding: "4px 0 8px", margin: "0 14px 10px", boxShadow: "none", animationDelay: "0.1s" }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, fontFamily: C.serif, color: C.text, margin: "0 0 10px" }}>自住房分析</h2>
         <div style={{ display: "flex", gap: 4, marginBottom: 8 }}>
-     {[["🏠","独栋","sf","550000"],["🏘","联排","th","420000"],["🏢","Condo","condo","350000"],["🏛","Co-op","coop","380000"],["🏗","多户","mf","850000"]].map(function(t) { return (
-      <button key={t[2]} onClick={function() { setHomePropType(t[2]); setHomeSaleP(t[3]); setHomeListP(String(Math.round(parseFloat(t[3]) * 1.1))); if (t[2] === "coop") { var p = parseInt(t[3]); var maint = Math.round((p * 0.008 / 12 + 500) / 100) * 100; setHomeCoopMaint(String(maint)); setHomeInsurance("50"); setHomeUtils("100"); } }} style={{ flex: 1, padding: "4px 2px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: homePropType === t[2] ? "1.5px solid #1565C0" : "1px solid " + C.border, background: homePropType === t[2] ? "#E3F2FD" : "#fff", color: homePropType === t[2] ? "#1565C0" : C.sub, textAlign: "center" }}>
+     {[["","独栋","sf","550000"],["","联排","th","420000"],["","Condo","condo","350000"],["","Co-op","coop","380000"],["","多户","mf","850000"]].map(function(t) { return (
+      <button key={t[2]} onClick={function() { setHomePropType(t[2]); setHomeSaleP(t[3]); setHomeListP(String(Math.round(parseFloat(t[3]) * 1.1))); if (t[2] === "coop") { var p = parseInt(t[3]); var maint = Math.round((p * 0.008 / 12 + 500) / 100) * 100; setHomeCoopMaint(String(maint)); setHomeInsurance("50"); setHomeUtils("100"); } }} style={{ flex: 1, padding: "4px 2px", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, border: homePropType === t[2] ? "2px solid #121212" : "1px solid " + C.border, background: homePropType === t[2] ? "#FFFFFF" : "#fff", color: homePropType === t[2] ? "#326891" : C.sub, textAlign: "center" }}>
        <div style={{ fontSize: 14 }}>{t[0]}</div>
        <div>{t[1]}</div>
-       <div style={{ fontSize: 6.5, color: C.muted }}>~{fmtMoney(parseInt(t[3]))}</div>
+       <div style={{ fontSize: 8, color: C.muted }}>~{fmtMoney(parseInt(t[3]))}</div>
       </button>); })}
         </div>
         <div style={{ display: "flex", gap: 8, marginBottom: 4 }}>
@@ -1313,9 +1341,9 @@ if (!showReport) {
      {fs2("持股%", homeOwn, setHomeOwn, [25,50,60,70,80,90,100].map(function(v){return {v:String(v),l:v+"%"};}))}
      {fs2("交割费", homeClosing, setHomeClosing, [0,10000,20000,30000,40000,50000,60000].map(v=>({v:String(v),l:fmtMoney(v)})))}</div>
         <div onClick={function() { setHomeHasLoan(!homeHasLoan); }} style={{ display: "flex", alignItems: "center", padding: "4px 0", cursor: "pointer", marginBottom: 4 }}>
-     <span style={{ flex: 1, fontSize: 10, fontWeight: 600, color: homeHasLoan ? C.text : "#2E7D32" }}>{homeHasLoan ? "有房贷 Mortgage" : "无房贷 No Mortgage"}</span>
-     <div style={{ width: 32, height: 18, borderRadius: 9, background: homeHasLoan ? C.blue : C.border, padding: 2, transition: "background 0.2s", flexShrink: 0 }}>
-      <div style={{ width: 14, height: 14, borderRadius: 7, background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.15)", transform: homeHasLoan ? "translateX(14px)" : "translateX(0)", transition: "transform 0.2s" }}></div></div>
+     <span style={{ flex: 1, fontSize: 10, fontWeight: 600, color: homeHasLoan ? C.text : "#2A7A4B" }}>{homeHasLoan ? "有房贷 Mortgage" : "无房贷 No Mortgage"}</span>
+     <div style={{ width: 32, height: 18, borderRadius: 0, background: homeHasLoan ? C.blue : C.border, padding: 2, transition: "background 0.2s", flexShrink: 0 }}>
+      <div style={{ width: 14, height: 14, borderRadius: 0, background: "#fff", boxShadow: "none", transform: homeHasLoan ? "translateX(14px)" : "translateX(0)", transition: "transform 0.2s" }}></div></div>
         </div>
         {homeHasLoan && <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
      {fs2("首付%", homeDownPct, setHomeDownPct, [0,3,5,10,15,20,25,30,40,50].map(function(v){return {v:String(v),l:v+"%"};}))}
@@ -1323,9 +1351,9 @@ if (!showReport) {
      {fs2("年限", homeLoanYrs, setHomeLoanYrs, ["10","15","20","25","30"].map(function(y){return {v:y,l:y+"yr"};}))}
      {(parseFloat(homeDownPct)||20) < 20 && fs2("PMI%", homePmiRate, setHomePmiRate, [0.3,0.4,0.5,0.6,0.7,0.8,1.0,1.2,1.5,2.0].map(function(v){return {v:String(v),l:v+"%/yr"};}))}
         </div>}
-        {(parseFloat(homeDownPct)||20) < 20 && homeHasLoan && <div style={{ fontSize: 7, color: "#AD1457", marginBottom: 4, padding: "2px 6px", background: "#FCE4EC", borderRadius: 4 }}>⚠ 首付低于20%需缴PMI · 权益达20%后可申请取消 · 22%自动取消</div>}
+        {(parseFloat(homeDownPct)||20) < 20 && homeHasLoan && <div style={{ fontSize: 8.5, color: "#A8385F", marginBottom: 4, padding: "2px 6px", background: "#F7F7F7", borderRadius: 0}}>注意 首付低于20%需缴PMI · 权益达20%后可申请取消 · 22%自动取消</div>}
         {homePropType === "coop" ? <>
-     <div style={{ fontSize: 7, color: C.muted, marginBottom: 3, padding: "2px 6px", background: "#E8EAF6", borderRadius: 4 }}>Co-op管理费通常包含地税+保险+部分Utilities+人员+维修基金</div>
+     <div style={{ fontSize: 8.5, color: C.muted, marginBottom: 3, padding: "2px 6px", background: "#F7F7F7", borderRadius: 0}}>Co-op管理费通常包含地税+保险+部分Utilities+人员+维修基金</div>
      <div style={FG6}>{fs2("管理费/月", homeCoopMaint, setHomeCoopMaint, [500,600,700,800,900,1000,1100,1200,1400,1600,1800,2000,2500,3000].map(function(v){ return {v:String(v),l:"$"+v};}))}
       {fs2("个人保险/月", homeInsurance, setHomeInsurance, [0,25,50,75,100,150,200,300].map(v=>({v:String(v),l:"$"+v})))}
       {fs2("Utilities/月", homeUtils, setHomeUtils, [0,50,75,100,150,200,250,300].map(v=>({v:String(v),l:"$"+v})))}</div>
@@ -1343,151 +1371,148 @@ if (!showReport) {
       {fs2("升值涨幅/年", appRate, setAppRate, [{v:"2",l:"保守2%"},{v:"3",l:"普通3%"},{v:"4",l:"4%"},{v:"5",l:"热门5%"},{v:"6",l:"6%"},{v:"7",l:"高速7%"},{v:"8",l:"8%"}])}</div>
         </>}</div>
       <div className="sec-anim" style={{ margin: "0 14px 8px", animationDelay: "0.2s" }}>
-        <button className="btn3d" onClick={function() { setShowReport(true); setCalcMode("home"); setWantHome(true); trackEvent("home"); }} style={{ width: "100%", padding: "14px 0", borderRadius: 12, cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 700, border: "none", background: "linear-gradient(135deg, #56CCF2, #2F80ED)", color: "#fff", boxSizing: "border-box", boxShadow: "0 4px 14px rgba(47,128,237,0.3), inset 0 1px 0 rgba(255,255,255,0.25)", textShadow: "0 1px 2px rgba(0,0,0,0.15)" }}>
-     🏡 自住房分析
+        <button className="btn3d" onClick={function() { setShowReport(true); setCalcMode("home"); setWantHome(true); trackEvent("home"); }} style={{ width: "100%", padding: "14px 0", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 700, border: "none", background: "#121212", color: "#fff", boxSizing: "border-box", boxShadow: "none", textShadow: "none" }}>
+     自住房分析
         </button></div>
   </>}
       {/* Usage Guide */}
-      <div style={{ margin: "0 14px 6px" }}>
-        <button onClick={() => setShowGuide(!showGuide)} style={{ width: "100%", padding: "8px 12px", borderRadius: 10, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, border: "1px solid " + C.border, background: "#fff", color: C.sub, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-     <span>📖 使用说明 User Guide</span>
+      <div style={{ margin: "8px 14px 0" }}>
+        <button onClick={() => setShowGuide(!showGuide)} style={{ width: "100%", padding: "10px 0", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700, border: "none", borderTop: "1px solid " + C.rule, background: "transparent", color: C.text, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "space-between", letterSpacing: "0.02em" }}>
+     <span>使用说明 User Guide</span>
      <span style={{ fontSize: 12, transform: showGuide ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
         </button>
-        {showGuide && <div style={{ background: "#fff", borderRadius: "0 0 10px 10px", padding: "10px 12px", fontSize: 8.5, color: C.sub, lineHeight: 1.9, marginTop: -1, border: "1px solid " + C.border, borderTop: "none" }}>
-     <div style={{ fontWeight: 700, fontSize: 9, color: "#1565C0", marginBottom: 4 }}>三大模式</div>
-     <div>🔥 <b>FIRE财务自由</b> — 综合模拟薪资储蓄+股票复利+投资房+自住房，计算何时达成财务自由</div>
-     <div>📊 <b>房产投资分析</b> — 单套投资房Deal评分(A-F)，含NOI瀑布图、雷达图、估值对比、税盾BRRRR</div>
-     <div>🏡 <b>自住房分析</b> — 房价预测+贷款+持有成本模拟，含提前还贷对比和PMI计算</div>
-     <div style={{ fontWeight: 700, fontSize: 9, color: "#2E7D32", marginTop: 6, marginBottom: 4 }}>自住房特色功能</div>
-     <div>🏠 <b>房型选择</b> — 独栋/联排/Condo/Co-op/多户，不同房型有不同默认费用和输入项</div>
-     <div>📈 <b>折线图交互</b> — 点击图表任意年份查看该年房价、净资产、贷款余额，成本明细同步更新</div>
-     <div>⚡ <b>提前还贷</b> — 滑动slider实时对比加速还清vs原30年，显示节省时间和利息</div>
-     <div>📊 <b>里程碑竖线</b> — 当前/本{">"+ ""}息交叉/还清时间点，自动标注在折线图上</div>
-     <div>💡 <b>智能估算</b> — 地税1.1%·保险0.4%·维修1%·Utilities$150-200，未输入时自动套用市场均值</div>
-     <div>📋 <b>PMI自动计算</b> — 首付{"<"}20%自动加入PMI费用，权益达20%后自动移除</div>
-     <div style={{ fontWeight: 700, fontSize: 9, color: "#E65100", marginTop: 6, marginBottom: 4 }}>投资分析特色</div>
-     <div>🎯 <b>Deal评分</b> — 6项指标(CoC/DSCR/Cap/IRR/盈亏平衡/折扣率)加权评分A+→F</div>
-     <div>📊 <b>NOI瀑布图</b> — 从毛租金到净现金流的逐步分解</div>
-     <div>🛡 <b>税盾/BRRRR</b> — 折旧节税计算和BRRRR策略模拟</div>
-     <div>➕ <b>自定义费用</b> — 装修费+律师费/验房费/评估费等可动态添加</div>
-     <div style={{ fontWeight: 700, fontSize: 9, color: "#7B1FA2", marginTop: 6, marginBottom: 4 }}>通用功能</div>
-     <div>💱 <b>多币种</b> — USD/CNY/HKD/GBP/EUR/JPY/CAD/AUD/SGD实时换算</div>
-     <div>💾 <b>存档/读档</b> — 导出JSON保存，随时导入恢复所有参数</div>
-     <div>📊 <b>月/年切换</b> — 所有金额支持月度和年度视角切换</div>
+        {showGuide && <div style={{ background: "#fff", borderRadius: 0, padding: "2px 0 12px", fontSize: 13, fontFamily: C.serif, color: C.sub, lineHeight: 1.7 }}>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, textTransform: "uppercase", letterSpacing: "0.06em", color: C.text, marginBottom: 4 }}>三大模式</div>
+     <div><b>FIRE财务自由</b> — 综合模拟薪资储蓄+股票复利+投资房+自住房，计算何时达成财务自由</div>
+     <div><b>房产投资分析</b> — 单套投资房Deal评分(A-F)，含NOI瀑布图、雷达图、估值对比、税盾BRRRR</div>
+     <div><b>自住房分析</b> — 房价预测+贷款+持有成本模拟，含提前还贷对比和PMI计算</div>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, textTransform: "uppercase", letterSpacing: "0.06em", color: C.text, marginTop: 10, marginBottom: 4 }}>自住房特色功能</div>
+     <div><b>房型选择</b> — 独栋/联排/Condo/Co-op/多户，不同房型有不同默认费用和输入项</div>
+     <div><b>折线图交互</b> — 点击图表任意年份查看该年房价、净资产、贷款余额，成本明细同步更新</div>
+     <div><b>提前还贷</b> — 滑动slider实时对比加速还清vs原30年，显示节省时间和利息</div>
+     <div><b>里程碑竖线</b> — 当前/本{">"+ ""}息交叉/还清时间点，自动标注在折线图上</div>
+     <div><b>智能估算</b> — 地税1.1%·保险0.4%·维修1%·Utilities$150-200，未输入时自动套用市场均值</div>
+     <div><b>PMI自动计算</b> — 首付{"<"}20%自动加入PMI费用，权益达20%后自动移除</div>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, textTransform: "uppercase", letterSpacing: "0.06em", color: C.text, marginTop: 10, marginBottom: 4 }}>投资分析特色</div>
+     <div><b>Deal评分</b> — 6项指标(CoC/DSCR/Cap/IRR/盈亏平衡/折扣率)加权评分A+→F</div>
+     <div><b>NOI瀑布图</b> — 从毛租金到净现金流的逐步分解</div>
+     <div><b>税盾/BRRRR</b> — 折旧节税计算和BRRRR策略模拟</div>
+     <div>+ <b>自定义费用</b> — 装修费+律师费/验房费/评估费等可动态添加</div>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, textTransform: "uppercase", letterSpacing: "0.06em", color: C.text, marginTop: 10, marginBottom: 4 }}>通用功能</div>
+     <div><b>多币种</b> — USD/CNY/EUR/GBP/JPY/CAD/TWD/HKD/MOP，按内置固定汇率换算（非实时）</div>
+     <div><b>存档/读档</b> — 存档把全部参数复制到剪贴板，读档时粘贴回来即可恢复</div>
+     <div><b>月/年切换</b> — 所有金额支持月度和年度视角切换</div>
         </div>}</div>
       {/* Formula Reference */}
-      <div style={{ margin: "0 14px 10px" }}>
-        <button onClick={() => setShowFormulas(!showFormulas)} style={{ width: "100%", padding: "8px 12px", borderRadius: 10, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, border: "1px solid " + C.border, background: "#fff", color: C.sub, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-     <span>📐 计算公式 & 逻辑 Formulas</span>
+      <div style={{ margin: "0 14px 10px", borderBottom: "1px solid " + C.rule }}>
+        <button onClick={() => setShowFormulas(!showFormulas)} style={{ width: "100%", padding: "10px 0", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700, border: "none", borderTop: "1px solid " + C.rule, background: "transparent", color: C.text, boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "space-between", letterSpacing: "0.02em" }}>
+     <span>计算公式 & 逻辑 Formulas</span>
      <span style={{ fontSize: 12, transform: showFormulas ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
         </button>
-        {showFormulas && <div style={{ background: "#fff", borderRadius: "0 0 10px 10px", padding: "10px 12px", fontSize: 8, color: C.sub, lineHeight: 1.8, fontFamily: "monospace", marginTop: -1, border: "1px solid " + C.border, borderTop: "none" }}>
-     <div style={{ fontWeight: 700, fontSize: 9, color: C.text, marginBottom: 4 }}>贷款 Mortgage</div>
+        {showFormulas && <div style={{ background: "#fff", borderRadius: 0, padding: "2px 0 12px", fontSize: 11, color: C.sub, lineHeight: 1.8, fontFamily: "Menlo, Consolas, monospace" }}>
+     <div style={{ fontWeight: 700, fontSize: 10, color: C.text, marginBottom: 4 }}>贷款 Mortgage</div>
      <div>月供 P&I = L × r / (1 - (1+r)^(-n))</div>
      <div>贷款余额 Bal(k) = L × ((1+r)^N - (1+r)^k) / ((1+r)^N - 1)</div>
      <div>提前还贷: 每月额外还 E → 新余额 = Bal - (P&I本金部分 + E)</div>
      <div style={{ color: C.muted }}>L=贷款额 r=月利率 n=总月数 k=已还月数 E=额外还款</div>
-     <div style={{ fontWeight: 700, fontSize: 9, color: C.text, marginTop: 6, marginBottom: 4 }}>PMI 私人抵押保险</div>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, color: C.text, marginTop: 10, marginBottom: 2 }}>PMI 私人抵押保险</div>
      <div>PMI/月 = 贷款额 × PMI费率% / 12</div>
      <div>触发条件: 首付 {"<"} 20%</div>
      <div>取消条件: 权益 ≥ 20%(申请) 或 ≥ 22%(自动)</div>
-     <div style={{ fontWeight: 700, fontSize: 9, color: C.text, marginTop: 6, marginBottom: 4 }}>现金流 Cash Flow</div>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, color: C.text, marginTop: 10, marginBottom: 2 }}>现金流 Cash Flow</div>
      <div>毛租金 GRI = 月租 × 12</div>
      <div>运营费 OpEx = GRI × 费率%</div>
      <div>NOI = GRI - OpEx</div>
      <div>净CF = NOI - 年供DS - 硬钱贷利息</div>
-     <div style={{ fontWeight: 700, fontSize: 9, color: C.text, marginTop: 6, marginBottom: 4 }}>回报率 Returns</div>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, color: C.text, marginTop: 10, marginBottom: 2 }}>回报率 Returns</div>
      <div>Cap Rate = NOI / 成交价</div>
      <div>CoC = 净CF / TCI</div>
      <div>DSCR = NOI / 年供DS</div>
      <div>GRM = 成交价 / 年毛租金</div>
      <div>TCI = 首付 + 过户费 + 装修费 + 自定义费用</div>
-     <div style={{ fontWeight: 700, fontSize: 9, color: C.text, marginTop: 6, marginBottom: 4 }}>自住房预测 Home Projection</div>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, color: C.text, marginTop: 10, marginBottom: 2 }}>自住房预测 Home Projection</div>
      <div>未来房价 = 买入价 × (1 + 升值率)^年数</div>
      <div>未来净资产 = 房价 - 贷款余额</div>
      <div>持有成本(第N年) = 当前费用 × (1 + 成本涨幅)^N</div>
      <div>本{">"+""}息交叉: 月供中本金 {">"} 利息的时间点</div>
-     <div style={{ fontWeight: 700, fontSize: 9, color: C.text, marginTop: 6, marginBottom: 4 }}>智能默认值 Smart Defaults</div>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, color: C.text, marginTop: 10, marginBottom: 2 }}>智能默认值 Smart Defaults</div>
      <div>地税 = 房价 × 1.1% / 12</div>
      <div>保险 = 房价 × 0.4% / 12 (Co-op: $50)</div>
      <div>维修 = 房价 × 1.0% / 12 (Condo: 0.5%)</div>
      <div>Utilities = $200 (Condo: $150, Co-op: $100)</div>
      <div>Co-op管理费 = 房价 × 0.8% / 12 + $500</div>
-     <div style={{ fontWeight: 700, fontSize: 9, color: C.text, marginTop: 6, marginBottom: 4 }}>评分 Deal Score</div>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, color: C.text, marginTop: 10, marginBottom: 2 }}>评分 Deal Score</div>
      <div>6项指标加权: CoC·DSCR·Cap·IRR·盈亏平衡·折扣率</div>
      <div>A+(≥90) A(≥80) B(≥65) C(≥45) D(≥25) F({"<"}25)</div>
-     <div style={{ fontWeight: 700, fontSize: 9, color: C.text, marginTop: 6, marginBottom: 4 }}>FIRE 财务自由</div>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, color: C.text, marginTop: 10, marginBottom: 2 }}>FIRE 财务自由</div>
      <div>被动收入 = 租金CF + 退休账户 + 社保 + 股息 + 存款利息</div>
      <div>净值 = 投资房净值 + 自住房净值 + 401K + 股票 + 存款</div>
      <div>FIRE达成: 被动收入 ≥ 月目标 或 净值 ≥ 目标</div>
-     <div style={{ fontWeight: 700, fontSize: 9, color: C.text, marginTop: 6, marginBottom: 4 }}>折旧税盾 Depreciation</div>
+     <div style={{ fontWeight: 700, fontSize: 11, fontFamily: C.sans, color: C.text, marginTop: 10, marginBottom: 2 }}>折旧税盾 Depreciation</div>
      <div>年折旧 = (成交价 × (1-土地占比)) / 27.5</div>
      <div>税盾节税 = 年折旧 × 边际税率</div>
      <div>税后CoC = (净CF + 税盾) / TCI</div>
         </div>}</div>
-      <div style={{ textAlign: "center", fontSize: 7, color: C.muted, marginBottom: 24, letterSpacing: "0.04em", lineHeight: 1.6, padding: "0 14px", opacity: 0.6 }}>
-        © JMJ Invest LLC · All Rights Reserved</div>
+      <footer style={{ textAlign: "center", fontSize: 11, color: C.muted, margin: "0 14px 28px", lineHeight: 1.6 }}>
+        <div style={{ fontFamily: C.serif, fontWeight: 900, fontSize: 16, color: C.text, letterSpacing: "0.06em" }}>钱景</div>© {new Date().getFullYear()} JMJ Invest LLC · 仅供参考，不构成投资建议</footer>
       {saveModal === "import" && (
     <div style={overlay} onClick={() => setSaveModal(null)}>
       <div style={mBox} onClick={e => e.stopPropagation()}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-     <span style={{ fontSize: 15, fontWeight: 700, color: C.blue }}>📂 读取配置</span>
-     <button onClick={() => setSaveModal(null)} style={{ background: C.inset, border: "none", borderRadius: 5, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button></div>
+     <span style={{ fontSize: 18, fontWeight: 700, fontFamily: C.serif, color: C.text}}>读取配置</span>
+     <button onClick={() => setSaveModal(null)} style={{ background: C.inset, border: "none", borderRadius: 0, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button></div>
         <div style={{ fontSize: 10.5, color: C.muted, marginBottom: 6 }}>从备忘录复制之前保存的配置，粘贴到下方，点击「应用」。</div>
-        <textarea placeholder='在此粘贴配置内容...' value={importText} onChange={e => setImportText(e.target.value)} style={{ width: "100%", height: 120, fontSize: 9.5, fontFamily: "monospace", border: "1px solid " + C.border, borderRadius: 6, padding: 8, boxSizing: "border-box", background: "#fff", color: C.text, resize: "none" }} />
+        <textarea placeholder='在此粘贴配置内容...' value={importText} onChange={e => setImportText(e.target.value)} style={{ width: "100%", height: 120, fontSize: 10.5, fontFamily: "monospace", border: "1px solid " + C.border, borderRadius: 0, padding: 8, boxSizing: "border-box", background: "#fff", color: C.text, resize: "none" }} />
         <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
-     <button onClick={function() { navigator.clipboard.readText().then(function(t) { setImportText(t); }).catch(function() {}); }} style={{ flex: 1, padding: "10px 0", fontSize: 13, fontWeight: 700, background: C.inset, color: C.sub, border: "1px solid " + C.border, borderRadius: 6, cursor: "pointer" }}>📋 粘贴</button>
-     <button onClick={handleApplyImport} disabled={!importText.trim()} style={{ flex: 2, padding: "10px 0", fontSize: 14, fontWeight: 700, background: importText.trim() ? C.blue : C.border, color: "#fff", border: "none", borderRadius: 6, cursor: importText.trim() ? "pointer" : "default" }}>✅ 应用配置</button></div>
-        {saveMsg && <div style={{ marginTop: 6, fontSize: 11.5, fontWeight: 700, color: saveMsg.startsWith("✅") ? C.green : C.red, textAlign: "center" }}>{saveMsg}</div>}</div></div>
+     <button onClick={function() { navigator.clipboard.readText().then(function(t) { setImportText(t); }).catch(function() {}); }} style={{ flex: 1, padding: "10px 0", fontSize: 13, fontWeight: 700, background: C.inset, color: C.sub, border: "1px solid " + C.border, borderRadius: 0, cursor: "pointer" }}>粘贴</button>
+     <button onClick={handleApplyImport} disabled={!importText.trim()} style={{ flex: 2, padding: "10px 0", fontSize: 14, fontWeight: 700, background: importText.trim() ? C.blue : C.border, color: "#fff", border: "none", borderRadius: 0, cursor: importText.trim() ? "pointer" : "default" }}>✓ 应用配置</button></div>
+        {saveMsg && <div style={{ marginTop: 6, fontSize: 11.5, fontWeight: 700, color: saveMsg.startsWith("✓") ? C.green : C.red, textAlign: "center" }}>{saveMsg}</div>}</div></div>
       )}</div>
   );}
 return (
-<div className="page-enter" style={{ maxWidth: 430, margin: "0 auto", background: "#FAF9F6", padding: "0 10px 10px", boxSizing: "border-box", minHeight: "100vh", position: "relative", fontFamily: '-apple-system,"SF Pro Display","SF Pro Text",system-ui,sans-serif', color: C.text, overflowX: "hidden", WebkitFontSmoothing: "antialiased", width: "100%" }}>
+<div className="page-enter" style={{ maxWidth: 430, margin: "0 auto", background: "#FFFFFF", padding: "0 12px 12px", boxSizing: "border-box", minHeight: "100vh", position: "relative", fontFamily: 'var(--nyt-sans)', color: C.text, overflowX: "clip", WebkitFontSmoothing: "antialiased", width: "100%" }}>
 <style>{`
   @keyframes slideIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   .page-enter { animation: slideIn 0.35s ease-out both; }
 `}</style>
 {/* App Header */}
-<div style={{ position: "sticky", top: 0, zIndex: 5, paddingTop: 6, paddingBottom: 4, marginBottom: 4, borderBottom: "none" }}>
-<div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 2, background: calcMode === "invest" ? (dealAvg >= 70 ? "linear-gradient(90deg, #00B894, #00897B)" : dealAvg >= 40 ? "linear-gradient(90deg, #F39C12, #E67E22)" : "linear-gradient(90deg, #E74C3C, #C0392B)") : calcMode === "home" ? "linear-gradient(90deg, #56CCF2, #2F80ED)" : "linear-gradient(90deg, #00B894, #2F80ED)", borderRadius: 1 }}></div>
-<div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-<div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 4 }}>
-<Logo small />
-<div style={{ fontSize: 12, fontWeight: 700, color: C.text, letterSpacing: "-0.02em", lineHeight: 1 }}>{calcMode === "invest" ? "房产投资分析" : calcMode === "home" ? "自住分析" : "FIRE"} <span style={{ fontSize: 8, fontWeight: 500, color: C.muted }}>{calcMode === "invest" ? "Deal" : calcMode === "home" ? "Home" : "Planning"}</span></div></div>
-<div style={{ display: "flex", borderRadius: 6, overflow: "hidden", background: C.accent + "12", height: 22, border: "1px solid " + C.accent + "25" }}>
+<div style={{ position: "sticky", top: 0, zIndex: 5, background: "#FFFFFF", margin: "0 -12px 8px", padding: "8px 12px 0", borderBottom: "3px double " + C.rule }}>
+<div style={{ display: "flex", alignItems: "center", gap: 6, paddingBottom: 6, borderBottom: "1px solid " + C.border }}>
+<div onClick={function() { setShowReport(false); setIntroMode(""); }} style={{ cursor: "pointer", flexShrink: 0 }} title="回到首页"><Logo small /></div>
+<div style={{ flex: 1 }}></div>
+<div role="group" aria-label="金额按月或按年显示" style={{ display: "flex", height: 24, border: "1px solid " + C.rule }}>
 {[["月", "mo"], ["年", "yr"]].map(([lbl, p]) => (
-<button key={p} onClick={() => setRentPeriod(p)} style={{ padding: "0 8px", height: "100%", cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 700, border: "none", background: rentPeriod === p ? C.accent : "transparent", color: rentPeriod === p ? "#fff" : C.accent, borderRadius: rentPeriod === p ? 5 : 0 }}>{lbl}</button>
+<button key={p} onClick={() => setRentPeriod(p)} aria-pressed={rentPeriod === p} style={{ padding: "0 9px", height: "100%", cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 700, border: "none", background: rentPeriod === p ? C.text : "transparent", color: rentPeriod === p ? "#fff" : C.text, borderRadius: 0 }}>{lbl}</button>
 ))}</div>
-{(wantHome || wantFire) && <div style={{ display: "flex", borderRadius: 6, overflow: "hidden", background: C.inset, height: 22 }}>
-{[wantInvest && ["投资", "invest"], wantHome && ["自住", "home"], wantFire && ["FIRE", "overview"]].filter(Boolean).map(([lbl, mode]) => (
-<button key={mode} onClick={() => setCalcMode(mode)} style={{ padding: "0 6px", height: "100%", cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: "none", background: calcMode === mode ? C.surface : "transparent", color: calcMode === mode ? C.text : C.muted, borderRadius: calcMode === mode ? 5 : 0, boxShadow: calcMode === mode ? "0 1px 2px rgba(0,0,0,0.08)" : "none" }}>{lbl}</button>
+<button onClick={() => { handleCopyExport(); setSaveMsg("✓ 已保存到剪贴板"); setTimeout(() => setSaveMsg(""), 2000); }} style={{ padding: "0 0 0 6px", cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 600, border: "none", background: "transparent", color: C.sub, height: 24 }}>存档</button>
+<button onClick={() => setSaveModal("import")} style={{ padding: "0 0 0 6px", cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 600, border: "none", background: "transparent", color: C.sub, height: 24 }}>读档</button>
+{saveMsg && <span role="status" style={{ fontSize: 11, fontWeight: 600, color: C.green, position: "absolute", top: 38, right: 12, background: "#fff", padding: "3px 8px", border: "1px solid " + C.border, zIndex: 6 }}>{saveMsg}</span>}
+</div>
+<div style={{ display: "flex", alignItems: "center", height: 32 }}>
+<button onClick={() => setShowReport(false)} style={{ padding: "0 10px 0 0", cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700, border: "none", background: "transparent", color: C.blue, flexShrink: 0 }}>← 修改参数</button>
+<div style={{ flex: 1, display: "flex", justifyContent: "flex-end", alignItems: "center", height: "100%" }}>
+{[wantInvest && ["房产投资", "invest"], wantHome && ["自住房", "home"], wantFire && ["FIRE", "overview"]].filter(Boolean).map(([lbl, mode], i) => (
+<button key={mode} onClick={() => setCalcMode(mode)} aria-pressed={calcMode === mode} style={{ padding: "0 10px", height: 20, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: calcMode === mode ? 800 : 500, border: "none", borderLeft: i ? "1px solid " + C.border : "none", background: "transparent", color: calcMode === mode ? C.text : C.sub, textDecoration: calcMode === mode ? "underline" : "none", textUnderlineOffset: 5, textDecorationThickness: 2, borderRadius: 0 }}>{lbl}</button>
 ))}
-</div>}
-<button onClick={() => { handleCopyExport(); setSaveMsg("✅ 已保存到剪贴板"); setTimeout(() => setSaveMsg(""), 2000); }} style={{ padding: "2px 6px", cursor: "pointer", fontFamily: "inherit", fontSize: 8, fontWeight: 700, border: "none", borderRadius: 10, background: C.green, color: "#fff", height: 22, display: "flex", alignItems: "center", gap: 2 }}>💾 存档</button>
-<button onClick={() => setSaveModal("import")} style={{ padding: "2px 6px", cursor: "pointer", fontFamily: "inherit", fontSize: 8, fontWeight: 700, border: "none", borderRadius: 10, background: C.blue, color: "#fff", height: 22, display: "flex", alignItems: "center", gap: 2 }}>📂 读档</button>
-</div>
-<div style={{ marginTop: 4 }}>
-<button onClick={() => setShowReport(false)} style={{ padding: "5px 12px", cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, border: "1px solid " + C.border, borderRadius: 6, background: "#fff", color: C.sub, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>← 返回</button>
-<button onClick={function() { setShowReport(false); setIntroMode(""); }} style={{ padding: "5px 12px", cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, border: "1px solid " + C.border, borderRadius: 6, background: "#fff", color: C.sub, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>🏠 主页</button>
-</div>
+</div></div>
 {calcMode === "overview" && <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 4 }}>
-<div style={{ display: "flex", alignItems: "center", gap: 4, flex: 2, height: 24, background: C.inset, borderRadius: 8, padding: "0 8px", overflow: "hidden" }}>
-  <span style={{ fontSize: 8, color: C.muted, flexShrink: 0 }}>配置</span>
-  <div style={{ flex: 1, display: "flex", height: 10, borderRadius: 3, overflow: "hidden" }}>
-    {(parseInt(savREPct)||0) > 0 && <div style={{ width: (parseInt(savREPct)||0)+"%", background: "#2E7D32", opacity: 0.7 }}></div>}
-    <div style={{ width: (parseInt(savStockPct)||0)+"%", background: "#7B1FA2", opacity: 0.6 }}></div>
-    <div style={{ width: (parseInt(savBankPct)||0)+"%", background: "#1565C0", opacity: 0.5 }}></div>
-    <div style={{ flex: 1, background: "#C2185B", opacity: 0.5 }}></div></div>
-  <span style={{ fontSize: 7.5, fontWeight: 700, color: "#2E7D32", flexShrink: 0 }}>房{savREPct}%</span>
-  <span style={{ fontSize: 7.5, fontWeight: 700, color: "#7B1FA2", flexShrink: 0 }}>股{savStockPct}%</span></div>
-<select value={currency} onChange={e => setCurrency(e.target.value)} style={{ height: 24, fontSize: 9, fontWeight: 600, fontFamily: "inherit", border: "none", borderRadius: 8, background: C.inset, color: C.text, padding: "0 4px", cursor: "pointer" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 4, flex: 2, height: 24, background: C.inset, borderRadius: 0, padding: "0 8px", overflow: "hidden" }}>
+  <span style={{ fontSize: 9.5, color: C.muted, flexShrink: 0 }}>配置</span>
+  <div style={{ flex: 1, display: "flex", height: 10, borderRadius: 0, overflow: "hidden" }}>
+    {(parseInt(savREPct)||0) > 0 && <div style={{ width: (parseInt(savREPct)||0)+"%", background: "#2A7A4B", opacity: 0.7 }}></div>}
+    <div style={{ width: (parseInt(savStockPct)||0)+"%", background: "#7D3C8C", opacity: 0.6 }}></div>
+    <div style={{ width: (parseInt(savBankPct)||0)+"%", background: "#326891", opacity: 0.5 }}></div>
+    <div style={{ flex: 1, background: "#A8385F", opacity: 0.5 }}></div></div>
+  <span style={{ fontSize: 9, fontWeight: 700, color: "#2A7A4B", flexShrink: 0 }}>房{savREPct}%</span>
+  <span style={{ fontSize: 9, fontWeight: 700, color: "#7D3C8C", flexShrink: 0 }}>股{savStockPct}%</span></div>
+<select value={currency} onChange={e => setCurrency(e.target.value)} style={{ height: 24, fontSize: 10, fontWeight: 600, fontFamily: "inherit", border: "none", borderRadius: 0, background: C.inset, color: C.text, padding: "0 4px", cursor: "pointer" }}>
 {Object.keys(FX).map(c => <option key={c} value={c}>{CUR_SYM[c]} {c}</option>)}
 </select>
 </div>}</div>
   {/* ═══ INVEST MODE ═══ */}
   {calcMode === "invest" && <>
     {/* Property (left 50%) + Donut (right 50%) */}
-    <div style={{ background: "#FAF9F6", borderRadius: 12, padding: "6px 10px", marginBottom: 4, overflow: "hidden", borderLeft: "3px solid #D4A853" }}>
+    <div style={{ background: "#FFFFFF", borderRadius: 0, padding: "8px 2px 8px", marginBottom: 6, overflow: "hidden", borderTop: "1px solid #121212" }}>
       {(() => {
         const ownerPct = Math.min(100, Math.max(0, parseFloat(investOwn) || 100)) / 100;
         const isPartner = ownerPct < 1;
@@ -1508,25 +1533,25 @@ return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
        <SHdr zh="投资概览" en="Deal Overview" />
        <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-        {[["📋 摊销","prepay","#1565C0"],["🛡 税盾","depreciation","#2E7D32"],["♻️ BRRRR","brrrr","#E65100"]].map(function(pair) { return (
-         <button key={pair[1]} onClick={function() { setModal(pair[1]); }} style={{ padding: "2px 6px", fontSize: 7, fontWeight: 700, borderRadius: 10, cursor: "pointer", fontFamily: "inherit", border: "none", background: pair[2], color: "#fff" }}>{pair[0]}</button>
+        {[["摊销","prepay","#326891"],["税盾","depreciation","#2A7A4B"],["BRRRR","brrrr","#B35C1E"]].map(function(pair) { return (
+         <button key={pair[1]} onClick={function() { setModal(pair[1]); }} style={{ padding: "2px 7px", fontSize: 10, fontWeight: 700, borderRadius: 0, cursor: "pointer", fontFamily: "inherit", border: "1px solid " + C.rule, background: "#fff", color: C.text }}>{pair[0]}</button>
         ); })}
-        <select value={investOwn} onChange={e => setInvestOwn(e.target.value)} style={{ width: 44, height: 18, fontSize: 8, fontWeight: 700, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 6, background: "#fff", color: "#3E2723", padding: "0 2px", cursor: "pointer" }}>
+        <select value={investOwn} onChange={e => setInvestOwn(e.target.value)} style={{ width: 44, height: 18, fontSize: 9.5, fontWeight: 700, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 0, background: "#fff", color: "#121212", padding: "0 2px", cursor: "pointer" }}>
          {[5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100].map(v => <option key={v} value={String(v)}>{v}%</option>)}
         </select></div></div>
-      {(userName || propAddress) && <div style={{ fontSize: 8, color: C.muted, marginBottom: 3 }}>{userName && <span style={{ fontWeight: 600 }}>{userName}</span>}{userName && propAddress && " · "}{propAddress}</div>}
+      {(userName || propAddress) && <div style={{ fontSize: 9.5, color: C.muted, marginBottom: 3 }}>{userName && <span style={{ fontWeight: 600 }}>{userName}</span>}{userName && propAddress && " · "}{propAddress}</div>}
       <div style={{ display: "flex", gap: 0, alignItems: "center", overflow: "hidden" }}>
        {/* LEFT: Deal summary */}
        <div style={{ flex: 1, minWidth: 0, paddingRight: 4, overflow: "hidden" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3 }}>
          {(() => { const isYr = rentPeriod === "yr"; const mul = isYr ? 12 : 1; const held = investHeld > 0; return [
-          [held?"当前市值":"成交价", fmtMoney(held?investCurrentVal:(parseFloat(saleP)||0)), "#5D4037", "#FFF8E1"],
-          [isYr?"年租金":"月租金", fmtMoney((parseFloat(activeUnitRents[0])||0)*mul), "#1B5E20", "#E8F5E9"],
-          ["投入 TCI", fmtMoney(tci), "#E65100", "#FFF3E0"],
-          [isYr?"年净CF":"月净CF", fmtMoney(netCF/(isYr?1:12)), netCF >= 0 ? "#1B5E20" : "#B71C1C", netCF >= 0 ? "#E8F5E9" : "#FFEBEE"],
+          [held?"当前市值":"成交价", fmtMoney(held?investCurrentVal:(parseFloat(saleP)||0)), "#4A3F38", "#F9F0E6"],
+          [isYr?"年租金":"月租金", fmtMoney((parseFloat(activeUnitRents[0])||0)*mul), "#1D5536", "#EDF4EF"],
+          ["投入 TCI", fmtMoney(tci), "#B35C1E", "#F9F0E6"],
+          [isYr?"年净CF":"月净CF", fmtMoney(netCF/(isYr?1:12)), netCF >= 0 ? "#1D5536" : "#8A1F1D", netCF >= 0 ? "#FFFFFF" : "#F8ECEB"],
          ]; })().map(([k, v, c, bg], i) => (
-          <div key={i} style={{ background: bg, borderRadius: 5, padding: "4px 6px" }}>
-           <div style={{ fontSize: 7, color: "#78909C" }}>{k}</div>
+          <div key={i} style={{ background: bg, borderRadius: 0, padding: "4px 6px" }}>
+           <div style={{ fontSize: 8.5, color: "#727272" }}>{k}</div>
            <div style={{ fontSize: 11, fontWeight: 800, color: c }}>{v}</div></div>
          ))}</div></div>
        {/* RIGHT: Donut */}
@@ -1534,8 +1559,8 @@ return (
         {isPartner ? (
          <svg viewBox="0 0 100 100" width={80} height={80}>
           <defs>
-           <linearGradient id="cg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#D4A574" /><stop offset="100%" stopColor="#C4956A" /></linearGradient>
-           <linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#7BA7C9" /><stop offset="100%" stopColor="#5B8DAF" /></linearGradient>
+           <linearGradient id="cg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#9C7A55" /><stop offset="100%" stopColor="#9C7A55" /></linearGradient>
+           <linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#8FAEC6" /><stop offset="100%" stopColor="#6A93B3" /></linearGradient>
           </defs>
           <g transform="rotate(-90 50 50)">
            <path d={arc(50,50,40,0,cashEnd)} fill="none" stroke="url(#cg)" strokeWidth={10} strokeLinecap="butt" opacity={0.55} />
@@ -1552,8 +1577,8 @@ return (
         ) : (
          <svg viewBox={"0 0 "+sz+" "+sz} width={80} height={80}>
           <defs>
-           <linearGradient id="cashG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#D4A574" /><stop offset="100%" stopColor="#C4956A" /></linearGradient>
-           <linearGradient id="debtG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#7BA7C9" /><stop offset="100%" stopColor="#5B8DAF" /></linearGradient>
+           <linearGradient id="cashG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#9C7A55" /><stop offset="100%" stopColor="#9C7A55" /></linearGradient>
+           <linearGradient id="debtG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#8FAEC6" /><stop offset="100%" stopColor="#6A93B3" /></linearGradient>
           </defs>
           <g transform={"rotate(-90 "+cx2+" "+cy2+")"}>
            <path d={arc(cx2,cy2,r1,0,cashEnd)} fill="none" stroke="url(#cashG)" strokeWidth={r1-r2} strokeLinecap="butt" opacity={0.55} />
@@ -1562,18 +1587,18 @@ return (
           <circle cx={cx2} cy={cy2} r={r2} fill="none" stroke={C.border} strokeWidth={0.5} />
           <text x={cx2} y={cy2-10} textAnchor="middle" style={{ fontSize: 5, fill: C.muted, fontWeight: 600 }}>总价</text>
           <text x={cx2} y={cy2+2} textAnchor="middle" style={{ fontSize: 12, fill: C.text, fontWeight: 800 }}>{fmtMoney(total)}</text>
-          <text x={cx2} y={cy2+13} textAnchor="middle" style={{ fontSize: 6, fill: "#C4956A", fontWeight: 700 }}>现金 {fmtMoney(tci)}</text>
-          <text x={cx2} y={cy2+22} textAnchor="middle" style={{ fontSize: 6, fill: totalDebt > 0 ? "#5B8DAF" : "#2E7D32", fontWeight: 700 }}>{totalDebt > 0 ? "贷款 " + fmtMoney(totalDebt) : "全款购入 ✓"}</text>
+          <text x={cx2} y={cy2+13} textAnchor="middle" style={{ fontSize: 6, fill: "#9C7A55", fontWeight: 700 }}>现金 {fmtMoney(tci)}</text>
+          <text x={cx2} y={cy2+22} textAnchor="middle" style={{ fontSize: 6, fill: totalDebt > 0 ? "#6A93B3" : "#2A7A4B", fontWeight: 700 }}>{totalDebt > 0 ? "贷款 " + fmtMoney(totalDebt) : "全款购入 ✓"}</text>
          </svg>
         )}</div></div>
      </div>);
       })()}</div>
     {/* ═══ DEAL SCORE ═══ */}
-    <div style={{ background: C.surface, borderRadius: 12, padding: "6px 10px", marginBottom: 4 }}>
+    <div style={{ background: C.surface, borderRadius: 0, padding: "6px 10px", marginBottom: 4 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <div style={{ width: 48, height: 48, borderRadius: 24, background: dealColor + "12", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+        <div style={{ width: 48, height: 48, borderRadius: 0, background: dealColor + "12", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
      <div style={{ fontSize: 18, fontWeight: 800, color: dealColor, lineHeight: 1 }}>{dealGrade}</div>
-     <div style={{ fontSize: 7, fontWeight: 500, color: dealColor, opacity: 0.6 }}>{dealAvg}分</div></div>
+     <div style={{ fontSize: 8.5, fontWeight: 500, color: dealColor, opacity: 0.6 }}>{dealAvg}分</div></div>
         <div style={{ flex: 1, minWidth: 0 }}>
      <div style={{ fontSize: 13, fontWeight: 600, color: C.text, marginBottom: 3 }}>{dealDesc}</div>
      <div style={FG6}>
@@ -1583,7 +1608,7 @@ return (
        ["净CF", fmtMoney(netCF/12)+"/月", netCF >= 0 ? C.green : C.red],
        ["Cap", actualCap > 0 ? (actualCap*100).toFixed(1)+"%" : "—", actualCap >= 0.07 ? C.green : actualCap >= 0.04 ? C.orange : C.muted],
       ].map(([k, v, c], i) => (
-       <div key={i} style={{ fontSize: 9, color: C.muted }}>
+       <div key={i} style={{ fontSize: 10, color: C.muted }}>
         {k} <span style={{ fontWeight: 600, color: c }}>{v}</span></div>
       ))}</div></div>
       </div></div>
@@ -1596,7 +1621,7 @@ return (
       const sliderVal = parseInt(expSlider) || 35;
       const gross = computedRent * ownerPct * scale;
       const effectiveExpPct = expIdx === 4 ? Math.round(customRatio * 100) : sliderVal;
-      const expColor = effectiveExpPct <= 25 ? "#2E7D32" : effectiveExpPct <= 32 ? C.green : effectiveExpPct <= 38 ? "#8B6914" : effectiveExpPct <= 45 ? C.orange : effectiveExpPct <= 52 ? "#E65100" : C.red;
+      const expColor = effectiveExpPct <= 25 ? "#2A7A4B" : effectiveExpPct <= 32 ? C.green : effectiveExpPct <= 38 ? "#8A6D1F" : effectiveExpPct <= 45 ? C.orange : effectiveExpPct <= 52 ? "#B35C1E" : C.red;
       const expLabel = sliderVal <= 25 ? "NNN净租约 · 租客承担税险Utilities维修"
         : sliderVal <= 30 ? "房东自管·不含Utilities · 适合新手小型物业"
         : sliderVal <= 35 ? "房东自管·包Utilities · 中西部多家庭常见"
@@ -1659,7 +1684,7 @@ return (
       wfItems.push({ name: "NOI", amt: Math.abs(noiVal), top: Math.max(noiVal, 0), bottom: Math.min(noiVal, 0), color: C.blue, isTotal: true, isNOI: true });
       cursor = noiVal;
       if (interestAmt > 0) { wfItems.push({ name: "利息", amt: interestAmt, top: cursor, bottom: cursor - interestAmt, color: C.red }); cursor -= interestAmt; }
-      if (principalAmt > 0) { wfItems.push({ name: "还本", amt: principalAmt, top: cursor, bottom: cursor - principalAmt, color: "#E65100" }); cursor -= principalAmt; }
+      if (principalAmt > 0) { wfItems.push({ name: "还本", amt: principalAmt, top: cursor, bottom: cursor - principalAmt, color: "#B35C1E" }); cursor -= principalAmt; }
       wfItems.push({ name: "净CF", amt: Math.abs(netCFVal), top: Math.max(netCFVal, 0), bottom: Math.min(netCFVal, 0), color: ncfColor, isTotal: true });
       // Compute pixel scale from data range
       var wfMin = 0, wfMax = gross;
@@ -1668,19 +1693,19 @@ return (
       const barH = 165;
       const usableH = barH - 24;
       return (
-        <div style={{ background: "#FAF9F6", borderRadius: 12, padding: "6px 10px", marginBottom: 4, overflow: "hidden", borderLeft: "3px solid #4CAF50" }}>
+        <div style={{ background: "#FFFFFF", borderRadius: 0, padding: "8px 2px 8px", marginBottom: 6, overflow: "hidden", borderTop: "1px solid #121212" }}>
      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 2, overflow: "hidden" }}>
       <div style={FAC}>
        <SHdr zh="租金收支分解" en="Cash Flow Breakdown" />
-       {isPartnerWf && <div style={{ display: "flex", borderRadius: 8, overflow: "hidden", border: "none", height: 18 }}>
-        <button onClick={() => setWfViewAll(true)} style={{ padding: "0 5px", height: "100%", cursor: "pointer", fontFamily: "inherit", fontSize: 7.5, fontWeight: 600, border: "none", background: wfViewAll ? C.accent : "#fff", color: wfViewAll ? "#fff" : C.muted }}>全部</button>
-        <button onClick={() => setWfViewAll(false)} style={{ padding: "0 5px", height: "100%", cursor: "pointer", fontFamily: "inherit", fontSize: 7.5, fontWeight: 600, border: "none", background: !wfViewAll ? C.blue : "#fff", color: !wfViewAll ? "#fff" : C.muted }}>我的{investOwn}%</button>
+       {isPartnerWf && <div style={{ display: "flex", borderRadius: 0, overflow: "hidden", border: "none", height: 18 }}>
+        <button onClick={() => setWfViewAll(true)} style={{ padding: "0 5px", height: "100%", cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: "none", background: wfViewAll ? C.accent : "#fff", color: wfViewAll ? "#fff" : C.muted }}>全部</button>
+        <button onClick={() => setWfViewAll(false)} style={{ padding: "0 5px", height: "100%", cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: "none", background: !wfViewAll ? C.blue : "#fff", color: !wfViewAll ? "#fff" : C.muted }}>我的{investOwn}%</button>
        </div>}</div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 3 }}>
-       <span style={{ fontSize: 9.5, color: C.muted }}>净现金流 Net CF</span>
+       <span style={{ fontSize: 10.5, color: C.muted, whiteSpace: "nowrap" }}>净现金流</span>
        <span style={{ fontSize: 18, fontWeight: 800, color: ncfColor }}>{fmtMoney(netCFVal)}</span>
-       <span style={{ fontSize: 9.5, color: C.muted }}>/{rentPeriod === "yr" ? "年" : "月"}</span></div></div>
-     <div style={{ background: "#fff", borderRadius: 8, border: "1px solid " + C.border + "80", padding: "6px 4px 2px", position: "relative" }}>
+       <span style={{ fontSize: 10.5, color: C.muted }}>/{rentPeriod === "yr" ? "年" : "月"}</span></div></div>
+     <div style={{ background: "#fff", borderRadius: 0, border: "1px solid " + C.border + "80", padding: "6px 4px 2px", position: "relative" }}>
       {/* Y-axis gridlines - smart intervals */}
       {(() => {
        var range = wfMax - wfMin;
@@ -1693,8 +1718,8 @@ return (
         if (yPct >= -2 && yPct <= usableH + 2) lines.push({ val: gv, px: yPct });}
        return lines.map(function(line, li) {
         var isZero = line.val === 0;
-        return <div key={li} style={{ position: "absolute", left: 30, right: 4, bottom: 18 + line.px, height: 0, borderTop: isZero ? "2px dashed #616161" : "1px dashed #E0E0E0", zIndex: isZero ? 5 : 0 }}>
-         <span style={{ position: "absolute", left: -28, top: -6, fontSize: 6.5, color: isZero ? "#424242" : "#9E9E9E", fontWeight: isZero ? 700 : 500, width: 24, textAlign: "right" }}>{fmtMoney(line.val)}</span>
+        return <div key={li} style={{ position: "absolute", left: 30, right: 4, bottom: 18 + line.px, height: 0, borderTop: isZero ? "2px dashed #5A5A5A" : "1px dashed #DFDFDF", zIndex: isZero ? 5 : 0 }}>
+         <span style={{ position: "absolute", left: -28, top: -6, fontSize: 8, color: isZero ? "#333333" : "#727272", fontWeight: isZero ? 700 : 500, width: 24, textAlign: "right" }}>{fmtMoney(line.val)}</span>
         </div>;});
       })()}
       <div style={{ display: "flex", gap: 0, height: barH, position: "relative", marginLeft: 28 }}>
@@ -1716,7 +1741,7 @@ return (
            left: isT ? 2 : 3, right: isT ? 2 : 3,
            bottom: 18 + bot, height: h,
            background: bc + (isT ? "30" : "20"),
-           borderRadius: 2,
+           borderRadius: 0,
            border: "1px solid " + bc + "50",
            zIndex: 2,
            boxSizing: "border-box",
@@ -1724,9 +1749,9 @@ return (
            {h >= 18 && <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ fontSize: h > 30 ? 9 : h > 22 ? 7.5 : 6.5, fontWeight: 700, color: bc }}>{valText}</span>
            </div>}</div>
-          {thinBar && <div style={{ position: "absolute", left: 0, right: 0, bottom: 18 + bot + h + 2, textAlign: "center", fontSize: 7, fontWeight: 700, color: bc, zIndex: 3, whiteSpace: "nowrap" }}>{valText}</div>}
-          {!thinBar && <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", bottom: 18 + bot + h + 1, fontSize: 6, fontWeight: 600, color: "#9E9E9E", zIndex: 3, whiteSpace: "nowrap" }}>{pct}%</div>}
-          <div style={{ position: "absolute", bottom: 2, left: 0, right: 0, textAlign: "center", fontSize: 7.5, fontWeight: isT ? 700 : 500, color: isT ? bc : "#616161", lineHeight: 1 }}>{item.name}</div></div>
+          {thinBar && <div style={{ position: "absolute", left: 0, right: 0, bottom: 18 + bot + h + 2, textAlign: "center", fontSize: 8.5, fontWeight: 700, color: bc, zIndex: 3, whiteSpace: "nowrap" }}>{valText}</div>}
+          {!thinBar && <div style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", bottom: 18 + bot + h + 1, fontSize: 7.5, fontWeight: 600, color: "#727272", zIndex: 3, whiteSpace: "nowrap" }}>{pct}%</div>}
+          <div style={{ position: "absolute", bottom: 2, left: 0, right: 0, textAlign: "center", fontSize: 9, fontWeight: isT ? 700 : 500, color: isT ? bc : "#5A5A5A", lineHeight: 1 }}>{item.name}</div></div>
         );
        })}</div></div>
      {/* Expense slider below waterfall */}
@@ -1734,9 +1759,9 @@ return (
       {/* Toggle: 快速估算 vs 自定义 */}
       <div style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: 2 }}>
        <span style={{ fontSize: 10, fontWeight: 700, color: C.sub, marginRight: 6 }}>物业运营费 OpEx</span>
-       <div style={{ display: "flex", borderRadius: 6, overflow: "hidden", border: "1px solid " + C.border, height: 22 }}>
-        <button onClick={function() { if (expIdx === 4) setExpIdx(3); }} style={{ padding: "0 8px", height: "100%", cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: "none", background: expIdx !== 4 ? C.accent : "transparent", color: expIdx !== 4 ? "#fff" : C.muted }}>快速估算 Quick</button>
-        <button onClick={function() { setExpIdx(4); }} style={{ padding: "0 8px", height: "100%", cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: "none", background: expIdx === 4 ? C.blue : "transparent", color: expIdx === 4 ? "#fff" : C.muted }}>自定义 Custom</button>
+       <div style={{ display: "flex", borderRadius: 0, overflow: "hidden", border: "1px solid " + C.border, height: 22 }}>
+        <button onClick={function() { if (expIdx === 4) setExpIdx(3); }} style={{ padding: "0 8px", height: "100%", cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, border: "none", background: expIdx !== 4 ? C.accent : "transparent", color: expIdx !== 4 ? "#fff" : C.muted }}>快速估算 Quick</button>
+        <button onClick={function() { setExpIdx(4); }} style={{ padding: "0 8px", height: "100%", cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, border: "none", background: expIdx === 4 ? C.blue : "transparent", color: expIdx === 4 ? "#fff" : C.muted }}>自定义 Custom</button>
        </div>
        <div style={{ flex: 1 }}></div>
        <span style={{ fontSize: 16, fontWeight: 800, color: expColor }}>{isCustomExp ? Math.round(customRatio*100) : sliderVal}%</span></div>
@@ -1745,16 +1770,16 @@ return (
        <div>
         <input type="range" min={20} max={60} step={1} value={sliderVal} onChange={e => handleExpSlider(e.target.value)} style={{ width: "100%", accentColor: expColor, cursor: "pointer", height: 14, margin: 0 }} />
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 1 }}>
-         <span style={{ fontSize: 7, color: C.muted }}>20% 租客全包(NNN)</span>
-         <span style={{ fontSize: 9, fontWeight: 600, color: expColor }}>{expLabel}</span>
-         <span style={{ fontSize: 7, color: C.muted }}>60% 房东全包</span></div></div>
+         <span style={{ fontSize: 8.5, color: C.muted }}>20% 租客全包(NNN)</span>
+         <span style={{ fontSize: 10, fontWeight: 600, color: expColor }}>{expLabel}</span>
+         <span style={{ fontSize: 8.5, color: C.muted }}>60% 房东全包</span></div></div>
       )}</div>
      {expIdx === 4 && (() => {
       const isYr = rentPeriod === "yr";
       const mul = isYr ? 12 : 1;
       const pSfx = isYr ? "/年" : "/月";
       const mkOpts = (max, step) => Array.from({length: Math.floor(max/step)+1}, (_, i) => i*step);
-      const selStyle = { width: "100%", height: 24, fontSize: 10, fontWeight: 600, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 6, background: "#fff", color: C.text, padding: "0 4px", cursor: "pointer", boxSizing: "border-box" };
+      const selStyle = { width: "100%", height: 24, fontSize: 10, fontWeight: 600, fontFamily: "inherit", border: "1px solid " + C.border, borderRadius: 0, background: "#fff", color: C.text, padding: "0 4px", cursor: "pointer", boxSizing: "border-box" };
       const items = [
        ["空置 Vacancy", vacancyPct, setVacancyPct, mkOpts(30,1).map(v=>({v:String(v),l:v+"%"}))],
        ["管理 Mgmt", mgmtPct, setMgmtPct, mkOpts(20,1).map(v=>({v:String(v),l:v+"%"}))],
@@ -1765,14 +1790,14 @@ return (
        ["其他"+pSfx, otherMo, setOtherMo, mkOpts(1000,50).map(v=>({v:String(v),l:fmtMoney(v*mul)}))],
       ];
       return (
-       <div style={{ background: C.blue + "06", border: "1px solid " + C.blue + "15", borderRadius: 8, padding: "6px 6px 4px", marginTop: 4 }}>
+       <div style={{ background: C.blue + "06", border: "1px solid " + C.blue + "15", borderRadius: 0, padding: "6px 6px 4px", marginTop: 4 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
-         <span style={{ fontSize: 8, fontWeight: 600, color: C.blue }}>逐项输入各费用</span>
-         <span style={{ fontSize: 9, fontWeight: 800, color: expColor }}>合计 {Math.round(customRatio*100)}%</span></div>
+         <span style={{ fontSize: 9.5, fontWeight: 600, color: C.blue }}>逐项输入各费用</span>
+         <span style={{ fontSize: 10, fontWeight: 800, color: expColor }}>合计 {Math.round(customRatio*100)}%</span></div>
         <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
          {items.map(([label, val, setter, opts]) => (
           <div key={label} style={{ flex: 1, minWidth: 46 }}>
-           <div style={{ fontSize: 7.5, color: C.sub, marginBottom: 1, fontWeight: 500 }}>{label}</div>
+           <div style={{ fontSize: 9, color: C.sub, marginBottom: 1, fontWeight: 500 }}>{label}</div>
            <select value={val} onChange={e => setter(e.target.value)} style={selStyle}>
             {opts.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
            </select></div>
@@ -1780,7 +1805,7 @@ return (
      })()}</div>);
     })()}
     {/* Valuation (left 50%) + Radar (right 50%) */}
-    <div style={{ background: "#FAF9F6", borderRadius: 12, padding: "6px 10px", marginBottom: 4, overflow: "hidden", borderLeft: "3px solid #5C6BC0" }}>
+    <div style={{ background: "#FFFFFF", borderRadius: 0, padding: "8px 2px 8px", marginBottom: 6, overflow: "hidden", borderTop: "1px solid #121212" }}>
       {(() => {
         const grm = grossRent > 0 ? sP / grossRent : 0;
         const dscr = totalAnnDS > 0 ? noi / totalAnnDS : 0;
@@ -1842,56 +1867,56 @@ return (
         const verdict = dealGrade + " " + dealDesc;
         const verdictColor = dealColor;
         const cr = parseFloat(capRate) || 5;
-        const crColor = cr <= 4 ? "#7B5EA7" : cr <= 5.5 ? C.blue : cr <= 7 ? C.green : cr <= 9 ? C.orange : C.red;
+        const crColor = cr <= 4 ? "#6B4E8C" : cr <= 5.5 ? C.blue : cr <= 7 ? C.green : cr <= 9 ? C.orange : C.red;
         const crLabel = cr <= 3 ? "A+ 顶级地段" : cr <= 4 ? "A 核心区" : cr <= 5 ? "A- 优质区" : cr <= 6 ? "B+ 成熟区" : cr <= 7 ? "B 热门区" : cr <= 8 ? "B- 成长区" : cr <= 9 ? "C+ 现金流型" : cr <= 10 ? "C 高收益区" : cr <= 11 ? "C- 高风险区" : "D 投机型";
         const priceDiscount = sP > 0 ? (impliedVal - sP) / sP : 0;
         const discColor = priceDiscount >= 0.10 ? C.green : priceDiscount >= 0 ? C.orange : C.red;
         const maxBar = Math.max(sP, impliedVal, grossRent * 10) * 1.05;
         const grossYield = sP > 0 ? grossRent / sP : 0;
         const gyColor = grossYield >= 0.10 ? C.green : grossYield >= 0.07 ? C.orange : C.red;
-        const grmColor = "#7B5EA7";
+        const grmColor = "#6B4E8C";
         return (
      <div>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 0 }}>
        <div style={FAC}>
         <span style={{ fontSize: 10.5, fontWeight: 700, color: C.sub }}>回报 & 尽调 Returns</span></div>
        <div style={FAC}>
-        <span style={{ fontSize: 8.5, color: C.muted }}>总评分</span>
+        <span style={{ fontSize: 10, color: C.muted }}>总评分</span>
         <span style={{ fontSize: 16, fontWeight: 800, color: verdictColor }}>{avgScore}</span></div></div>
       <div style={{ display: "flex", gap: 0, alignItems: "flex-start", overflow: "hidden" }}>
        {/* LEFT: Valuation — compact */}
        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-start", gap: 1, paddingRight: 4, paddingTop: 2, minWidth: 0, overflow: "hidden" }}>
         <div>
          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-          <span style={{ fontSize: 8.5, fontWeight: 700, color: C.sub }}>估值 Valuation</span>
-          <span style={{ fontSize: 8.5, fontWeight: 700, color: discColor }}>{priceDiscount >= 0 ? "估值高于成交价" + fmtPct(priceDiscount*100) + " ✓" : "成交价高于估值" + fmtPct(Math.abs(priceDiscount)*100)}</span>
+          <span style={{ fontSize: 10, fontWeight: 700, color: C.sub, whiteSpace: "nowrap" }}>估值</span>
+          <span style={{ fontSize: 10, fontWeight: 700, color: discColor }}>{priceDiscount >= 0 ? "估值高于成交价" + fmtPct(priceDiscount*100) + " ✓" : "成交价高于估值" + fmtPct(Math.abs(priceDiscount)*100)}</span>
          </div>
          <div style={{ marginBottom: 2 }}>
-          <div style={{ fontSize: 8.5, color: C.accent, fontWeight: 600, marginBottom: 1 }}>成交价 {fmtMoney(sP)}</div>
-          <div style={{ height: 14, background: C.border + "50", borderRadius: 3, overflow: "hidden" }}>
-           <div style={{ height: "100%", width: (maxBar > 0 ? sP / maxBar * 100 : 50) + "%", background: C.accent + "45", borderRadius: 3 }}></div></div></div>
+          <div style={{ fontSize: 10, color: C.accent, fontWeight: 600, marginBottom: 1 }}>成交价 {fmtMoney(sP)}</div>
+          <div style={{ height: 14, background: C.border + "50", borderRadius: 0, overflow: "hidden" }}>
+           <div style={{ height: "100%", width: (maxBar > 0 ? sP / maxBar * 100 : 50) + "%", background: C.accent + "45", borderRadius: 0}}></div></div></div>
          <div style={{ marginBottom: 2 }}>
-          <div style={{ fontSize: 8.5, color: C.blue, fontWeight: 600, marginBottom: 1 }}>现金流估价 {fmtMoney(impliedVal)}</div>
-          <div style={{ height: 14, background: C.border + "50", borderRadius: 3, overflow: "hidden" }}>
-           <div style={{ height: "100%", width: (maxBar > 0 ? impliedVal / maxBar * 100 : 50) + "%", background: C.blue + "45", borderRadius: 3 }}></div></div></div>
+          <div style={{ fontSize: 10, color: C.blue, fontWeight: 600, marginBottom: 1 }}>现金流估价 {fmtMoney(impliedVal)}</div>
+          <div style={{ height: 14, background: C.border + "50", borderRadius: 0, overflow: "hidden" }}>
+           <div style={{ height: "100%", width: (maxBar > 0 ? impliedVal / maxBar * 100 : 50) + "%", background: C.blue + "45", borderRadius: 0}}></div></div></div>
          <div style={{ marginBottom: 2 }}>
-          <div style={{ fontSize: 8.5, color: grmColor, fontWeight: 600, marginBottom: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>租金估价 {fmtMoney(grossRent * 10)} <span style={{ fontSize: 7, color: C.muted }}>GRM {grossRent > 0 && sP/grossRent < 100 ? (sP/grossRent).toFixed(1) : "—"}x</span></div>
-          <div style={{ height: 14, background: C.border + "50", borderRadius: 3, overflow: "hidden" }}>
-           <div style={{ height: "100%", width: (maxBar > 0 ? grossRent * 10 / maxBar * 100 : 50) + "%", background: grmColor + "40", borderRadius: 3 }}></div></div></div></div>
-        <div style={{ fontSize: 6.5, color: C.muted, marginTop: 1 }}>6项均分 · 灰虚线=基准</div>
+          <div style={{ fontSize: 10, color: grmColor, fontWeight: 600, marginBottom: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>租金估价 {fmtMoney(grossRent * 10)} <span style={{ fontSize: 8.5, color: C.muted }}>GRM {grossRent > 0 && sP/grossRent < 100 ? (sP/grossRent).toFixed(1) : "—"}x</span></div>
+          <div style={{ height: 14, background: C.border + "50", borderRadius: 0, overflow: "hidden" }}>
+           <div style={{ height: "100%", width: (maxBar > 0 ? grossRent * 10 / maxBar * 100 : 50) + "%", background: grmColor + "40", borderRadius: 0}}></div></div></div></div>
+        <div style={{ fontSize: 8, color: C.muted, marginTop: 1 }}>6项均分 · 灰虚线=基准</div>
         <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 1 }}>
-         <span style={{ fontSize: 7, color: C.muted, flexShrink: 0 }}>Cap</span>
+         <span style={{ fontSize: 8.5, color: C.muted, flexShrink: 0 }}>Cap</span>
          <input type="range" min={2} max={12} step={0.5} value={capRate} onChange={e => setCapRate(e.target.value)} style={{ flex: 1, accentColor: crColor, cursor: "pointer", height: 8, margin: 0 }} />
-         <span style={{ fontSize: 9, fontWeight: 800, color: crColor, flexShrink: 0 }}>{cr}%</span>
-         <span style={{ fontSize: 7, fontWeight: 600, color: crColor, flexShrink: 0 }}>{crLabel}</span></div>
+         <span style={{ fontSize: 10, fontWeight: 800, color: crColor, flexShrink: 0 }}>{cr}%</span>
+         <span style={{ fontSize: 8.5, fontWeight: 600, color: crColor, flexShrink: 0 }}>{crLabel}</span></div>
         {/* Cap scale visual */}
         <div style={{ marginTop: 3 }}>
-         <div style={{ display: "flex", height: 6, borderRadius: 3, overflow: "hidden", marginBottom: 2 }}>
-          <div style={{ flex: 3, background: "linear-gradient(90deg, #7B5EA7, #4A7FA5)" }}></div>
-          <div style={{ flex: 2, background: "linear-gradient(90deg, #4A7FA5, #4A7C59)" }}></div>
-          <div style={{ flex: 2, background: "linear-gradient(90deg, #4A7C59, #C4956A)" }}></div>
-          <div style={{ flex: 3, background: "linear-gradient(90deg, #C4956A, #C62828)" }}></div></div>
-         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 6, color: C.muted }}>
+         <div style={{ display: "flex", height: 6, borderRadius: 0, overflow: "hidden", marginBottom: 2 }}>
+          <div style={{ flex: 3, background: "#326891" }}></div>
+          <div style={{ flex: 2, background: "#2A7A4B" }}></div>
+          <div style={{ flex: 2, background: "#8A6D1F" }}></div>
+          <div style={{ flex: 3, background: "#B8312F" }}></div></div>
+         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 7.5, color: C.muted }}>
           <span>2% 核心</span>
           <span>5% 优质</span>
           <span>8% 现金流</span>
@@ -1900,7 +1925,7 @@ return (
           var actualCR = sP > 0 ? noi / sP : 0;
           var diff = actualCR - cr / 100;
           return actualCR > 0 ? (
-           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 2, fontSize: 7 }}>
+           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 2, fontSize: 8.5 }}>
             <span style={{ color: C.muted }}>实际Cap <b style={{ color: crColor }}>{(actualCR*100).toFixed(1)}%</b></span>
             <span style={{ color: diff >= 0 ? C.green : C.red, fontWeight: 700 }}>{diff >= 0 ? "高于" : "低于"}设定 {Math.abs(diff*100).toFixed(1)}%</span></div>
           ) : null;
@@ -1912,7 +1937,7 @@ return (
           <PolarGrid stroke={C.border} />
           <PolarAngleAxis dataKey="metric" tick={renderTick} />
           <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-          <Radar dataKey="benchmark" stroke="#B0BEC5" fill="#B0BEC5" fillOpacity={0.10} strokeWidth={1} strokeDasharray="4 3" />
+          <Radar dataKey="benchmark" stroke="#999999" fill="#999999" fillOpacity={0.10} strokeWidth={1} strokeDasharray="4 3" />
           <Radar dataKey="you" stroke={verdictColor} fill={verdictColor} fillOpacity={0.20} strokeWidth={2.5} />
          </RadarChart>
         </ResponsiveContainer></div></div>
@@ -1922,7 +1947,7 @@ return (
   {/* ═══ HOME MODE ═══ */}
   {calcMode === "home" && <>
     {/* Home Overview Cards */}
-    <div style={{ background: "#FAF9F6", borderRadius: 12, padding: "6px 10px", marginBottom: 4, overflow: "hidden", borderLeft: "3px solid #D4A853" }}>
+    <div style={{ background: "#FFFFFF", borderRadius: 0, padding: "8px 2px 8px", marginBottom: 6, overflow: "hidden", borderTop: "1px solid #121212" }}>
       {(() => {
         const hSP = parseFloat(homeSaleP) || 0;
         const hLP = parseFloat(homeListP) || 0;
@@ -1956,14 +1981,14 @@ return (
         const isYr = rentPeriod === "yr";
         const mul = isYr ? 12 : 1;
         const costItems = [
-     hPI > 0 && { l: "月供", v: hPI, c: "#1565C0", xtra: modalXtra > 0 ? modalXtra : 0 },
-     hPmiMo > 0 && { l: "PMI", v: hPmiMo, c: "#AD1457" },
-     homePropType === "coop" && useCoopM > 0 && { l: "管理", v: useCoopM, c: "#4A148C", est: !pF(homeCoopMaint) },
-     homePropType !== "coop" && useTax > 0 && { l: "地税", v: useTax, c: "#0D47A1", est: !pF(homeTax) },
-     useIns > 0 && { l: "保险", v: useIns, c: "#00695C", est: !pF(homeInsurance) },
-     hHoa > 0 && { l: "HOA", v: hHoa, c: "#4A148C" },
-     useUtil > 0 && { l: "杂费", v: useUtil, c: "#E65100", est: !pF(homeUtils) },
-     homePropType !== "coop" && useMaint > 0 && { l: "维修", v: useMaint, c: "#546E7A", est: !pF(homeMaint) },
+     hPI > 0 && { l: "月供", v: hPI, c: "#326891", xtra: modalXtra > 0 ? modalXtra : 0 },
+     hPmiMo > 0 && { l: "PMI", v: hPmiMo, c: "#A8385F" },
+     homePropType === "coop" && useCoopM > 0 && { l: "管理", v: useCoopM, c: "#4A3563", est: !pF(homeCoopMaint) },
+     homePropType !== "coop" && useTax > 0 && { l: "地税", v: useTax, c: "#1A4B6E", est: !pF(homeTax) },
+     useIns > 0 && { l: "保险", v: useIns, c: "#1D5536", est: !pF(homeInsurance) },
+     hHoa > 0 && { l: "HOA", v: hHoa, c: "#4A3563" },
+     useUtil > 0 && { l: "杂费", v: useUtil, c: "#B35C1E", est: !pF(homeUtils) },
+     homePropType !== "coop" && useMaint > 0 && { l: "维修", v: useMaint, c: "#4F5B63", est: !pF(homeMaint) },
         ].filter(Boolean);
         const hasEstimates = costItems.some(function(x) { return x.est; });
         return (
@@ -1971,19 +1996,19 @@ return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
        <SHdr zh="自住房概览" en="Home Overview" />
        <div style={FAC}>
-        <span style={{ fontSize: 8, color: C.muted }}>持股</span>
-        <select value={homeOwn} onChange={function(e) { setHomeOwn(e.target.value); }} style={{ width: 48, height: 18, fontSize: 8, fontWeight: 700, fontFamily: "inherit", border: "none", borderRadius: 3, background: "#fff", color: C.accent, padding: "0 2px", cursor: "pointer" }}>
+        <span style={{ fontSize: 9.5, color: C.muted }}>持股</span>
+        <select value={homeOwn} onChange={function(e) { setHomeOwn(e.target.value); }} style={{ width: 48, height: 18, fontSize: 9.5, fontWeight: 700, fontFamily: "inherit", border: "none", borderRadius: 0, background: "#fff", color: C.accent, padding: "0 2px", cursor: "pointer" }}>
          {[25,50,60,70,80,90,100].map(function(v) { return <option key={v} value={String(v)}>{v}%</option>; })}
         </select></div></div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3, marginBottom: 4 }}>
        {[
-        ["当前市值", fmtMoney(hLP), "#1B5E20", "#E8F5E9"],
-        ["净资产", fmtMoney(hEquity * hOwn), hEquity >= 0 ? "#1B5E20" : "#B71C1C", hEquity >= 0 ? "#E8F5E9" : "#FFEBEE"],
-        [homeHasLoan && hPI > 0 ? (isYr?"年持有成本":"月持有成本") : "无房贷·" + (isYr?"年":"月") + "固定费", fmtMoney(hTotalMo*mul), homeHasLoan && hPI > 0 ? "#E65100" : "#2E7D32", homeHasLoan && hPI > 0 ? "#FFF3E0" : "#E8F5E9"],
-        ["总投入 TCI", fmtMoney(hTCI), "#5D4037", "#FFF8E1"],
+        ["当前市值", fmtMoney(hLP), "#1D5536", "#EDF4EF"],
+        ["净资产", fmtMoney(hEquity * hOwn), hEquity >= 0 ? "#1D5536" : "#8A1F1D", hEquity >= 0 ? "#FFFFFF" : "#F8ECEB"],
+        [homeHasLoan && hPI > 0 ? (isYr?"年持有成本":"月持有成本") : "无房贷·" + (isYr?"年":"月") + "固定费", fmtMoney(hTotalMo*mul), homeHasLoan && hPI > 0 ? "#B35C1E" : "#2A7A4B", homeHasLoan && hPI > 0 ? "#FFFFFF" : "#EDF4EF"],
+        ["总投入 TCI", fmtMoney(hTCI), "#4A3F38", "#F9F0E6"],
        ].map(function(item, i) { return (
-        <div key={i} style={{ background: item[3], borderRadius: 5, padding: "4px 6px" }}>
-         <div style={{ fontSize: 7, color: "#78909C" }}>{item[0]}</div>
+        <div key={i} style={{ background: item[3], borderRadius: 0, padding: "4px 6px" }}>
+         <div style={{ fontSize: 8.5, color: "#727272" }}>{item[0]}</div>
          <div style={{ fontSize: 11, fontWeight: 800, color: item[2] }}>{item[1]}</div></div>); })}
       </div>
       {/* Monthly Cost Breakdown */}
@@ -2006,11 +2031,11 @@ return (
        }).filter(Boolean);
        var projTotal = projItems.reduce(function(s, x) { return s + x.v; }, 0);
        var maxV = Math.max.apply(null, projItems.map(function(x) { return x.v; }));
-       return <div style={{ background: "#FAF9F6", borderRadius: 8, padding: "5px 8px", border: selRow ? "1px solid #1565C030" : "1px solid #E8E4DE" }}>
+       return <div style={{ background: "#F7F7F7", borderRadius: 0, padding: "5px 8px", border: selRow ? "1px solid #32689130" : "1px solid #DFDFDF" }}>
        {/* Cost bars */}
        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 }}>
-        <span style={{ fontSize: 8, fontWeight: 700, color: "#fff", background: selRow ? "#1565C0" : "#5D4037", borderRadius: 6, padding: "2px 8px" }}>{isYr ? "年" : "月"}持有成本{!homeHasLoan ? " · 无房贷" : ""}{yrsOut > 0 ? " +" + (pF(homeCostGrowth)||3) + "%×" + yrsOut + "yr" : ""}</span>
-        <span style={{ fontSize: 14, fontWeight: 800, color: "#BF360C" }}>{fmtMoney(projTotal * mul)}<span style={{ fontSize: 8, fontWeight: 500, color: "#90A4AE" }}>/{isYr ? "年" : "月"}</span></span>
+        <span style={{ fontSize: 9.5, fontWeight: 700, color: "#fff", background: selRow ? "#326891" : "#4A3F38", borderRadius: 0, padding: "2px 8px" }}>{isYr ? "年" : "月"}持有成本{!homeHasLoan ? " · 无房贷" : ""}{yrsOut > 0 ? " +" + (pF(homeCostGrowth)||3) + "%×" + yrsOut + "yr" : ""}</span>
+        <span style={{ fontSize: 14, fontWeight: 800, color: "#8F4418" }}>{fmtMoney(projTotal * mul)}<span style={{ fontSize: 9.5, fontWeight: 500, color: "#767676" }}>/{isYr ? "年" : "月"}</span></span>
        </div>
        {projItems.map(function(item, i) {
         var hasChange = item.changed;
@@ -2021,27 +2046,27 @@ return (
         var pct = projTotal > 0 ? (item.v / projTotal * 100).toFixed(0) : "";
         return (
         <div key={i} style={{ display: "flex", alignItems: "center", height: 17, gap: 3, marginBottom: 1 }}>
-          <span style={{ fontSize: 8, color: item.est ? "#BDBDBD" : item.c, width: 22, flexShrink: 0, overflow: "hidden", fontWeight: 700, whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{item.l}{item.est ? "*" : ""}</span>
+          <span style={{ fontSize: 9.5, color: item.est ? "#999999" : item.c, width: 30, flexShrink: 0, overflow: "hidden", fontWeight: 700, whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{item.l}{item.est ? "*" : ""}</span>
           <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 3, minWidth: 0 }}>
            <div style={{ position: "relative", height: 12, width: (hasChange ? projW : origW) + "%", minWidth: 4, flexShrink: 0 }}>
-            {hasChange && <div style={{ position: "absolute", top: 0, left: 0, width: (origW > 0 ? origW / projW * 100 : 100) + "%", height: 12, background: item.c + "12", borderRadius: 2, border: "1px dashed " + item.c + "25" }} />}
-            <div style={{ width: "100%", height: 12, background: item.c, borderRadius: 2, opacity: item.est ? 0.25 : hasChange ? 0.85 : 0.55 }} />
+            {hasChange && <div style={{ position: "absolute", top: 0, left: 0, width: (origW > 0 ? origW / projW * 100 : 100) + "%", height: 12, background: item.c + "12", borderRadius: 0, border: "1px dashed " + item.c + "25" }} />}
+            <div style={{ width: "100%", height: 12, background: item.c, borderRadius: 0, opacity: item.est ? 0.25 : hasChange ? 0.85 : 0.55 }} />
            </div>
-           <span style={{ fontSize: 8, fontWeight: 800, color: isPayoff ? "#2E7D32" : item.c, flexShrink: 0, whiteSpace: "nowrap" }}>{isPayoff ? "$0✓" : fmtMoney(displayVal * mul)}</span>
-           {pct && <span style={{ fontSize: 7, color: "#90A4AE", flexShrink: 0 }}>{pct}%</span>}
+           <span style={{ fontSize: 9.5, fontWeight: 800, color: isPayoff ? "#2A7A4B" : item.c, flexShrink: 0, whiteSpace: "nowrap" }}>{isPayoff ? "$0✓" : fmtMoney(displayVal * mul)}</span>
+           {pct && <span style={{ fontSize: 8.5, color: "#767676", flexShrink: 0 }}>{pct}%</span>}
           </div>
         </div>
        ); })}
-       {hasEstimates && <div style={{ fontSize: 6, color: "#9E9E9E", fontStyle: "italic" }}>* 估算</div>}
+       {hasEstimates && <div style={{ fontSize: 7.5, color: "#727272", fontStyle: "italic" }}>* 估算</div>}
        </div>;
       })()}</div>);
       })()}</div>
-    <div style={{ background: "#FAF9F6", borderRadius: 12, padding: "6px 10px", marginBottom: 4, overflow: "hidden", borderLeft: "3px solid #C9A94E" }}>
+    <div style={{ background: "#FFFFFF", borderRadius: 0, padding: "8px 2px 8px", marginBottom: 6, overflow: "hidden", borderTop: "1px solid #121212" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
         <SHdr zh={!homeHasLoan ? "房价增值预测" : modalXtra > 0 ? "房价与加速还贷" : "房价与贷款预测"} en="Projection" />
         <div style={FAC}>
-     {selSimIdx !== null && homeSim[selSimIdx] && <div onClick={() => setSelSimIdx(null)} style={{ background: "#1565C0", borderRadius: 8, padding: "2px 8px", fontSize: 8, fontWeight: 800, color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}>{homeSim[selSimIdx].calYr}年 <span style={{ opacity: 0.6, fontSize: 10 }}>✕</span></div>}
-     <div style={{ background: "#2E7D32", borderRadius: 8, padding: "2px 6px", fontSize: 7, fontWeight: 700, color: "#fff" }}>升值 ↑{appRate}%/年</div></div></div>
+     {selSimIdx !== null && homeSim[selSimIdx] && <div onClick={() => setSelSimIdx(null)} style={{ background: "#326891", borderRadius: 0, padding: "2px 8px", fontSize: 9.5, fontWeight: 800, color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}>{homeSim[selSimIdx].calYr}年 <span style={{ opacity: 0.6, fontSize: 10 }}>✕</span></div>}
+     <div style={{ background: "#2A7A4B", borderRadius: 0, padding: "2px 6px", fontSize: 8.5, fontWeight: 700, color: "#fff" }}>升值 ↑{appRate}%/年</div></div></div>
       {homeSim.length > 0 && (() => {
         const last = homeSim[homeSim.length - 1];
         var msPrepayOff = null, msBaseOff = null, msCrossover = null, msCrossPrepay = null;
@@ -2081,19 +2106,19 @@ return (
         return <>
      <div style={{ display: "flex", gap: 3, marginBottom: 4 }}>
       {[
-        { l: "🏠", n: "房价", v: sel.homeVal, c: "#5D4037", bg: "#FFF8E1" },
-        { l: "📈", n: "净值", v: sel.equity, c: "#1B5E20", bg: "#E8F5E9" },
+        { l: "", n: "房价", v: sel.homeVal, c: "#4A3F38", bg: "#FFFFFF" },
+        { l: "", n: "净值", v: sel.equity, c: "#1D5536", bg: "#FFFFFF" },
         homeHasLoan && (modalXtra > 0 && sel.debtBase > 0.01 && sel.debt !== sel.debtBase
-          ? { l: "⚡", n: "加速", v: sel.debt, c: "#E53935", bg: "#FFEBEE" }
-          : { l: "💳", n: "贷款", v: sel.debt, c: sel.debt > 0 ? "#B71C1C" : "#1B5E20", bg: sel.debt > 0 ? "#FFEBEE" : "#E8F5E9" }),
-        homeHasLoan && sel.cPI > 0 && { l: "💰", n: "月供", v: sel.cPI, c: "#1565C0", bg: "#E3F2FD" },
-        { l: "🏷", n: "固定", v: sel.cFixed, c: "#6A1B9A", bg: "#F3E5F5" },
-        !homeHasLoan && { l: "✅", n: "全款", v: sel.homeVal, c: "#1B5E20", bg: "#E8F5E9" },
-      ].filter(Boolean).map(function(r, i) { return <div key={i} style={{ flex: 1, background: r.bg, borderRadius: 8, padding: "4px 3px", textAlign: "center", minWidth: 0, cursor: "pointer", border: selSimIdx !== null ? "1px solid " + r.c + "25" : "1px solid transparent" }} onClick={() => setSelSimIdx(null)}>
-        <div style={{ fontSize: 7, color: r.c, fontWeight: 600 }}>{r.l}{r.n}</div>
+          ? { l: "", n: "加速", v: sel.debt, c: "#B8312F", bg: "#FFFFFF" }
+          : { l: "", n: "贷款", v: sel.debt, c: sel.debt > 0 ? "#8A1F1D" : "#1D5536", bg: sel.debt > 0 ? "#FFFFFF" : "#FFFFFF" }),
+        homeHasLoan && sel.cPI > 0 && { l: "", n: "月供", v: sel.cPI, c: "#326891", bg: "#FFFFFF" },
+        { l: "", n: "固定", v: sel.cFixed, c: "#5E3A7A", bg: "#FFFFFF" },
+        !homeHasLoan && { l: "✓", n: "全款", v: sel.homeVal, c: "#1D5536", bg: "#FFFFFF" },
+      ].filter(Boolean).map(function(r, i) { return <div key={i} style={{ flex: 1, background: r.bg, borderRadius: 0, padding: "4px 3px", textAlign: "center", minWidth: 0, cursor: "pointer", border: selSimIdx !== null ? "1px solid " + r.c + "25" : "1px solid transparent" }} onClick={() => setSelSimIdx(null)}>
+        <div style={{ fontSize: 8.5, color: r.c, fontWeight: 600 }}>{r.l}{r.n}</div>
         <div style={{ fontSize: 10, fontWeight: 800, color: r.c, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{fmtMoney(r.v)}</div></div>; })}
      </div>
-     <div style={{ background: C.surface, borderRadius: 6, border: "1px solid " + C.border, padding: "4px 4px 2px", position: "relative", touchAction: "none" }}
+     <div style={{ background: C.surface, borderRadius: 0, border: "1px solid " + C.border, padding: "4px 4px 2px", position: "relative", touchAction: "none" }}
        onPointerDown={function(e) {
          var el = e.currentTarget;
          var rect = el.getBoundingClientRect();
@@ -2112,26 +2137,26 @@ return (
        }}
      >
       <ResponsiveContainer width="100%" height={200}>
-       <ComposedChart data={homeSim} margin={{ top: 14, right: 4, left: -4, bottom: 18 }}>
-        <CartesianGrid strokeDasharray="2 2" stroke="#E8E4DE" />
-        <XAxis dataKey="calYr" tickFormatter={v => "'" + String(v).slice(-2)} tick={{ fill: C.muted, fontSize: 8 }} interval={Math.max(0, Math.ceil(homeSim.length / 7) - 1)} axisLine={{ stroke: C.border }} tickLine={false} />
-        <YAxis yAxisId="left" tickFormatter={v => fmtMoney(v)} tick={{ fill: C.muted, fontSize: 8 }} width={48} axisLine={false} tickLine={false} />
+       <ComposedChart data={homeSim} margin={{ top: 14, right: 4, left: 0, bottom: 18 }}>
+        <CartesianGrid strokeDasharray="2 2" stroke="#DFDFDF" />
+        <XAxis dataKey="calYr" tickFormatter={v => "'" + String(v).slice(-2)} tick={{ fill: C.muted, fontSize: 9.5 }} interval={Math.max(0, Math.ceil(homeSim.length / 7) - 1)} axisLine={{ stroke: C.border }} tickLine={false} />
+        <YAxis yAxisId="left" tickFormatter={v => fmtAxis(v)} tick={{ fill: C.muted, fontSize: 9.5 }} width={54} axisLine={false} tickLine={false} />
         <YAxis yAxisId="right" orientation="right" hide={true} />
-        {homeHasLoan && <Bar yAxisId="right" dataKey="cPI" stackId="cost" fill="#1565C0" fillOpacity={0.1} barSize={8} />}
-        <Bar yAxisId="right" dataKey="cFixed" stackId="cost" fill="#FF9800" fillOpacity={0.12} barSize={8} radius={[1,1,0,0]} />
-        {homeSim[0].held && <ReferenceArea yAxisId="left" x1={chartStart} x2={2026} fill="#9E9E9E" fillOpacity={0.18} />}
-        {homeSim[0].held && <ReferenceLine yAxisId="left" x={2026} stroke="#616161" strokeDasharray="3 2" strokeWidth={1} />}
-        {msCrossover && msCrossover > Math.max(2026, chartStart) && msCrossover <= chartEnd && <ReferenceArea yAxisId="left" x1={Math.max(2026, chartStart)} x2={modalXtra > 0 && msCrossPrepay ? msCrossPrepay : msCrossover} fill="#FFF3E0" fillOpacity={isFaded(msCrossover) ? 0.1 : 0.25} />}
-        {modalXtra > 0 && msCrossPrepay && msCrossPrepay <= chartEnd && <ReferenceLine yAxisId="left" x={msCrossPrepay} stroke="#E53935" strokeDasharray="3 2" strokeWidth={1} opacity={isFaded(msCrossPrepay) ? 0.25 : 1} />}
-        {msCrossover && msCrossover <= chartEnd && <ReferenceLine yAxisId="left" x={msCrossover} stroke={modalXtra > 0 ? "#FFCDD2" : "#E65100"} strokeDasharray="3 2" strokeWidth={1} opacity={isFaded(msCrossover) ? 0.25 : 1} />}
-        {msPrepayOff && modalXtra > 0 && msPrepayOff <= chartEnd && <ReferenceLine yAxisId="left" x={msPrepayOff} stroke="#E53935" strokeWidth={1.5} opacity={isFaded(msPrepayOff) ? 0.25 : 1} />}
-        {msPrepayOff && modalXtra > 0 && msBaseOff && msPrepayOff < msBaseOff && <ReferenceArea yAxisId="left" x1={msPrepayOff} x2={Math.min(msBaseOff, chartEnd)} fill="#E8F5E9" fillOpacity={isFaded(msPrepayOff) ? 0.1 : 0.25} />}
-        {msBaseOff && msBaseOff <= chartEnd && <ReferenceLine yAxisId="left" x={msBaseOff} stroke={modalXtra > 0 ? "#FFCDD2" : "#EF9A9A"} strokeDasharray="3 2" strokeWidth={1} opacity={isFaded(msBaseOff) ? 0.2 : 1} />}
-        {selSimIdx !== null && sel && <ReferenceLine yAxisId="left" x={sel.calYr} stroke="#1565C0" strokeWidth={1.5} strokeDasharray="2 2" />}
-        <Line yAxisId="left" dataKey="homeVal" stroke="#5D4037" dot={false} strokeWidth={2.5} />
-        <Line yAxisId="left" dataKey="equity" stroke="#2E7D32" dot={false} strokeWidth={2} />
-        {modalXtra > 0 && <Line yAxisId="left" dataKey="debtBase" stroke="#FFCDD2" dot={false} strokeWidth={2} strokeDasharray="6 3" />}
-        {homeHasLoan && <Line yAxisId="left" dataKey="debt" stroke={modalXtra > 0 ? "#E53935" : "#D32F2F"} dot={false} strokeWidth={modalXtra > 0 ? 2.5 : 2} />}
+        {homeHasLoan && <Bar yAxisId="right" dataKey="cPI" stackId="cost" fill="#326891" fillOpacity={0.1} barSize={8} />}
+        <Bar yAxisId="right" dataKey="cFixed" stackId="cost" fill="#D08A2E" fillOpacity={0.12} barSize={8} radius={[1,1,0,0]} />
+        {homeSim[0].held && <ReferenceArea yAxisId="left" x1={chartStart} x2={2026} fill="#727272" fillOpacity={0.18} />}
+        {homeSim[0].held && <ReferenceLine yAxisId="left" x={2026} stroke="#5A5A5A" strokeDasharray="3 2" strokeWidth={1} />}
+        {msCrossover && msCrossover > Math.max(2026, chartStart) && msCrossover <= chartEnd && <ReferenceArea yAxisId="left" x1={Math.max(2026, chartStart)} x2={modalXtra > 0 && msCrossPrepay ? msCrossPrepay : msCrossover} fill="#F9F0E6" fillOpacity={isFaded(msCrossover) ? 0.1 : 0.25} />}
+        {modalXtra > 0 && msCrossPrepay && msCrossPrepay <= chartEnd && <ReferenceLine yAxisId="left" x={msCrossPrepay} stroke="#B8312F" strokeDasharray="3 2" strokeWidth={1} opacity={isFaded(msCrossPrepay) ? 0.25 : 1} />}
+        {msCrossover && msCrossover <= chartEnd && <ReferenceLine yAxisId="left" x={msCrossover} stroke={modalXtra > 0 ? "#E8C4C2" : "#B35C1E"} strokeDasharray="3 2" strokeWidth={1} opacity={isFaded(msCrossover) ? 0.25 : 1} />}
+        {msPrepayOff && modalXtra > 0 && msPrepayOff <= chartEnd && <ReferenceLine yAxisId="left" x={msPrepayOff} stroke="#B8312F" strokeWidth={1.5} opacity={isFaded(msPrepayOff) ? 0.25 : 1} />}
+        {msPrepayOff && modalXtra > 0 && msBaseOff && msPrepayOff < msBaseOff && <ReferenceArea yAxisId="left" x1={msPrepayOff} x2={Math.min(msBaseOff, chartEnd)} fill="#EDF4EF" fillOpacity={isFaded(msPrepayOff) ? 0.1 : 0.25} />}
+        {msBaseOff && msBaseOff <= chartEnd && <ReferenceLine yAxisId="left" x={msBaseOff} stroke={modalXtra > 0 ? "#E8C4C2" : "#E8C4C2"} strokeDasharray="3 2" strokeWidth={1} opacity={isFaded(msBaseOff) ? 0.2 : 1} />}
+        {selSimIdx !== null && sel && <ReferenceLine yAxisId="left" x={sel.calYr} stroke="#326891" strokeWidth={1.5} strokeDasharray="2 2" />}
+        <Line yAxisId="left" dataKey="homeVal" stroke="#4A3F38" dot={false} strokeWidth={2.5} />
+        <Line yAxisId="left" dataKey="equity" stroke="#2A7A4B" dot={false} strokeWidth={2} />
+        {modalXtra > 0 && <Line yAxisId="left" dataKey="debtBase" stroke="#E8C4C2" dot={false} strokeWidth={2} strokeDasharray="6 3" />}
+        {homeHasLoan && <Line yAxisId="left" dataKey="debt" stroke={modalXtra > 0 ? "#B8312F" : "#A62B29"} dot={false} strokeWidth={modalXtra > 0 ? 2.5 : 2} />}
        </ComposedChart>
       </ResponsiveContainer>
       {/* Selected year label + dismiss — bottom of chart above x-axis */}
@@ -2139,7 +2164,7 @@ return (
         var rng = (chartEnd - chartStart) || 1;
         var pctX = (sel.calYr - chartStart) / rng;
         var leftCalc = "calc(48px + (100% - 56px) * " + pctX + ")";
-        return <div onClick={() => setSelSimIdx(null)} style={{ position: "absolute", bottom: 28, left: leftCalc, transform: "translateX(-50%)", zIndex: 10, display: "flex", alignItems: "center", gap: 2, background: "#1565C0", borderRadius: 10, padding: "2px 8px 2px 10px", cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.3)", whiteSpace: "nowrap" }}>
+        return <div onClick={() => setSelSimIdx(null)} style={{ position: "absolute", bottom: 28, left: leftCalc, transform: "translateX(-50%)", zIndex: 10, display: "flex", alignItems: "center", gap: 2, background: "#326891", borderRadius: 0, padding: "2px 8px 2px 10px", cursor: "pointer", boxShadow: "none", whiteSpace: "nowrap" }}>
           <span style={{ fontSize: 10, fontWeight: 800, color: "#fff" }}>{sel.calYr}</span>
           <span style={{ fontSize: 11, fontWeight: 700, color: "#fff", opacity: 0.6 }}>✕</span>
         </div>;
@@ -2148,11 +2173,11 @@ return (
       {(() => {
         var range = chartEnd - chartStart || 1;
         var rawLabels = [];
-        if (homeSim[0].held) rawLabels.push({ yr: 2026, text: "📍当前", color: "#616161", bg: "#fff" });
-        if (modalXtra > 0 && msCrossPrepay && msCrossPrepay <= chartEnd) rawLabels.push({ yr: msCrossPrepay, text: "⚡本>息", color: "#E53935", bg: "#FFEBEE" });
-        if (msCrossover && msCrossover <= chartEnd) rawLabels.push({ yr: msCrossover, text: modalXtra > 0 ? "原本>息" : "📐本>息", color: modalXtra > 0 ? "#BDBDBD" : "#E65100", bg: modalXtra > 0 ? "#f5f5f5" : "#FFF3E0" });
-        if (msPrepayOff && modalXtra > 0 && msPrepayOff <= chartEnd) rawLabels.push({ yr: msPrepayOff, text: "✅还清", color: "#E53935", bg: "#FFEBEE" });
-        if (msBaseOff && msBaseOff <= chartEnd) rawLabels.push({ yr: msBaseOff, text: modalXtra > 0 ? "原" + homeLoanYrs + "yr" : "🏁" + homeLoanYrs + "yr", color: modalXtra > 0 ? "#BDBDBD" : "#EF9A9A", bg: modalXtra > 0 ? "#f5f5f5" : "#FCE4EC" });
+        if (homeSim[0].held) rawLabels.push({ yr: 2026, text: "当前", color: "#5A5A5A", bg: "#fff" });
+        if (modalXtra > 0 && msCrossPrepay && msCrossPrepay <= chartEnd) rawLabels.push({ yr: msCrossPrepay, text: "本>息", color: "#B8312F", bg: "#FFFFFF" });
+        if (msCrossover && msCrossover <= chartEnd) rawLabels.push({ yr: msCrossover, text: modalXtra > 0 ? "原本>息" : "本>息", color: modalXtra > 0 ? "#999999" : "#B35C1E", bg: modalXtra > 0 ? "#F4F4F4" : "#FFFFFF" });
+        if (msPrepayOff && modalXtra > 0 && msPrepayOff <= chartEnd) rawLabels.push({ yr: msPrepayOff, text: "✓还清", color: "#B8312F", bg: "#FFFFFF" });
+        if (msBaseOff && msBaseOff <= chartEnd) rawLabels.push({ yr: msBaseOff, text: modalXtra > 0 ? "原" + homeLoanYrs + "yr" : "" + homeLoanYrs + "yr", color: modalXtra > 0 ? "#999999" : "#E8C4C2", bg: modalXtra > 0 ? "#F4F4F4" : "#FFFFFF" });
         rawLabels.sort(function(a, b) { return a.yr - b.yr; });
         var occupied = [];
         if (selSimIdx !== null) {
@@ -2178,37 +2203,37 @@ return (
           }
           occupied.push({ pct: leftPct, slot: useBottom ? 1 : 0 });
           return <div key={lb.text} style={{ position: "absolute", [useBottom ? "bottom" : "top"]: useBottom ? 20 : 2, left: leftCalc, transform: "translateX(-50%)", pointerEvents: "none", zIndex: 2 }}>
-            <div style={{ fontSize: 7, fontWeight: 700, color: faded ? "#ccc" : lb.color, background: faded ? "#f5f5f5" : lb.bg, borderRadius: 6, padding: "1px 5px", whiteSpace: "nowrap", border: "1px solid " + (faded ? "#e0e0e0" : lb.color + "30"), boxShadow: faded ? "none" : "0 1px 3px " + lb.color + "20" }}>{lb.text}</div></div>;
+            <div style={{ fontSize: 8.5, fontWeight: 700, color: faded ? "#CCCCCC" : lb.color, background: faded ? "#F4F4F4" : lb.bg, borderRadius: 0, padding: "1px 5px", whiteSpace: "nowrap", border: "1px solid " + (faded ? "#DFDFDF" : lb.color + "30"), boxShadow: "none"}}>{lb.text}</div></div>;
         });
       })()}
       <div style={{ position: "absolute", bottom: 4, left: 4, right: 4, display: "flex", alignItems: "center", gap: 0 }}>
        <div style={{ width: 44, flexShrink: 0, textAlign: "right", paddingRight: 4 }}>
-        <span style={{ fontSize: 9, fontWeight: 800, color: "#5D4037" }}>{wYears}年</span>
+        <span style={{ fontSize: 10, fontWeight: 800, color: "#4A3F38" }}>{wYears}年</span>
        </div>
        <div style={{ flex: 1, position: "relative", height: 14 }}>
         {/* Gray unfilled track */}
-        <div style={{ position: "absolute", top: 5, left: 0, right: 0, height: 4, borderRadius: 2, background: "#E0E0E0" }}></div>
+        <div style={{ position: "absolute", top: 5, left: 0, right: 0, height: 4, borderRadius: 0, background: "#DFDFDF" }}></div>
         {/* Filled track - green to orange as years increase */}
         {(() => {
           var pct = (parseInt(wYears) - 5) / 45 * 100;
-          var filledColor = parseInt(wYears) <= 15 ? "#43A047" : parseInt(wYears) <= 25 ? "#F9A825" : parseInt(wYears) <= 35 ? "#EF6C00" : "#D32F2F";
-          return <div style={{ position: "absolute", top: 5, left: 0, width: pct + "%", height: 4, borderRadius: 2, background: filledColor, transition: "width 0.1s, background 0.3s" }}></div>;
+          var filledColor = parseInt(wYears) <= 15 ? "#4E9A6A" : parseInt(wYears) <= 25 ? "#A88A3A" : parseInt(wYears) <= 35 ? "#B35C1E" : "#A62B29";
+          return <div style={{ position: "absolute", top: 5, left: 0, width: pct + "%", height: 4, borderRadius: 0, background: filledColor, transition: "width 0.1s, background 0.3s" }}></div>;
         })()}
         <input type="range" min={5} max={50} step={1} value={wYears} onChange={e => setWYears(e.target.value)} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: 14, opacity: 0, cursor: "pointer", margin: 0 }} />
-        <div style={{ position: "absolute", top: 2, left: "calc(" + ((parseInt(wYears) - 5) / 45 * 100) + "% - 5px)", width: 10, height: 10, borderRadius: 5, background: "#fff", border: "2px solid #5D4037", boxShadow: "0 1px 3px rgba(0,0,0,0.2)", pointerEvents: "none", transition: "left 0.1s" }}></div>
+        <div style={{ position: "absolute", top: 2, left: "calc(" + ((parseInt(wYears) - 5) / 45 * 100) + "% - 5px)", width: 10, height: 10, borderRadius: 0, background: "#fff", border: "2px solid #4A3F38", boxShadow: "none", pointerEvents: "none", transition: "left 0.1s" }}></div>
        </div>
       </div>
       {/* Legend overlay inside chart right */}
       </div>
-     <div style={{ display: "flex", gap: 3, fontSize: 6.5, justifyContent: "center", marginBottom: 2, flexWrap: "wrap", color: "#90A4AE" }}>
+     <div style={{ display: "flex", gap: 3, fontSize: 8, justifyContent: "center", marginBottom: 2, flexWrap: "wrap", color: "#767676" }}>
         {homeSim[0].held && <span>▒持有</span>}
-        <span><span style={{ color: "#5D4037" }}>■</span>房价</span>
-        <span><span style={{ color: "#2E7D32" }}>■</span>净资产</span>
-        <span><span style={{ color: "#D32F2F" }}>━</span>贷款</span>
-        {modalXtra > 0 && <span><span style={{ color: "#FFCDD2" }}>╌</span>原供</span>}
-        <span><span style={{ color: "#E53935", opacity: 0.3 }}>█</span>P&I</span>
-        <span><span style={{ color: "#FF9800", opacity: 0.3 }}>█</span>固定</span>
-        {msCrossover && msCrossover <= chartEnd && <span><span style={{ color: "#E65100" }}>┊</span>本&gt;息</span>}
+        <span><span style={{ color: "#4A3F38" }}>■</span>房价</span>
+        <span><span style={{ color: "#2A7A4B" }}>■</span>净资产</span>
+        <span><span style={{ color: "#A62B29" }}>━</span>贷款</span>
+        {modalXtra > 0 && <span><span style={{ color: "#E8C4C2" }}>╌</span>原供</span>}
+        <span><span style={{ color: "#B8312F", opacity: 0.3 }}>█</span>P&I</span>
+        <span><span style={{ color: "#D08A2E", opacity: 0.3 }}>█</span>固定</span>
+        {msCrossover && msCrossover <= chartEnd && <span><span style={{ color: "#B35C1E" }}>┊</span>本&gt;息</span>}
       </div>
         </>;
       })()}</div>
@@ -2227,32 +2252,32 @@ return (
       for (var mm2 = 0; mm2 < hN2 - heldMo && balB > 0.01; mm2++) { var i1 = balB * hAR2; balB = Math.max(0, balB - Math.max(0, hPI2 - i1)); intB2 += i1; moBase = mm2 + 1; }
       for (var mm3 = 0; mm3 < hN2 - heldMo && balP > 0.01; mm3++) { var i2 = balP * hAR2; balP = Math.max(0, balP - Math.max(0, hPI2 - i2) - modalXtra); intP2 += i2; moPrep = mm3 + 1; }
       var moSaved = moBase - moPrep, intSaved = intB2 - intP2;
-      return <div style={{ background: "#FAF9F6", borderRadius: 10, padding: "6px 10px", marginBottom: 4, borderLeft: "3px solid #1565C0" }}>
-        <div style={{ fontSize: 9, fontWeight: 700, color: "#1565C0", marginBottom: 4 }}>📋 提前还贷模拟</div>
-        {heldMo > 0 && <div style={{ display: "flex", gap: 6, marginBottom: 4, padding: "3px 6px", background: "#F5F5F5", borderRadius: 4 }}>
-     <span style={{ fontSize: 7.5, color: "#78909C" }}>已还 <b style={{ color: "#2E7D32" }}>{Math.floor(heldMo/12)}年{heldMo%12}月</b></span>
-     <span style={{ fontSize: 7.5, color: "#78909C" }}>本金 <b style={{ color: "#1565C0" }}>{fmtMoney(paidPrin)}</b></span>
-     <span style={{ fontSize: 7.5, color: "#78909C" }}>利息 <b style={{ color: "#E65100" }}>{fmtMoney(paidInt)}</b></span>
-     <span style={{ fontSize: 7.5, color: "#78909C" }}>余额 <b style={{ color: "#5D4037" }}>{fmtMoney(bal2)}</b></span>
+      return <div style={{ background: "#F7F7F7", borderRadius: 0, padding: "8px 10px", marginBottom: 6, borderTop: "2px solid #121212" }}>
+        <div style={{ fontSize: 13, fontWeight: 700, fontFamily: C.serif, color: C.text, marginBottom: 4 }}>提前还贷模拟</div>
+        {heldMo > 0 && <div style={{ display: "flex", gap: 6, marginBottom: 4, padding: "3px 6px", background: "#F4F4F4", borderRadius: 0}}>
+     <span style={{ fontSize: 9, color: "#727272" }}>已还 <b style={{ color: "#2A7A4B" }}>{Math.floor(heldMo/12)}年{heldMo%12}月</b></span>
+     <span style={{ fontSize: 9, color: "#727272" }}>本金 <b style={{ color: "#326891" }}>{fmtMoney(paidPrin)}</b></span>
+     <span style={{ fontSize: 9, color: "#727272" }}>利息 <b style={{ color: "#B35C1E" }}>{fmtMoney(paidInt)}</b></span>
+     <span style={{ fontSize: 9, color: "#727272" }}>余额 <b style={{ color: "#4A3F38" }}>{fmtMoney(bal2)}</b></span>
         </div>}
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-     <span style={{ fontSize: 8, color: "#78909C", flexShrink: 0 }}>提前还贷</span>
-     <input type="range" min={0} max={5000} step={50} value={modalXtra} onChange={function(e) { setModalXtra(parseInt(e.target.value)); }} style={{ flex: 1, height: 12, accentColor: modalXtra > 0 ? "#1565C0" : "#BDBDBD", cursor: "pointer" }} />
-     <span style={{ fontSize: 10, fontWeight: 800, color: modalXtra > 0 ? "#1565C0" : "#9E9E9E", width: 50, textAlign: "right", flexShrink: 0 }}>{modalXtra > 0 ? "$"+modalXtra+"/月" : "无"}</span>
+     <span style={{ fontSize: 9.5, color: "#727272", flexShrink: 0 }}>提前还贷</span>
+     <input type="range" min={0} max={5000} step={50} value={modalXtra} onChange={function(e) { setModalXtra(parseInt(e.target.value)); }} style={{ flex: 1, height: 12, accentColor: modalXtra > 0 ? "#326891" : "#999999", cursor: "pointer" }} />
+     <span style={{ fontSize: 10, fontWeight: 800, color: modalXtra > 0 ? "#326891" : "#727272", width: 50, textAlign: "right", flexShrink: 0 }}>{modalXtra > 0 ? "$"+modalXtra+"/月" : "无"}</span>
         </div>
         {modalXtra > 0 && <div style={{ display: "flex", gap: 3 }}>
      {[
-      { l: "原始还款", v: moToYrMo(moBase + heldMo), c: "#78909C", bg: "#F5F5F5" },
-      { l: "提前还清", v: moToYrMo(moPrep + heldMo), c: "#1565C0", bg: "#E3F2FD" },
-      { l: "节省时间", v: moSaved > 0 ? moToYrMo(moSaved) : "—", c: "#2E7D32", bg: "#E8F5E9" },
-      { l: "节省利息", v: intSaved > 0 ? fmtMoney(intSaved) : "—", c: "#2E7D32", bg: "#E8F5E9" },
-     ].map(function(s, si) { return <div key={si} style={{ flex: 1, background: s.bg, borderRadius: 8, padding: "5px 4px", textAlign: "center", border: "1px solid " + s.c + "20" }}>
-      <div style={{ fontSize: 7, color: "#78909C", fontWeight: 600 }}>{s.l}</div>
+      { l: "原始还款", v: moToYrMo(moBase + heldMo), c: "#727272", bg: "#F4F4F4" },
+      { l: "提前还清", v: moToYrMo(moPrep + heldMo), c: "#326891", bg: "#FFFFFF" },
+      { l: "节省时间", v: moSaved > 0 ? moToYrMo(moSaved) : "—", c: "#2A7A4B", bg: "#FFFFFF" },
+      { l: "节省利息", v: intSaved > 0 ? fmtMoney(intSaved) : "—", c: "#2A7A4B", bg: "#FFFFFF" },
+     ].map(function(s, si) { return <div key={si} style={{ flex: 1, background: s.bg, borderRadius: 0, padding: "5px 4px", textAlign: "center", border: "1px solid " + s.c + "20" }}>
+      <div style={{ fontSize: 8.5, color: "#727272", fontWeight: 600 }}>{s.l}</div>
       <div style={{ fontSize: 11, fontWeight: 800, color: s.c }}>{s.v}</div></div>; })}
         </div>}
         <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
-     <button onClick={() => setModal("prepay")} style={{ flex: 1, padding: "6px 0", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, background: "#fff", border: "1px solid #1565C0", color: "#1565C0" }}>📋 摊销时间表</button>
-     <button onClick={() => { setRptStep(0); setRptYear(String(2026 + Math.min(parseInt(wYears)||30, 20))); setRptPrepay(modalXtra); setModal("homeReport"); }} style={{ flex: 1, padding: "6px 0", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, background: "#1565C0", border: "1px solid #1565C0", color: "#fff" }}>📊 自住房报告</button>
+     <button onClick={() => setModal("prepay")} style={{ flex: 1, padding: "6px 0", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 700, background: "#fff", border: "1px solid #121212", color: "#121212" }}>摊销时间表</button>
+     <button onClick={() => { setRptStep(0); setRptYear(String(2026 + Math.min(parseInt(wYears)||30, 20))); setRptPrepay(modalXtra); setModal("homeReport"); }} style={{ flex: 1, padding: "6px 0", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, background: "#121212", border: "1px solid #121212", color: "#fff" }}>自住房报告</button>
         </div></div>;
     })()}
   </>}
@@ -2317,8 +2342,8 @@ return (
     const assets = [
       wantInvest && { l: "投资房"+investOwn+"%", v: invEquity*invOwn, c: C.blue },
       wantHome && { l: "自住"+homeOwn+"%", v: homeEquity*hmOwn, c: C.accent },
-      { l: retLabel, v: k401B, c: "#4A7FA5" },
-      { l: "股票", v: stockB, c: "#7B5EA7" },
+      { l: retLabel, v: k401B, c: "#6A93B3" },
+      { l: "股票", v: stockB, c: "#6B4E8C" },
       { l: "存款", v: bankB, c: C.green },
     ].filter(Boolean);
     const totalAssets = assets.reduce((s,a) => s+Math.max(0,a.v), 0);
@@ -2327,32 +2352,32 @@ return (
     const rRow = retireRow || {};
     return (
       <div style={{ marginBottom: 2 }}>
-        <div style={{ background: "linear-gradient(135deg,"+C.accent+"10 0%,"+C.green+"08 100%)", border: "1.5px solid "+C.accent+"30", borderRadius: 10, padding: "7px 8px", marginBottom: 2 }}>
+        <div style={{ background: C.inset, border: "none", borderTop: "2px solid " + C.rule, borderRadius: 0, padding: "7px 8px", marginBottom: 2 }}>
      <div style={{ display: "flex", alignItems: "center" }}>
       <div style={{ flex: 1, textAlign: "center" }}>
-       <div style={{ fontSize: 8.5, color: C.muted }}>当前净资产 · {uAge}岁</div>
+       <div style={{ fontSize: 10, color: C.muted }}>当前净资产 · {uAge}岁</div>
        <div style={{ fontSize: 20, fontWeight: 800, color: C.accent, letterSpacing: "-0.02em" }}>{fxM(totalNW)}</div>
-       <div style={{ fontSize: 7.5, color: C.muted, marginTop: 1 }}>被动 <b style={{ color: totalPassive>0?C.green:C.muted }}>{D(totalPassive)}{pfx}</b> · CoC <b style={{ color: cocColor }}>{fmtPct(coc*100)}</b></div>
-       {wantInvest && calc.cocNoDbt > coc && <div style={{ fontSize: 6.5, color: C.blue, marginTop: 1 }}>清贷后 <b>{D((noi/12)*invOwn)}{pfx}</b> (+{D((totalAnnDS/12)*invOwn)}{pfx})</div>}</div>
+       <div style={{ fontSize: 9, color: C.muted, marginTop: 1 }}>被动 <b style={{ color: totalPassive>0?C.green:C.muted }}>{D(totalPassive)}{pfx}</b> · CoC <b style={{ color: cocColor }}>{fmtPct(coc*100)}</b></div>
+       {wantInvest && calc.cocNoDbt > coc && <div style={{ fontSize: 8, color: C.blue, marginTop: 1 }}>清贷后 <b>{D((noi/12)*invOwn)}{pfx}</b> (+{D((totalAnnDS/12)*invOwn)}{pfx})</div>}</div>
       <div style={{ width: 1, height: 40, background: C.border, margin: "0 4px", flexShrink: 0 }} />
       <div style={{ flex: 1, textAlign: "center" }}>
-       <div style={{ fontSize: 8.5, color: freedomAge&&rAge>=freedomAge?C.green:C.accent }}>{rAge}岁退休</div>
+       <div style={{ fontSize: 10, color: freedomAge&&rAge>=freedomAge?C.green:C.accent }}>{rAge}岁退休</div>
        <div style={{ fontSize: 18, fontWeight: 800, color: freedomAge&&rAge>=freedomAge?C.green:C.accent, letterSpacing: "-0.02em" }}>{fxM(showNominal?(rRow.netWorth||0):(rRow.nwReal||rRow.netWorth||0))}</div>
-       <div style={{ fontSize: 7.5, color: C.muted, marginTop: 1 }}>{showNominal?"名义":"通胀"+inflRate+"%调整"} · 被动<b style={{ color: C.green }}>{D(rRow.monthlyTotalPsv||0)}{pfx}</b></div></div>
+       <div style={{ fontSize: 9, color: C.muted, marginTop: 1 }}>{showNominal?"名义":"通胀"+inflRate+"%调整"} · 被动<b style={{ color: C.green }}>{D(rRow.monthlyTotalPsv||0)}{pfx}</b></div></div>
       <div style={{ width: 1, height: 40, background: C.border, margin: "0 4px", flexShrink: 0 }} />
       <div style={{ flex: 1, textAlign: "center" }}>
-       <div style={{ fontSize: 8.5, color: "#5C6BC0" }}>{uAge+cmpYrs}岁 · 模拟终点</div>
-       <div style={{ fontSize: 18, fontWeight: 800, color: "#5C6BC0", letterSpacing: "-0.02em" }}>{lastW?fxM(showNominal?(lastW.netWorth||0):(lastW.nwReal||lastW.netWorth||0)):"—"}</div>
-       <div style={{ fontSize: 7.5, color: C.muted, marginTop: 1 }}>被动<b style={{ color: "#5C6BC0" }}>{lastW?D(lastW.monthlyTotalPsv||0):"—"}{pfx}</b>{lastW&&totalNW>0?<> · <b style={{ color: "#5C6BC0" }}>{(((showNominal?(lastW.netWorth||0):(lastW.nwReal||lastW.netWorth||0))/totalNW-1)*100).toFixed(0)}%</b></>:""}</div></div>
+       <div style={{ fontSize: 10, color: "#4F5D95" }}>{uAge+cmpYrs}岁 · 模拟终点</div>
+       <div style={{ fontSize: 18, fontWeight: 800, color: "#4F5D95", letterSpacing: "-0.02em" }}>{lastW?fxM(showNominal?(lastW.netWorth||0):(lastW.nwReal||lastW.netWorth||0)):"—"}</div>
+       <div style={{ fontSize: 9, color: C.muted, marginTop: 1 }}>被动<b style={{ color: "#4F5D95" }}>{lastW?D(lastW.monthlyTotalPsv||0):"—"}{pfx}</b>{lastW&&totalNW>0?<> · <b style={{ color: "#4F5D95" }}>{(((showNominal?(lastW.netWorth||0):(lastW.nwReal||lastW.netWorth||0))/totalNW-1)*100).toFixed(0)}%</b></>:""}</div></div>
      </div></div>
-        <div style={{ background: C.surface, border: "1.5px solid "+(freedomAge?C.green:C.border)+"50", borderRadius: 7, padding: "5px 8px", marginBottom: 2 }}>
+        <div style={{ background: C.surface, border: "1.5px solid "+(freedomAge?C.green:C.border)+"50", borderRadius: 0, padding: "5px 8px", marginBottom: 2 }}>
      <div style={{ display: "flex", gap: 3, alignItems: "center", marginBottom: 3 }}>
       {[["收入","income"],["净值","wealth"]].map(([lbl,m]) => (
-       <button key={m} onClick={() => setFfMode(m)} style={{ padding: "2px 5px", fontSize: 8, borderRadius: 3, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, whiteSpace: "nowrap", border: "1px solid "+(ffMode===m?C.green:C.borderIn), background: ffMode===m?C.green:"#fff", color: ffMode===m?"#fff":C.sub }}>{lbl}</button>
+       <button key={m} onClick={() => setFfMode(m)} style={{ padding: "2px 5px", fontSize: 9.5, borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontWeight: 600, whiteSpace: "nowrap", border: "1px solid "+(ffMode===m?C.green:C.borderIn), background: ffMode===m?C.green:"#fff", color: ffMode===m?"#fff":C.sub }}>{lbl}</button>
       ))}
-      <span style={{ fontSize: 7.5, color: C.orange, fontWeight: 600, whiteSpace: "nowrap" }}>税{effectiveTax}%</span>
-      <span style={{ fontSize: 8, fontWeight: 700, color: C.accent, whiteSpace: "nowrap" }}>{ffMode==="income"?D(totalPassive)+pfx:fxM(totalNW)}</span>
-      <span style={{ fontSize: 7, color: C.muted }}>→</span>
+      <span style={{ fontSize: 9, color: C.orange, fontWeight: 600, whiteSpace: "nowrap" }}>税{effectiveTax}%</span>
+      <span style={{ fontSize: 9.5, fontWeight: 700, color: C.accent, whiteSpace: "nowrap" }}>{ffMode==="income"?D(totalPassive)+pfx:fxM(totalNW)}</span>
+      <span style={{ fontSize: 8.5, color: C.muted }}>→</span>
       {ffMode === "income" ?
        <input type="range" min={2000} max={20000} step={500} value={parseInt(ffIncomeTgt)||10000} onChange={function(e) { setFfIncomeTgt(e.target.value); }} style={{ flex: 1, accentColor: C.green, cursor: "pointer", height: 8, margin: 0 }} /> :
        <input type="range" min={1000000} max={20000000} step={500000} value={parseInt(ffWealthTgt)||3000000} onChange={function(e) { setFfWealthTgt(e.target.value); }} style={{ flex: 1, accentColor: C.green, cursor: "pointer", height: 8, margin: 0 }} />
@@ -2360,90 +2385,90 @@ return (
       <span style={{ fontSize: 10, fontWeight: 800, color: C.green, whiteSpace: "nowrap" }}>{ffMode==="income"?D(parseFloat(ffIncomeTgt)||10000)+pfx:fxM(parseFloat(ffWealthTgt)||3000000)}</span>
      </div>
      <div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 3 }}>
-      <span style={{ fontSize: 10.5, fontWeight: 800, color: freedomAge?C.green:C.accent }}>🔥 {freedomAge?freedomAge+"岁FIRE":"未达成"}</span>
+      <span style={{ fontSize: 10.5, fontWeight: 800, color: freedomAge?C.green:C.accent }}>{freedomAge?freedomAge+"岁FIRE":"未达成"}</span>
       <div style={{ flex: 1 }}></div>
-      {freedomAge && <span style={{ fontSize: 8, color: C.green, background: C.green+"12", borderRadius: 3, padding: "1px 5px" }}>早{67-(freedomAge||67)}年</span>}
+      {freedomAge && <span style={{ fontSize: 9.5, color: C.green, background: C.green+"12", borderRadius: 0, padding: "1px 5px" }}>早{67-(freedomAge||67)}年</span>}
       <span style={{ fontSize: 11, fontWeight: 800, color: fireProgress>=1?C.green:C.orange }}>{(fireProgress*100).toFixed(0)}%</span></div>
      <div style={{ position: "relative" }}>
-      <div style={{ height: 14, background: C.border, borderRadius: 7, overflow: "hidden" }}>
-       <div style={{ height: "100%", width: (fireProgress*100)+"%", background: fireProgress>=1 ? "linear-gradient(90deg,"+C.green+",#43A047)" : "linear-gradient(90deg,"+C.blue+","+C.accent+")", borderRadius: 7, transition: "width 0.3s" }} />
+      <div style={{ height: 14, background: C.border, borderRadius: 0, overflow: "hidden" }}>
+       <div style={{ height: "100%", width: (fireProgress*100)+"%", background: fireProgress>=1 ? C.green : C.blue, borderRadius: 0, transition: "width 0.3s" }} />
       </div>
       {[25,50,75].map(m => (
        <div key={m} style={{ position: "absolute", left: m+"%", top: 0, width: 1, height: 14, background: "#fff8", zIndex: 1 }} />
       ))}
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
-       <span style={{ fontSize: 7.5, color: C.muted }}>0%</span>
-       <span style={{ fontSize: 7.5, color: fireProgress>=0.25?C.green:C.muted }}>25%</span>
-       <span style={{ fontSize: 7.5, color: fireProgress>=0.5?C.green:C.muted }}>50%</span>
-       <span style={{ fontSize: 7.5, color: fireProgress>=0.75?C.green:C.muted }}>75%</span>
-       <span style={{ fontSize: 7.5, color: fireProgress>=1?C.green:C.muted }}>100%</span></div></div>
+       <span style={{ fontSize: 9, color: C.muted }}>0%</span>
+       <span style={{ fontSize: 9, color: fireProgress>=0.25?C.green:C.muted }}>25%</span>
+       <span style={{ fontSize: 9, color: fireProgress>=0.5?C.green:C.muted }}>50%</span>
+       <span style={{ fontSize: 9, color: fireProgress>=0.75?C.green:C.muted }}>75%</span>
+       <span style={{ fontSize: 9, color: fireProgress>=1?C.green:C.muted }}>100%</span></div></div>
         </div>
-        <div style={{ background: C.bg, border: "1.5px solid "+(freedomAge?C.green:C.accent)+"30", borderRadius: 6, padding: "5px 8px", marginBottom: 2 }}>
+        <div style={{ background: C.bg, border: "1.5px solid "+(freedomAge?C.green:C.accent)+"30", borderRadius: 0, padding: "5px 8px", marginBottom: 2 }}>
      {(() => {
       var stage, stageColor, stageEmoji, stageNote;
       if (!freedomAge) {
-       stage = "尚需积累"; stageColor = "#9E9E9E"; stageEmoji = "⏳"; stageNote = "当前设定下无法达到FIRE · 请调整收入目标或储蓄率";
+       stage = "尚需积累"; stageColor = "#727272"; stageEmoji = ""; stageNote = "当前设定下无法达到FIRE · 请调整收入目标或储蓄率";
       } else if (rAge <= freedomAge - 5) {
-       stage = "激进退休"; stageColor = "#C62828"; stageEmoji = "⚡"; stageNote = "比FIRE早"+(freedomAge-rAge)+"年 · 存款可能不足 · 需额外收入补贴";
+       stage = "激进退休"; stageColor = "#9E2A27"; stageEmoji = ""; stageNote = "比FIRE早"+(freedomAge-rAge)+"年 · 存款可能不足 · 需额外收入补贴";
       } else if (rAge < freedomAge) {
-       stage = "轻退休"; stageColor = "#E65100"; stageEmoji = "🌤"; stageNote = "比FIRE早"+(freedomAge-rAge)+"年 · 需少量工作或兼职补贴";
+       stage = "轻退休"; stageColor = "#B35C1E"; stageEmoji = ""; stageNote = "比FIRE早"+(freedomAge-rAge)+"年 · 需少量工作或兼职补贴";
       } else if (rAge === freedomAge) {
-       stage = "FIRE 财务自由"; stageColor = "#2E7D32"; stageEmoji = "🔥"; stageNote = "被动收入完全覆盖支出 · 工作"+Math.max(0,rAge-uAge)+"年";
+       stage = "FIRE 财务自由"; stageColor = "#2A7A4B"; stageEmoji = ""; stageNote = "被动收入完全覆盖支出 · 工作"+Math.max(0,rAge-uAge)+"年";
       } else if (rAge <= freedomAge + 3) {
-       stage = "安全退休"; stageColor = "#00897B"; stageEmoji = "🛡"; stageNote = "比FIRE多积累"+(rAge-freedomAge)+"年 · 更充裕的安全边际";
+       stage = "安全退休"; stageColor = "#2B7A78"; stageEmoji = ""; stageNote = "比FIRE多积累"+(rAge-freedomAge)+"年 · 更充裕的安全边际";
       } else if (rAge < 67) {
-       stage = "充裕退休"; stageColor = "#1565C0"; stageEmoji = "💎"; stageNote = "超额积累"+(rAge-freedomAge)+"年 · 退休生活非常宽裕";
+       stage = "充裕退休"; stageColor = "#326891"; stageEmoji = ""; stageNote = "超额积累"+(rAge-freedomAge)+"年 · 退休生活非常宽裕";
       } else {
-       stage = "延迟退休"; stageColor = "#5C6BC0"; stageEmoji = "🏢"; stageNote = "工作至法定退休 · 最大化积累";}
+       stage = "延迟退休"; stageColor = "#4F5D95"; stageEmoji = ""; stageNote = "工作至法定退休 · 最大化积累";}
       return <div>
        <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3 }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
-         <span style={{ fontSize: 6, fontWeight: 600, color: "#fff", background: C.accent, borderRadius: 6, padding: "1px 5px", marginBottom: 1 }}>当前年龄</span>
-         <span style={{ fontSize: 18, fontWeight: 800, color: C.accent }}>{uAge}<span style={{ fontSize: 9, fontWeight: 600 }}>岁</span></span></div>
+         <span style={{ fontSize: 7.5, fontWeight: 600, color: "#fff", background: C.accent, borderRadius: 0, padding: "1px 5px", marginBottom: 1 }}>当前年龄</span>
+         <span style={{ fontSize: 18, fontWeight: 800, color: C.accent }}>{uAge}<span style={{ fontSize: 10, fontWeight: 600 }}>岁</span></span></div>
         <div style={{ width: 1, height: 20, background: C.border, flexShrink: 0 }} />
         <div style={{ flex: 1, minWidth: 0 }}>
          <div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 2 }}>
-          <span style={{ fontSize: 9, fontWeight: 700, color: stageColor, background: stageColor + "12", borderRadius: 4, padding: "1px 5px" }}>{stageEmoji} {stage}</span>
-          {freedomAge && freedomAge !== rAge && <span style={{ fontSize: 7, color: C.muted }}>FIRE={freedomAge}岁</span>}</div>
+          <span style={{ fontSize: 10, fontWeight: 700, color: stageColor, background: stageColor + "12", borderRadius: 0, padding: "1px 5px" }}>{stageEmoji} {stage}</span>
+          {freedomAge && freedomAge !== rAge && <span style={{ fontSize: 8.5, color: C.muted }}>FIRE={freedomAge}岁</span>}</div>
          {freedomAge ? <div>
-          <div style={{ fontSize: 7, color: C.muted, marginBottom: 1 }}>自选退休年龄</div>
+          <div style={{ fontSize: 8.5, color: C.muted, marginBottom: 1 }}>自选退休年龄</div>
           <input type="range" min={uAge+1} max={70} step={1} value={rAge} onChange={function(e) { var v = parseInt(e.target.value); setRetireAge(String(v)); setRetireManual(true); }} style={{ width: "100%", height: 14, accentColor: stageColor, cursor: "pointer" }} />
          </div> : null}</div>
-        {freedomAge && <span style={{ fontSize: 20, fontWeight: 800, color: stageColor, flexShrink: 0 }}>{rAge}<span style={{ fontSize: 9, fontWeight: 600 }}>岁</span></span>}</div>
-       <div style={{ fontSize: 7.5, color: stageColor, marginBottom: 2, opacity: 0.8 }}>{stageNote} · {rAge < (parseInt(ssClaimAge)||67) ? ssLabel+" "+ssClaimAge+"岁起" : "含"+ssLabel} · {rAge >= (parseInt(k401DrawAge)||60) ? retLabel+"可提取" : retLabel+" "+k401DrawAge+"岁起"}</div></div>;
+        {freedomAge && <span style={{ fontSize: 20, fontWeight: 800, color: stageColor, flexShrink: 0 }}>{rAge}<span style={{ fontSize: 10, fontWeight: 600 }}>岁</span></span>}</div>
+       <div style={{ fontSize: 9, color: stageColor, marginBottom: 2, opacity: 0.8 }}>{stageNote} · {rAge < (parseInt(ssClaimAge)||67) ? ssLabel+" "+ssClaimAge+"岁起" : "含"+ssLabel} · {rAge >= (parseInt(k401DrawAge)||60) ? retLabel+"可提取" : retLabel+" "+k401DrawAge+"岁起"}</div></div>;
      })()}</div>
         {wealthRows.length > 0 && (
-     <div style={{ background: C.surface, borderRadius: 6, border: "1px solid "+C.border, padding: "3px 0 0", marginBottom: 2 }}>
+     <div style={{ background: C.surface, borderRadius: 0, border: "1px solid "+C.border, padding: "3px 0 0", marginBottom: 2 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 6px 2px" }}>
-       <span style={{ fontSize: 7.5, fontWeight: 600, color: C.sub }}>{showInflAdj&&parseFloat(inflRate)>0?"橙=今日购买力":"蓝=积累 绿=退休"}{showIncomeLine?" · 灰柱=被动收入":""}{showStockComp?" · 紫=指数对比":""}</span>
+       <span style={{ fontSize: 9, fontWeight: 600, color: C.sub }}>{showInflAdj&&parseFloat(inflRate)>0?"橙=今日购买力":"蓝=积累 绿=退休"}{showIncomeLine?" · 灰柱=被动收入":""}{showStockComp?" · 紫=指数对比":""}</span>
        <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-        <label style={{ display: "flex", alignItems: "center", gap: 1, cursor: "pointer", fontSize: 7.5, color: C.muted }}><input type="checkbox" checked={showIncomeLine} onChange={function(e) { setShowIncomeLine(e.target.checked); }} style={{ accentColor: C.orange, cursor: "pointer", width: 8, height: 8 }} />收入</label>
-        <label style={{ display: "flex", alignItems: "center", gap: 1, cursor: "pointer", fontSize: 7.5, color: C.muted }}><input type="checkbox" checked={showStockComp} onChange={function(e) { setShowStockComp(e.target.checked); }} style={{ accentColor: "#7B5EA7", cursor: "pointer", width: 8, height: 8 }} />指数</label>
-        <div onClick={function() { if (showInflAdj) { setShowInflAdj(false); setShowNominal(false); } else { setShowInflAdj(true); } }} style={{ display: "flex", alignItems: "center", gap: 2, cursor: "pointer", padding: "1px 4px", borderRadius: 4, background: showInflAdj ? "#E65100" + "15" : "transparent", border: "0.5px solid " + (showInflAdj ? "#E65100" + "40" : C.border) }}>
-         <div style={{ width: 18, height: 10, borderRadius: 5, background: showInflAdj ? "#E65100" : "#BDBDBD", padding: 1, transition: "background 0.2s", flexShrink: 0 }}>
-          <div style={{ width: 8, height: 8, borderRadius: 4, background: "#fff", transform: showInflAdj ? "translateX(8px)" : "translateX(0)", transition: "transform 0.2s" }} /></div>
-         <span style={{ fontSize: 7.5, fontWeight: 600, color: showInflAdj ? "#E65100" : C.muted }}>{showInflAdj ? "考虑通胀" : "不考虑通胀"}</span></div></div>
+        <label style={{ display: "flex", alignItems: "center", gap: 1, cursor: "pointer", fontSize: 9, color: C.muted }}><input type="checkbox" checked={showIncomeLine} onChange={function(e) { setShowIncomeLine(e.target.checked); }} style={{ accentColor: C.orange, cursor: "pointer", width: 8, height: 8 }} />收入</label>
+        <label style={{ display: "flex", alignItems: "center", gap: 1, cursor: "pointer", fontSize: 9, color: C.muted }}><input type="checkbox" checked={showStockComp} onChange={function(e) { setShowStockComp(e.target.checked); }} style={{ accentColor: "#6B4E8C", cursor: "pointer", width: 8, height: 8 }} />指数</label>
+        <div onClick={function() { if (showInflAdj) { setShowInflAdj(false); setShowNominal(false); } else { setShowInflAdj(true); } }} style={{ display: "flex", alignItems: "center", gap: 2, cursor: "pointer", padding: "1px 4px", borderRadius: 0, background: showInflAdj ? "#B35C1E" + "15" : "transparent", border: "0.5px solid " + (showInflAdj ? "#B35C1E" + "40" : C.border) }}>
+         <div style={{ width: 18, height: 10, borderRadius: 0, background: showInflAdj ? "#B35C1E" : "#999999", padding: 1, transition: "background 0.2s", flexShrink: 0 }}>
+          <div style={{ width: 8, height: 8, borderRadius: 0, background: "#fff", transform: showInflAdj ? "translateX(8px)" : "translateX(0)", transition: "transform 0.2s" }} /></div>
+         <span style={{ fontSize: 9, fontWeight: 600, color: showInflAdj ? "#B35C1E" : C.muted }}>{showInflAdj ? "考虑通胀" : "不考虑通胀"}</span></div></div>
       </div>
       <ResponsiveContainer width="100%" height={140}>
-       <ComposedChart data={wealthRows} margin={{ top: 2, right: 2, left: -4, bottom: 0 }}>
+       <ComposedChart data={wealthRows} margin={{ top: 2, right: 2, left: 0, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
-        <XAxis dataKey="age" tickFormatter={v => v+"岁"} tick={{ fill: C.muted, fontSize: 9.5 }} interval={Math.max(0, Math.ceil(wealthRows.length/6)-1)} axisLine={{ stroke: C.border }} tickLine={false} />
-        <YAxis yAxisId="left" tickFormatter={v => fmtMoney(v)} tick={{ fill: C.muted, fontSize: 8 }} width={38} axisLine={false} tickLine={false} />
-        {showIncomeLine && <YAxis yAxisId="right" orientation="right" tickFormatter={v => fmtMoney(v)} tick={{ fill: C.orange, fontSize: 7.5 }} width={30} axisLine={false} tickLine={false} />}
+        <XAxis dataKey="age" tickFormatter={v => v+"岁"} tick={{ fill: C.muted, fontSize: 10.5 }} interval={Math.max(0, Math.ceil(wealthRows.length/6)-1)} axisLine={{ stroke: C.border }} tickLine={false} />
+        <YAxis yAxisId="left" tickFormatter={v => fmtAxis(v)} tick={{ fill: C.muted, fontSize: 9.5 }} width={52} axisLine={false} tickLine={false} />
+        {showIncomeLine && <YAxis yAxisId="right" orientation="right" tickFormatter={v => fmtAxis(v)} tick={{ fill: C.orange, fontSize: 9 }} width={40} axisLine={false} tickLine={false} />}
         <Tooltip content={<CustomTooltip />} />
         {(!showInflAdj || parseFloat(inflRate)<=0 || showNominal) && <Line yAxisId="left" dataKey="netWorthPre" name="积累期(名义)" stroke={C.blue} dot={false} strokeWidth={showInflAdj&&parseFloat(inflRate)>0?1.5:2.5} strokeDasharray={showInflAdj&&parseFloat(inflRate)>0?"4 2":""} opacity={showInflAdj&&parseFloat(inflRate)>0?0.35:1} connectNulls={false} />}
         {(!showInflAdj || parseFloat(inflRate)<=0 || showNominal) && <Line yAxisId="left" dataKey="netWorthPost" name="退休期(名义)" stroke={C.green} dot={false} strokeWidth={showInflAdj&&parseFloat(inflRate)>0?1.5:2.5} strokeDasharray={showInflAdj&&parseFloat(inflRate)>0?"4 2":""} opacity={showInflAdj&&parseFloat(inflRate)>0?0.35:1} connectNulls={false} />}
-        {showInflAdj && parseFloat(inflRate) > 0 && <Line yAxisId="left" dataKey="nwReal" name="实际购买力" stroke="#E65100" dot={false} strokeWidth={2.5} />}
-        {showIncomeLine && <Bar yAxisId="right" dataKey={rentPeriod==="yr"?(showInflAdj&&parseFloat(inflRate)>0?"annPsvReal":"annPsv"):(showInflAdj&&parseFloat(inflRate)>0?"psvReal":"monthlyTotalPsv")} name={rentPeriod==="yr"?"年收入":"月收入"} fill="#90A4AE" opacity={0.45} maxBarSize={10} isAnimationActive={false} radius={[2,2,0,0]} />}
+        {showInflAdj && parseFloat(inflRate) > 0 && <Line yAxisId="left" dataKey="nwReal" name="实际购买力" stroke="#B35C1E" dot={false} strokeWidth={2.5} />}
+        {showIncomeLine && <Bar yAxisId="right" dataKey={rentPeriod==="yr"?(showInflAdj&&parseFloat(inflRate)>0?"annPsvReal":"annPsv"):(showInflAdj&&parseFloat(inflRate)>0?"psvReal":"monthlyTotalPsv")} name={rentPeriod==="yr"?"年收入":"月收入"} fill="#999999" opacity={0.45} maxBarSize={10} isAnimationActive={false} radius={[2,2,0,0]} />}
         {(() => {
          const refLines = [];
-         if (freedomAge) refLines.push({ x: freedomAge, label: rAge===freedomAge?"FIRE=退休 "+freedomAge:"FIRE "+freedomAge, color: C.green, bg: "#E8F5E9", dash: "4 2", w: 1 });
-         if (rAge !== freedomAge) refLines.push({ x: rAge, label: "退休 "+rAge, color: C.accent, bg: "#FFF3E0", dash: "6 2", w: 1.5 });
-         if ((uAge+cmpYrs)>=67) refLines.push({ x: 67, label: "法定退休", color: "#8B6914", bg: "#FFF8E1", dash: "3 3", w: 0.5 });
-         if ((uAge+cmpYrs)>=(parseInt(k401DrawAge)||60)) refLines.push({ x: parseInt(k401DrawAge)||60, label: retLabel+" "+(parseInt(k401DrawAge)||60), color: "#C2185B", bg: "#FCE4EC", dash: "5 3", w: 0.5 });
+         if (freedomAge) refLines.push({ x: freedomAge, label: rAge===freedomAge?"FIRE=退休 "+freedomAge:"FIRE "+freedomAge, color: C.green, bg: "#FFFFFF", dash: "4 2", w: 1 });
+         if (rAge !== freedomAge) refLines.push({ x: rAge, label: "退休 "+rAge, color: C.accent, bg: "#FFFFFF", dash: "6 2", w: 1.5 });
+         if ((uAge+cmpYrs)>=67) refLines.push({ x: 67, label: "法定退休", color: "#8A6D1F", bg: "#FFFFFF", dash: "3 3", w: 0.5 });
+         if ((uAge+cmpYrs)>=(parseInt(k401DrawAge)||60)) refLines.push({ x: parseInt(k401DrawAge)||60, label: retLabel+" "+(parseInt(k401DrawAge)||60), color: "#A8385F", bg: "#FFFFFF", dash: "5 3", w: 0.5 });
          var investPayoffAge = Math.round(uAge + Math.max(0, investPayoffYrs - investHeld));
-         if (wantInvest && investPayoffAge > uAge && investPayoffAge <= uAge+cmpYrs) refLines.push({ x: investPayoffAge, label: "投资房清贷", color: C.blue, bg: "#E3F2FD", dash: "4 2", w: 1 });
-         if (wantHome && homeHasLoan) { var homePayoffAge = Math.round(uAge + Math.max(0, homePayoffYrs - homeHeld)); if (homePayoffAge > uAge && homePayoffAge <= uAge+cmpYrs) refLines.push({ x: homePayoffAge, label: "自住房清贷", color: "#00897B", bg: "#E0F2F1", dash: "4 2", w: 1 }); }
+         if (wantInvest && investPayoffAge > uAge && investPayoffAge <= uAge+cmpYrs) refLines.push({ x: investPayoffAge, label: "投资房清贷", color: C.blue, bg: "#FFFFFF", dash: "4 2", w: 1 });
+         if (wantHome && homeHasLoan) { var homePayoffAge = Math.round(uAge + Math.max(0, homePayoffYrs - homeHeld)); if (homePayoffAge > uAge && homePayoffAge <= uAge+cmpYrs) refLines.push({ x: homePayoffAge, label: "自住房清贷", color: "#2B7A78", bg: "#FFFFFF", dash: "4 2", w: 1 }); }
          refLines.sort((a,b) => a.x - b.x);
          return refLines.map((r, i) => (
           <ReferenceLine key={i} yAxisId="left" x={r.x} stroke={r.color} strokeDasharray={r.dash} strokeWidth={r.w}
@@ -2451,18 +2476,18 @@ return (
             const lw = r.label.length > 6 ? 42 : 34;
             const rx = (vb.x||0) - lw - 2;
             const ry = (vb.y||0) + 4 + i * 14;
-            return <g><rect x={Math.max(0,rx)} y={ry} width={lw} height={11} rx={3} fill={r.bg} stroke={r.color} strokeWidth={0.5} opacity={0.92} /><text x={Math.max(0,rx)+lw/2} y={ry+8} textAnchor="middle" style={{ fontSize: 6, fontWeight: 700, fill: r.color }}>{r.label}</text></g>;
+            return <g><rect x={Math.max(0,rx)} y={ry} width={lw} height={11} rx={0} fill={r.bg} stroke={r.color} strokeWidth={0.5} opacity={0.92} /><text x={Math.max(0,rx)+lw/2} y={ry+8} textAnchor="middle" style={{ fontSize: 6, fontWeight: 700, fill: r.color }}>{r.label}</text></g>;
            }} />
          ));
         })()}
-        {showStockComp && <Line yAxisId="left" dataKey="stockValue" name="指数" stroke="#7B5EA7" dot={false} strokeWidth={1.8} strokeDasharray="6 3" />}
+        {showStockComp && <Line yAxisId="left" dataKey="stockValue" name="指数" stroke="#6B4E8C" dot={false} strokeWidth={1.8} strokeDasharray="6 3" />}
        </ComposedChart>
       </ResponsiveContainer>
       <div style={{ display: "flex", alignItems: "center", gap: 3, padding: "2px 8px 4px", borderTop: "1px solid "+C.border }}>
-       <span style={{ fontSize: 8.5, fontWeight: 600, color: C.sub }}>{uAge}岁</span>
+       <span style={{ fontSize: 10, fontWeight: 600, color: C.sub }}>{uAge}岁</span>
        <input type="range" min={5} max={60} step={1} value={parseInt(compoundYears)||44} onChange={function(e) { setCompoundYears(e.target.value); setWYears(e.target.value); }} style={{ flex: 1, accentColor: C.accent, cursor: "pointer", height: 12 }} />
-       <span style={{ fontSize: 8.5, fontWeight: 600, color: C.accent }}>{uAge+cmpYrs}岁</span>
-       <span style={{ fontSize: 8.5, fontWeight: 700, color: C.accent, background: C.accent+"12", borderRadius: 3, padding: "1px 4px", whiteSpace: "nowrap" }}>模拟{compoundYears}年</span></div></div>
+       <span style={{ fontSize: 10, fontWeight: 600, color: C.accent }}>{uAge+cmpYrs}岁</span>
+       <span style={{ fontSize: 10, fontWeight: 700, color: C.accent, background: C.accent+"12", borderRadius: 0, padding: "1px 4px", whiteSpace: "nowrap" }}>模拟{compoundYears}年</span></div></div>
         )}
         {retireRow && (() => {
      const eTax2 = parseFloat(effectiveTax) / 100 || 0.15;
@@ -2475,7 +2500,7 @@ return (
      const stockM = accStock * 0.04 / 12;
      const totM = reM + k401M + ssM + bankM + stockM;
      const aftTax = totM * (1 - eTax2);
-     const CL2 = { re: "#2E7D32", k401: "#C2185B", ss: "#0277BD", bank: "#E65100", stock: "#7B1FA2" };
+     const CL2 = { re: "#2A7A4B", k401: "#A8385F", ss: "#3E7CB1", bank: "#B35C1E", stock: "#7D3C8C" };
      const replRate2 = (parseFloat(annualIncome)||100000) > 0 ? aftTax*12/((parseFloat(annualIncome)||100000)*Math.pow(1+(parseFloat(incomeGrowth)/100||0.03), Math.max(0,rAge-uAge)))*100 : 0;
      const retireNW = rRow.nwReal || rRow.netWorth || 0;
      const invOwnP = (parseFloat(investOwn)||100)/100;
@@ -2495,41 +2520,41 @@ return (
      };
      return <div style={{ marginBottom: 2 }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, marginBottom: 3 }}>
-       <div style={{ background: C.surface, border: "1px solid "+C.border, borderRadius: 7, padding: "5px 6px" }}>
-        <div style={{ fontSize: 8.5, fontWeight: 700, color: C.sub, marginBottom: 2 }}>{rAge}岁退休时净资产</div>
+       <div style={{ background: C.surface, border: "none", borderTop: "1px solid " + C.rule, borderRadius: 0, padding: "5px 6px" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: C.sub, marginBottom: 2 }}>{rAge}岁退休时净资产</div>
         <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
          {makeDonut(assetItems, assetTotal, fxM(retireNW), rAge+"岁")}
          <div style={{ flex: 1, minWidth: 0 }}>
           {assetItems.map(([l,v,cl], i) => (
            <div key={i} style={{ display: "flex", alignItems: "center", gap: 2, marginBottom: 2 }}>
-            <div style={{ width: 5, height: 5, borderRadius: 1, background: cl, flexShrink: 0 }} />
-            <span style={{ fontSize: 8.5, color: C.muted, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{l}</span>
-            <span style={{ fontSize: 8.5, fontWeight: 700 }}>{assetTotal>0?Math.round(v/assetTotal*100):0}%</span></div>
+            <div style={{ width: 5, height: 5, borderRadius: 0, background: cl, flexShrink: 0 }} />
+            <span style={{ fontSize: 10, color: C.muted, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{l}</span>
+            <span style={{ fontSize: 10, fontWeight: 700 }}>{assetTotal>0?Math.round(v/assetTotal*100):0}%</span></div>
           ))}</div></div>
        </div>
-       <div style={{ background: C.surface, border: "1px solid "+C.border, borderRadius: 7, padding: "5px 6px" }}>
-        <div style={{ fontSize: 8.5, fontWeight: 700, color: C.sub, marginBottom: 2 }}>退休{rentPeriod==="yr"?"每年":"每月"}收入分配</div>
+       <div style={{ background: C.surface, border: "none", borderTop: "1px solid " + C.rule, borderRadius: 0, padding: "5px 6px" }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: C.sub, marginBottom: 2 }}>退休{rentPeriod==="yr"?"每年":"每月"}收入分配</div>
         <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
          {makeDonut(incItems, totM, rentPeriod==="yr"?fxM(aftTax*12):fxM(aftTax), rentPeriod==="yr"?"税后/年":"税后/月")}
          <div style={{ flex: 1, minWidth: 0 }}>
           {incItems.map(([l,v,cl], i) => (
            <div key={i} style={{ display: "flex", alignItems: "center", gap: 2, marginBottom: 2 }}>
-            <div style={{ width: 5, height: 5, borderRadius: 1, background: cl, flexShrink: 0 }} />
-            <span style={{ fontSize: 8.5, color: C.muted, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{l}</span>
-            <span style={{ fontSize: 8.5, fontWeight: 700 }}>{rentPeriod==="yr"?fxM(v*12):fxM(v)}</span></div>
+            <div style={{ width: 5, height: 5, borderRadius: 0, background: cl, flexShrink: 0 }} />
+            <span style={{ fontSize: 10, color: C.muted, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{l}</span>
+            <span style={{ fontSize: 10, fontWeight: 700 }}>{rentPeriod==="yr"?fxM(v*12):fxM(v)}</span></div>
           ))}</div></div>
        </div></div>
-      <div style={{ display: "flex", alignItems: "center", gap: 3, background: C.surface, border: "1px solid "+C.border, borderRadius: 5, padding: "4px 8px" }}>
-       <span style={{ fontSize: 8.5, color: C.sub }}>收入替代率</span>
-       <div style={{ flex: 1, height: 8, background: C.border, borderRadius: 4, overflow: "hidden" }}>
-        <div style={{ height: "100%", width: Math.min(replRate2,100)+"%", background: "linear-gradient(90deg,"+(replRate2>=80?"#43A047":"#E53935")+","+(replRate2>=80?"#2E7D32":"#FF9800")+")", borderRadius: 4 }} />
+      <div style={{ display: "flex", alignItems: "center", gap: 3, background: C.surface, border: "none", borderTop: "1px solid " + C.rule, borderRadius: 0, padding: "4px 8px" }}>
+       <span style={{ fontSize: 10, color: C.sub }}>收入替代率</span>
+       <div style={{ flex: 1, height: 8, background: C.border, borderRadius: 0, overflow: "hidden" }}>
+        <div style={{ height: "100%", width: Math.min(replRate2,100)+"%", background: (replRate2>=80?"#2A7A4B":"#B8312F"), borderRadius: 0}} />
        </div>
-       <span style={{ fontSize: 12.5, fontWeight: 800, color: replRate2>=80?C.green:replRate2>=60?"#FF9800":"#E53935" }}>{replRate2.toFixed(0)}%</span>
-       <span style={{ fontSize: 7.5, color: C.muted }}>{replRate2 >= 80 ? "优秀" : replRate2 >= 60 ? "良好" : "偏低"}</span>
+       <span style={{ fontSize: 12.5, fontWeight: 800, color: replRate2>=80?C.green:replRate2>=60?"#D08A2E":"#B8312F" }}>{replRate2.toFixed(0)}%</span>
+       <span style={{ fontSize: 9, color: C.muted }}>{replRate2 >= 80 ? "优秀" : replRate2 >= 60 ? "良好" : "偏低"}</span>
       </div></div>;
         })()}
         <div style={{ marginTop: 3 }}>
-     <button onClick={() => setModal("fireReport")} style={{ width: "100%", padding: "8px 0", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 11, fontWeight: 700, background: "linear-gradient(135deg, #00B894, #00897B)", border: "none", color: "#fff", boxShadow: "0 2px 8px rgba(0,184,148,0.25)" }}>🔮 FIRE 加速规划器</button>
+     <button onClick={() => setModal("fireReport")} style={{ width: "100%", padding: "8px 0", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700, background: "#121212", border: "none", color: "#fff", boxShadow: "none"}}>FIRE 加速规划器</button>
         </div></div>);
   })()}
   {/* ═══ SAVE/LOAD MODAL ═══ */}
@@ -2537,30 +2562,30 @@ return (
     <div style={overlay} onClick={() => setSaveModal(null)}>
       <div style={mBox} onClick={e => e.stopPropagation()}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-     <span style={{ fontSize: 15, fontWeight: 700, color: C.green }}>💾 保存配置</span>
-     <button onClick={() => setSaveModal(null)} style={{ background: C.inset, border: "none", borderRadius: 5, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+     <span style={{ fontSize: 18, fontWeight: 700, fontFamily: C.serif, color: C.text}}>保存配置</span>
+     <button onClick={() => setSaveModal(null)} style={{ background: C.inset, border: "none", borderRadius: 0, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
         </div>
         <div style={{ fontSize: 10.5, color: C.muted, marginBottom: 6 }}>点击「复制」，然后粘贴到备忘录/Notes保存。下次用「读取」恢复。</div>
-        <textarea readOnly value={JSON.stringify(getStateSnapshot())} style={{ width: "100%", height: 120, fontSize: 9.5, fontFamily: "monospace", border: "1px solid " + C.border, borderRadius: 6, padding: 8, boxSizing: "border-box", background: C.inset, color: C.text, resize: "none" }} onFocus={e => e.target.select()} />
+        <textarea readOnly value={JSON.stringify(getStateSnapshot())} style={{ width: "100%", height: 120, fontSize: 10.5, fontFamily: "monospace", border: "1px solid " + C.border, borderRadius: 0, padding: 8, boxSizing: "border-box", background: C.inset, color: C.text, resize: "none" }} onFocus={e => e.target.select()} />
         <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
-     <button onClick={() => { handleCopyExport(); }} style={{ flex: 1, padding: "10px 0", fontSize: 14, fontWeight: 700, background: C.green, color: "#fff", border: "none", borderRadius: 6, cursor: "pointer" }}>📋 复制到剪贴板</button>
+     <button onClick={() => { handleCopyExport(); }} style={{ flex: 1, padding: "10px 0", fontSize: 14, fontWeight: 700, background: C.green, color: "#fff", border: "none", borderRadius: 0, cursor: "pointer" }}>复制到剪贴板</button>
         </div>
-        {saveMsg && <div style={{ marginTop: 6, fontSize: 11.5, fontWeight: 700, color: saveMsg.startsWith("✅") ? C.green : C.orange, textAlign: "center" }}>{saveMsg}</div>}</div></div>
+        {saveMsg && <div style={{ marginTop: 6, fontSize: 11.5, fontWeight: 700, color: saveMsg.startsWith("✓") ? C.green : C.orange, textAlign: "center" }}>{saveMsg}</div>}</div></div>
   )}
   {saveModal === "import" && (
     <div style={overlay} onClick={() => setSaveModal(null)}>
       <div style={mBox} onClick={e => e.stopPropagation()}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-     <span style={{ fontSize: 15, fontWeight: 700, color: C.blue }}>📂 读取配置</span>
-     <button onClick={() => setSaveModal(null)} style={{ background: C.inset, border: "none", borderRadius: 5, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+     <span style={{ fontSize: 18, fontWeight: 700, fontFamily: C.serif, color: C.text}}>读取配置</span>
+     <button onClick={() => setSaveModal(null)} style={{ background: C.inset, border: "none", borderRadius: 0, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
         </div>
         <div style={{ fontSize: 10.5, color: C.muted, marginBottom: 6 }}>从备忘录复制之前保存的配置，粘贴到下方，点击「应用」。</div>
-        <textarea placeholder='在此粘贴配置内容...' value={importText} onChange={e => setImportText(e.target.value)} style={{ width: "100%", height: 120, fontSize: 9.5, fontFamily: "monospace", border: "1px solid " + C.border, borderRadius: 6, padding: 8, boxSizing: "border-box", background: "#fff", color: C.text, resize: "none" }} />
+        <textarea placeholder='在此粘贴配置内容...' value={importText} onChange={e => setImportText(e.target.value)} style={{ width: "100%", height: 120, fontSize: 10.5, fontFamily: "monospace", border: "1px solid " + C.border, borderRadius: 0, padding: 8, boxSizing: "border-box", background: "#fff", color: C.text, resize: "none" }} />
         <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
-     <button onClick={function() { navigator.clipboard.readText().then(function(t) { setImportText(t); }).catch(function() {}); }} style={{ flex: 1, padding: "10px 0", fontSize: 13, fontWeight: 700, background: C.inset, color: C.sub, border: "1px solid " + C.border, borderRadius: 6, cursor: "pointer" }}>📋 粘贴</button>
-     <button onClick={handleApplyImport} disabled={!importText.trim()} style={{ flex: 2, padding: "10px 0", fontSize: 14, fontWeight: 700, background: importText.trim() ? C.blue : C.border, color: "#fff", border: "none", borderRadius: 6, cursor: importText.trim() ? "pointer" : "default" }}>✅ 应用配置</button>
+     <button onClick={function() { navigator.clipboard.readText().then(function(t) { setImportText(t); }).catch(function() {}); }} style={{ flex: 1, padding: "10px 0", fontSize: 13, fontWeight: 700, background: C.inset, color: C.sub, border: "1px solid " + C.border, borderRadius: 0, cursor: "pointer" }}>粘贴</button>
+     <button onClick={handleApplyImport} disabled={!importText.trim()} style={{ flex: 2, padding: "10px 0", fontSize: 14, fontWeight: 700, background: importText.trim() ? C.blue : C.border, color: "#fff", border: "none", borderRadius: 0, cursor: importText.trim() ? "pointer" : "default" }}>✓ 应用配置</button>
         </div>
-        {saveMsg && <div style={{ marginTop: 6, fontSize: 11.5, fontWeight: 700, color: saveMsg.startsWith("✅") ? C.green : C.red, textAlign: "center" }}>{saveMsg}</div>}</div></div>
+        {saveMsg && <div style={{ marginTop: 6, fontSize: 11.5, fontWeight: 700, color: saveMsg.startsWith("✓") ? C.green : C.red, textAlign: "center" }}>{saveMsg}</div>}</div></div>
   )}
   {/* ═══ PREPAY MODAL ═══ */}
   {modal === "prepay" && (() => {
@@ -2602,27 +2627,27 @@ return { months: months, totalInterest: totalInt, annualRows: rows };
     <div style={overlay}>
       <div style={{ ...mBox, maxHeight: "90vh", overflowY: "auto" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-     <span style={{ fontSize: 13, fontWeight: 700, color: C.accent }}>摊销时间表</span>
-     <button onClick={function() { setModal(null); setModalXtra(0); }} style={{ background: C.inset, border: "none", borderRadius: 5, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+     <span style={{ fontSize: 18, fontWeight: 700, fontFamily: C.serif, color: C.text}}>摊销时间表</span>
+     <button onClick={function() { setModal(null); setModalXtra(0); }} style={{ background: C.inset, border: "none", borderRadius: 0, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
         </div>
-        {monthsPaid > 0 && <div style={{ background: "#E8F5E9", borderRadius: 6, padding: "5px 8px", marginBottom: 4, border: "1px solid #C8E6C9" }}>
-     <div style={{ fontSize: 8.5, fontWeight: 600, color: "#2E7D32", marginBottom: 2 }}>📅 已持有 {Math.floor(monthsPaid/12)}年{monthsPaid%12}个月 · Mid-month {pd >= 15 ? "≥15日" : "<15日"}</div>
-     <div style={{ display: "flex", gap: 8, fontSize: 8, color: "#1B5E20" }}>
+        {monthsPaid > 0 && <div style={{ background: "#F7F7F7", borderRadius: 0, padding: "5px 8px", marginBottom: 4, border: "1px solid #CFE3D5" }}>
+     <div style={{ fontSize: 10, fontWeight: 600, color: "#2A7A4B", marginBottom: 2 }}>已持有 {Math.floor(monthsPaid/12)}年{monthsPaid%12}个月 · Mid-month {pd >= 15 ? "≥15日" : "<15日"}</div>
+     <div style={{ display: "flex", gap: 8, fontSize: 9.5, color: "#1D5536" }}>
       <span>已还本金 <b>{fmtMoney(paidPrin)}</b></span>
       <span>已付利息 <b>{fmtMoney(paidInt)}</b></span>
       <span>已建权益 <b>{equityPct.toFixed(1)}%</b></span></div>
-     <div style={{ height: 6, background: "#C8E6C9", borderRadius: 3, marginTop: 3, overflow: "hidden" }}>
-      <div style={{ height: "100%", width: equityPct + "%", background: "#2E7D32", borderRadius: 3, transition: "width 0.3s" }} /></div>
-     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 6.5, color: "#78909C", marginTop: 1 }}>
+     <div style={{ height: 6, background: "#CFE3D5", borderRadius: 0, marginTop: 3, overflow: "hidden" }}>
+      <div style={{ height: "100%", width: equityPct + "%", background: "#2A7A4B", borderRadius: 0, transition: "width 0.3s" }} /></div>
+     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 8, color: "#727272", marginTop: 1 }}>
       <span>当前余额 {fmtMoney(curBal)}</span>
       <span>剩余 {n - monthsPaid} 期</span>
      </div></div>}
-        <div style={{ background: C.inset, borderRadius: 8, padding: "6px 8px", marginBottom: 4 }}>
+        <div style={{ background: C.inset, borderRadius: 0, padding: "6px 8px", marginBottom: 4 }}>
      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
-      <span style={{ fontSize: 8, color: C.sub }}>每月提前还款</span>
+      <span style={{ fontSize: 9.5, color: C.sub }}>每月提前还款</span>
       <span style={{ fontSize: 11, fontWeight: 800, color: modalXtra > 0 ? C.green : C.muted }}>{modalXtra > 0 ? "$" + modalXtra + "/月" : "无"}</span></div>
-     <input type="range" min={0} max={5000} step={50} value={modalXtra} onChange={function(e) { setModalXtra(parseInt(e.target.value)); }} style={{ width: "100%", height: 14, accentColor: modalXtra >= 2000 ? "#2E7D32" : modalXtra >= 1000 ? "#43A047" : modalXtra >= 500 ? "#66BB6A" : modalXtra > 0 ? "#FFA726" : C.border, cursor: "pointer" }} />
-     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 7, color: C.muted, marginTop: 1 }}><span>$0</span><span>$2,500</span><span>$5,000</span></div></div>
+     <input type="range" min={0} max={5000} step={50} value={modalXtra} onChange={function(e) { setModalXtra(parseInt(e.target.value)); }} style={{ width: "100%", height: 14, accentColor: modalXtra >= 2000 ? "#2A7A4B" : modalXtra >= 1000 ? "#4E9A6A" : modalXtra >= 500 ? "#7DB892" : modalXtra > 0 ? "#D9A24A" : C.border, cursor: "pointer" }} />
+     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 8.5, color: C.muted, marginTop: 1 }}><span>$0</span><span>$2,500</span><span>$5,000</span></div></div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 3, marginBottom: 4 }}>
      {[
       { l: "原始还款期", v: moToYrMo(base.months), c: C.sub },
@@ -2630,25 +2655,25 @@ return { months: months, totalInterest: totalInt, annualRows: rows };
       { l: "节省时间", v: moSaved > 0 ? moToYrMo(moSaved) : "—", c: C.green },
       { l: "节省利息", v: intSaved > 0 ? fmtMoney(intSaved) : "—", c: C.green },
      ].map(function(item, i) { return (
-      <div key={i} style={{ background: item.c + "08", borderRadius: 4, padding: "3px 4px", border: "0.5px solid " + item.c + "20", textAlign: "center" }}>
-       <div style={{ fontSize: 6, color: C.muted }}>{item.l}</div>
-       <div style={{ fontSize: 9, fontWeight: 800, color: item.c }}>{item.v}</div></div>); })}
+      <div key={i} style={{ background: item.c + "08", borderRadius: 0, padding: "3px 4px", border: "0.5px solid " + item.c + "20", textAlign: "center" }}>
+       <div style={{ fontSize: 7.5, color: C.muted }}>{item.l}</div>
+       <div style={{ fontSize: 10, fontWeight: 800, color: item.c }}>{item.v}</div></div>); })}
         </div>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9 }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10 }}>
      <thead>
       <tr style={{ borderBottom: "1.5px solid " + C.border }}>
        {["Yr", "年供", "本金", "利息", "余额"].map(function(h, i) { return (
-        <th key={i} style={{ padding: "2px 3px", textAlign: i === 0 ? "left" : "right", fontWeight: 600, color: C.muted, fontSize: 8, position: "sticky", top: 0, background: C.bg }}>{h}</th>); })}
+        <th key={i} style={{ padding: "2px 3px", textAlign: i === 0 ? "left" : "right", fontWeight: 600, color: C.muted, fontSize: 9.5, position: "sticky", top: 0, background: C.bg }}>{h}</th>); })}
       </tr>
      </thead>
      <tbody>
       {withX.annualRows.map(function(row, i) { return (
-       <tr key={i} style={{ background: row.isPast ? "#E8F5E920" : i % 2 === 0 ? C.surface : "transparent" }}>
-        <td style={{ padding: "1.5px 3px", fontWeight: 600, color: row.isPast ? "#2E7D32" : C.sub, fontSize: 8.5 }}>{row.yr}{row.isPast ? " ✓" : ""}</td>
-        <td style={{ padding: "1.5px 3px", textAlign: "right", fontSize: 8.5 }}>{fmtMoney(row.annPmt)}</td>
-        <td style={{ padding: "1.5px 3px", textAlign: "right", color: C.blue, fontWeight: 600, fontSize: 8.5 }}>{fmtMoney(row.annPrin)}</td>
-        <td style={{ padding: "1.5px 3px", textAlign: "right", color: C.orange, fontSize: 8.5 }}>{fmtMoney(row.annInt)}</td>
-        <td style={{ padding: "1.5px 3px", textAlign: "right", color: row.endBal < 1 ? C.green : C.muted, fontWeight: row.endBal < 1 ? 700 : 400, fontSize: 8.5 }}>{row.endBal < 1 ? "✓ 清" : fmtMoney(row.endBal)}</td>
+       <tr key={i} style={{ background: row.isPast ? "#EDF4EF20" : i % 2 === 0 ? C.surface : "transparent" }}>
+        <td style={{ padding: "1.5px 3px", fontWeight: 600, color: row.isPast ? "#2A7A4B" : C.sub, fontSize: 10 }}>{row.yr}{row.isPast ? " ✓" : ""}</td>
+        <td style={{ padding: "1.5px 3px", textAlign: "right", fontSize: 10 }}>{fmtMoney(row.annPmt)}</td>
+        <td style={{ padding: "1.5px 3px", textAlign: "right", color: C.blue, fontWeight: 600, fontSize: 10 }}>{fmtMoney(row.annPrin)}</td>
+        <td style={{ padding: "1.5px 3px", textAlign: "right", color: C.orange, fontSize: 10 }}>{fmtMoney(row.annInt)}</td>
+        <td style={{ padding: "1.5px 3px", textAlign: "right", color: row.endBal < 1 ? C.green : C.muted, fontWeight: row.endBal < 1 ? 700 : 400, fontSize: 10 }}>{row.endBal < 1 ? "✓ 清" : fmtMoney(row.endBal)}</td>
        </tr>); })}
      </tbody>
         </table></div></div>);
@@ -2688,29 +2713,29 @@ return { months: months, totalInterest: totalInt, annualRows: rows };
         <div style={mBox}>
      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
       <div>
-       <div style={{ fontSize: 14, fontWeight: 700, color: C.orange }}>折旧税盾</div>
-       <div style={{ fontSize: 8, color: C.muted }}>Depreciation Tax Shield · 纸面亏损 = 真实省税</div></div>
-      <button onClick={function() { setModal(null); }} style={{ background: C.inset, border: "none", borderRadius: 5, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+       <div style={{ fontSize: 18, fontWeight: 700, fontFamily: C.serif, color: C.text}}>折旧税盾</div>
+       <div style={{ fontSize: 9.5, color: C.muted }}>Depreciation Tax Shield · 纸面亏损 = 真实省税</div></div>
+      <button onClick={function() { setModal(null); }} style={{ background: C.inset, border: "none", borderRadius: 0, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
      </div>
   {/* Interactive sliders */}
-     <div style={{ background: C.inset, borderRadius: 8, padding: "8px 10px", marginBottom: 8 }}>
+     <div style={{ background: C.inset, borderRadius: 0, padding: "8px 10px", marginBottom: 8 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-       <span style={{ fontSize: 9, color: C.sub, fontWeight: 600, flexShrink: 0, width: 50 }}>边际税率</span>
+       <span style={{ fontSize: 10, color: C.sub, fontWeight: 600, flexShrink: 0, width: 50 }}>边际税率</span>
        <input type="range" min={10} max={50} step={1} value={parseInt(taxRate)||24} onChange={function(e) { setTaxRate(e.target.value); }} style={{ flex: 1, accentColor: C.orange, cursor: "pointer", height: 10 }} />
        <span style={{ fontSize: 14, fontWeight: 800, color: C.orange, minWidth: 36, textAlign: "right" }}>{taxRate}%</span></div>
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-       <span style={{ fontSize: 9, color: C.sub, fontWeight: 600, flexShrink: 0, width: 50 }}>土地占比</span>
-       <input type="range" min={5} max={50} step={5} value={parseInt(landPct)||20} onChange={function(e) { setLandPct(e.target.value); }} style={{ flex: 1, accentColor: "#8D6E63", cursor: "pointer", height: 10 }} />
-       <span style={{ fontSize: 14, fontWeight: 800, color: "#8D6E63", minWidth: 36, textAlign: "right" }}>{landPct}%</span></div></div>
+       <span style={{ fontSize: 10, color: C.sub, fontWeight: 600, flexShrink: 0, width: 50 }}>土地占比</span>
+       <input type="range" min={5} max={50} step={5} value={parseInt(landPct)||20} onChange={function(e) { setLandPct(e.target.value); }} style={{ flex: 1, accentColor: "#6B5B50", cursor: "pointer", height: 10 }} />
+       <span style={{ fontSize: 14, fontWeight: 800, color: "#6B5B50", minWidth: 36, textAlign: "right" }}>{landPct}%</span></div></div>
   {/* Cost basis bar */}
-     <div style={{ display: "flex", height: 18, borderRadius: 4, overflow: "hidden", marginBottom: 8 }}>
-      <div style={{ width: (land*100) + "%", background: "#8D6E63", display: "flex", alignItems: "center", justifyContent: "center" }}>
-       <span style={{ fontSize: 8, color: "#fff", fontWeight: 700 }}>土地 {fmtMoney(saleVal*land)}</span></div>
+     <div style={{ display: "flex", height: 18, borderRadius: 0, overflow: "hidden", marginBottom: 8 }}>
+      <div style={{ width: (land*100) + "%", background: "#6B5B50", display: "flex", alignItems: "center", justifyContent: "center" }}>
+       <span style={{ fontSize: 9.5, color: "#fff", fontWeight: 700 }}>土地 {fmtMoney(saleVal*land)}</span></div>
       <div style={{ flex: 1, background: C.orange + "35", display: "flex", alignItems: "center", justifyContent: "center" }}>
-       <span style={{ fontSize: 8, color: C.orange, fontWeight: 700 }}>建筑 {fmtMoney(buildingVal)} ÷ 27.5年 = {fmtMoney(annualDep)}/年</span></div></div>
+       <span style={{ fontSize: 9.5, color: C.orange, fontWeight: 700 }}>建筑 {fmtMoney(buildingVal)} ÷ 27.5年 = {fmtMoney(annualDep)}/年</span></div></div>
   {/* Tax shield waterfall */}
-     <div style={{ fontSize: 9, fontWeight: 700, color: C.sub, marginBottom: 3 }}>税盾计算过程</div>
-     <div style={{ background: "#FDFCFA", borderRadius: 6, border: "1px solid " + C.border, padding: "4px 2px 0", marginBottom: 8 }}>
+     <div style={{ fontSize: 10, fontWeight: 700, color: C.sub, marginBottom: 3 }}>税盾计算过程</div>
+     <div style={{ background: "#FFFFFF", borderRadius: 0, border: "1px solid " + C.border, padding: "4px 2px 0", marginBottom: 8 }}>
       <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: shieldH }}>
        {wfItems.map(function(item, idx) {
         var absVal = Math.abs(item.val);
@@ -2718,43 +2743,43 @@ return { months: months, totalInterest: totalInt, annualRows: rows };
         var isNeg = item.val < 0;
         return (
          <div key={idx} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", height: shieldH, justifyContent: "flex-end", minWidth: 0 }}>
-          <div style={{ fontSize: 8, fontWeight: 800, color: item.color, marginBottom: 2, whiteSpace: "nowrap" }}>{isNeg ? "-" : ""}{fmtMoney(absVal)}</div>
-          <div style={{ width: "80%", height: barHeight, background: item.color + "25", border: "1.5px solid " + item.color + "50", borderRadius: 3 }}></div>
-          <div style={{ fontSize: 7.5, fontWeight: 600, color: item.color, marginTop: 6, textAlign: "center", lineHeight: 1.1 }}>{item.name}</div></div>);
+          <div style={{ fontSize: 9.5, fontWeight: 800, color: item.color, marginBottom: 2, whiteSpace: "nowrap" }}>{isNeg ? "-" : ""}{fmtMoney(absVal)}</div>
+          <div style={{ width: "80%", height: barHeight, background: item.color + "25", border: "1.5px solid " + item.color + "50", borderRadius: 0}}></div>
+          <div style={{ fontSize: 9, fontWeight: 600, color: item.color, marginTop: 6, textAlign: "center", lineHeight: 1.1 }}>{item.name}</div></div>);
        })}</div>
-      <div style={{ textAlign: "center", fontSize: 7, color: C.muted, padding: "3px 0 2px" }}>
+      <div style={{ textAlign: "center", fontSize: 8.5, color: C.muted, padding: "3px 0 2px" }}>
        净CF − 折旧 = 应税收入 × 税率 = 实际税额 → 税后现金流</div></div>
   {/* Before vs After comparison */}
-     <div style={{ fontSize: 9, fontWeight: 700, color: C.sub, marginBottom: 3 }}>有无税盾对比</div>
+     <div style={{ fontSize: 10, fontWeight: 700, color: C.sub, marginBottom: 3 }}>有无税盾对比</div>
      <div style={{ display: "flex", gap: 4, marginBottom: 8 }}>
-      <div style={{ flex: 1, background: C.red + "08", border: "1px solid " + C.red + "20", borderRadius: 8, padding: "8px 6px" }}>
-       <div style={{ fontSize: 8, color: C.red, fontWeight: 600, marginBottom: 4 }}>❌ 无折旧</div>
-       <div style={{ fontSize: 7, color: C.muted }}>应税收入</div>
+      <div style={{ flex: 1, background: C.red + "08", border: "1px solid " + C.red + "20", borderRadius: 0, padding: "8px 6px" }}>
+       <div style={{ fontSize: 9.5, color: C.red, fontWeight: 600, marginBottom: 4 }}>✗ 无折旧</div>
+       <div style={{ fontSize: 8.5, color: C.muted }}>应税收入</div>
        <div style={{ fontSize: 11, fontWeight: 800, color: C.text }}>{fmtMoney(taxableNoShield)}</div>
-       <div style={{ fontSize: 7, color: C.muted, marginTop: 2 }}>缴税额</div>
+       <div style={{ fontSize: 8.5, color: C.muted, marginTop: 2 }}>缴税额</div>
        <div style={{ fontSize: 11, fontWeight: 800, color: C.red }}>{fmtMoney(taxNoShield)}</div>
-       <div style={{ fontSize: 7, color: C.muted, marginTop: 2 }}>税后CF</div>
+       <div style={{ fontSize: 8.5, color: C.muted, marginTop: 2 }}>税后CF</div>
        <div style={{ fontSize: 11, fontWeight: 800, color: C.text }}>{fmtMoney(afterTaxNoShield)}</div>
-       <div style={{ fontSize: 7, color: C.muted, marginTop: 2 }}>税后CoC</div>
+       <div style={{ fontSize: 8.5, color: C.muted, marginTop: 2 }}>税后CoC</div>
        <div style={{ fontSize: 11, fontWeight: 800, color: cocNoShield >= 0.08 ? C.green : C.orange }}>{fmtPct(cocNoShield*100)}</div></div>
       <div style={{ display: "flex", alignItems: "center", fontSize: 16, color: C.green }}>→</div>
-      <div style={{ flex: 1, background: C.green + "08", border: "1px solid " + C.green + "20", borderRadius: 8, padding: "8px 6px" }}>
-       <div style={{ fontSize: 8, color: C.green, fontWeight: 600, marginBottom: 4 }}>✅ 有折旧</div>
-       <div style={{ fontSize: 7, color: C.muted }}>应税收入</div>
+      <div style={{ flex: 1, background: C.green + "08", border: "1px solid " + C.green + "20", borderRadius: 0, padding: "8px 6px" }}>
+       <div style={{ fontSize: 9.5, color: C.green, fontWeight: 600, marginBottom: 4 }}>✓ 有折旧</div>
+       <div style={{ fontSize: 8.5, color: C.muted }}>应税收入</div>
        <div style={{ fontSize: 11, fontWeight: 800, color: taxableWithShield <= 0 ? C.green : C.text }}>{taxableWithShield <= 0 ? "纸面亏损!" : fmtMoney(taxableWithShield)}</div>
-       <div style={{ fontSize: 7, color: C.muted, marginTop: 2 }}>缴税额</div>
+       <div style={{ fontSize: 8.5, color: C.muted, marginTop: 2 }}>缴税额</div>
        <div style={{ fontSize: 11, fontWeight: 800, color: C.green }}>{taxWithShield <= 0 ? "$0 ✓" : fmtMoney(taxWithShield)}</div>
-       <div style={{ fontSize: 7, color: C.muted, marginTop: 2 }}>税后CF</div>
+       <div style={{ fontSize: 8.5, color: C.muted, marginTop: 2 }}>税后CF</div>
        <div style={{ fontSize: 11, fontWeight: 800, color: C.green }}>{fmtMoney(afterTaxWithShield)}</div>
-       <div style={{ fontSize: 7, color: C.muted, marginTop: 2 }}>税后CoC</div>
+       <div style={{ fontSize: 8.5, color: C.muted, marginTop: 2 }}>税后CoC</div>
        <div style={{ fontSize: 11, fontWeight: 800, color: cocWithShield >= 0.08 ? C.green : C.orange }}>{fmtPct(cocWithShield*100)}</div></div></div>
   {/* Boost summary */}
-     <div style={{ background: C.green + "10", border: "1px solid " + C.green + "25", borderRadius: 8, padding: "6px 10px", marginBottom: 6, textAlign: "center" }}>
-      <div style={{ fontSize: 8, color: C.green, fontWeight: 600 }}>税盾每年为你省下</div>
+     <div style={{ background: C.green + "10", border: "1px solid " + C.green + "25", borderRadius: 0, padding: "6px 10px", marginBottom: 6, textAlign: "center" }}>
+      <div style={{ fontSize: 9.5, color: C.green, fontWeight: 600 }}>税盾每年为你省下</div>
       <div style={{ fontSize: 20, fontWeight: 800, color: C.green }}>{fmtMoney(annualSaving)}</div>
-      <div style={{ fontSize: 8, color: C.muted }}>CoC提升 <b style={{ color: C.green }}>+{fmtPct(cocBoost*100)}</b> · 等效月收入 <b style={{ color: C.green }}>+{fmtMoney(annualSaving/12)}/月</b></div>
-      {taxableWithShield <= 0 && <div style={{ fontSize: 8, fontWeight: 700, color: C.green, marginTop: 2 }}>纸面亏损 {fmtMoney(Math.abs(taxableWithShield))} 还可抵扣其他收入!</div>}</div>
-     <div style={{ fontSize: 7, color: C.muted, lineHeight: 1.5 }}>
+      <div style={{ fontSize: 9.5, color: C.muted }}>CoC提升 <b style={{ color: C.green }}>+{fmtPct(cocBoost*100)}</b> · 等效月收入 <b style={{ color: C.green }}>+{fmtMoney(annualSaving/12)}/月</b></div>
+      {taxableWithShield <= 0 && <div style={{ fontSize: 9.5, fontWeight: 700, color: C.green, marginTop: 2 }}>纸面亏损 {fmtMoney(Math.abs(taxableWithShield))} 还可抵扣其他收入!</div>}</div>
+     <div style={{ fontSize: 8.5, color: C.muted, lineHeight: 1.5 }}>
       住宅租赁物业按27.5年直线法折旧建筑部分(土地不折旧)。折旧是"纸面亏损"——你没有真实支出，但IRS允许你从应税收入中扣除。当应税收入变为负数时，多余的亏损可以抵扣W2工资等其他收入(需满足MAGI≤$150K或RE Professional身份)。卖出时需缴回折旧税(§1250 Recapture)，税率25%。</div></div>
       </div>);
   })()}
@@ -2782,8 +2807,8 @@ return { months: months, totalInterest: totalInt, annualRows: rows };
       <div style={overlay}>
         <div style={mBox}>
      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-      <span style={{ fontSize: 14, fontWeight: 700, color: "#7B5EA7" }}>BRRRR 策略分析</span>
-      <button onClick={function() { setModal(null); }} style={{ background: C.inset, border: "none", borderRadius: 5, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+      <span style={{ fontSize: 18, fontWeight: 700, fontFamily: C.serif, color: C.text}}>BRRRR 策略分析</span>
+      <button onClick={function() { setModal(null); }} style={{ background: C.inset, border: "none", borderRadius: 0, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
      </div>
      <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
       <NumInp label="装修预算" val={renoAmt} setVal={setRenoAmt} prefix="$" money style={{ flex: 1 }} />
@@ -2795,30 +2820,30 @@ return { months: months, totalInterest: totalInt, annualRows: rows };
        ["B", "Buy", fmtMoney(buyPrice), C.blue],
        ["R", "Rehab", fmtMoney(reno), C.orange],
        ["R", "Rent", fmtMoney(computedRent) + "/月", C.green],
-       ["R", "Refi", fmtMoney(refiLoan), "#7B5EA7"],
+       ["R", "Refi", fmtMoney(refiLoan), "#6B4E8C"],
        ["R", "Repeat", infiniteCoC ? "∞ CoC" : fmtPct(refiCoC*100), C.accent],
       ].map(function(item, idx) { return (
-       <div key={idx} style={{ flex: 1, background: item[3] + "10", border: "1px solid " + item[3] + "25", borderRadius: 6, padding: "4px 2px", textAlign: "center" }}>
+       <div key={idx} style={{ flex: 1, background: item[3] + "10", border: "1px solid " + item[3] + "25", borderRadius: 0, padding: "4px 2px", textAlign: "center" }}>
         <div style={{ fontSize: 16, fontWeight: 800, color: item[3], lineHeight: 1 }}>{item[0]}</div>
-        <div style={{ fontSize: 7, color: item[3], fontWeight: 600, marginTop: 1 }}>{item[1]}</div>
-        <div style={{ fontSize: 9, fontWeight: 800, color: item[3], marginTop: 2 }}>{item[2]}</div></div>); })}
+        <div style={{ fontSize: 8.5, color: item[3], fontWeight: 600, marginTop: 1 }}>{item[1]}</div>
+        <div style={{ fontSize: 10, fontWeight: 800, color: item[3], marginTop: 2 }}>{item[2]}</div></div>); })}
      </div>
      <div style={{ marginBottom: 6 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 8, marginBottom: 2 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9.5, marginBottom: 2 }}>
        <span style={{ color: C.muted }}>现金回收率</span>
        <span style={{ fontWeight: 800, color: recoveryPct >= 1 ? C.green : recoveryPct >= 0.7 ? C.orange : C.red }}>{(recoveryPct*100).toFixed(0)}%</span></div>
-      <div style={{ height: 16, background: C.border + "40", borderRadius: 4, overflow: "hidden", position: "relative" }}>
-       <div style={{ height: "100%", width: Math.min(recoveryPct*100, 100) + "%", background: recoveryPct >= 1 ? C.green + "60" : recoveryPct >= 0.7 ? C.orange + "60" : C.red + "60", borderRadius: 4 }}></div>
+      <div style={{ height: 16, background: C.border + "40", borderRadius: 0, overflow: "hidden", position: "relative" }}>
+       <div style={{ height: "100%", width: Math.min(recoveryPct*100, 100) + "%", background: recoveryPct >= 1 ? C.green + "60" : recoveryPct >= 0.7 ? C.orange + "60" : C.red + "60", borderRadius: 0}}></div>
        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <span style={{ fontSize: 8, fontWeight: 700, color: C.text }}>投入 {fmtMoney(totalCashIn)} → 回收 {fmtMoney(cashRecovered)}</span></div></div>
+        <span style={{ fontSize: 9.5, fontWeight: 700, color: C.text }}>投入 {fmtMoney(totalCashIn)} → 回收 {fmtMoney(cashRecovered)}</span></div></div>
      </div>
-     <div style={{ background: C.inset, borderRadius: 6, padding: "6px 8px", marginBottom: 6 }}>
-      <div style={{ fontSize: 9, fontWeight: 700, color: C.sub, marginBottom: 4 }}>Refi 前后对比</div>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 9 }}>
+     <div style={{ background: C.inset, borderRadius: 0, padding: "6px 8px", marginBottom: 6 }}>
+      <div style={{ fontSize: 10, fontWeight: 700, color: C.sub, marginBottom: 4 }}>Refi 前后对比</div>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10 }}>
        <thead>
         <tr style={{ borderBottom: "1px solid " + C.border }}>
          {["", "原始贷款", "Refi后"].map(function(h, i) { return (
-          <th key={i} style={{ padding: "2px 4px", textAlign: i === 0 ? "left" : "right", fontWeight: 600, color: C.muted, fontSize: 8 }}>{h}</th>); })}
+          <th key={i} style={{ padding: "2px 4px", textAlign: i === 0 ? "left" : "right", fontWeight: 600, color: C.muted, fontSize: 9.5 }}>{h}</th>); })}
         </tr>
        </thead>
        <tbody>
@@ -2831,61 +2856,61 @@ return { months: months, totalInterest: totalInt, annualRows: rows };
          ["CoC", fmtPct(coc*100), infiniteCoC ? "∞ ✓" : fmtPct(refiCoC*100)],
         ].map(function(row, i) { return (
          <tr key={i} style={{ borderBottom: "0.5px solid " + C.border + "60" }}>
-          <td style={{ padding: "3px 4px", fontWeight: 600, color: C.sub, fontSize: 8.5 }}>{row[0]}</td>
-          <td style={{ padding: "3px 4px", textAlign: "right", color: C.muted, fontSize: 8.5 }}>{row[1]}</td>
-          <td style={{ padding: "3px 4px", textAlign: "right", fontWeight: 700, color: C.text, fontSize: 8.5 }}>{row[2]}</td>
+          <td style={{ padding: "3px 4px", fontWeight: 600, color: C.sub, fontSize: 10 }}>{row[0]}</td>
+          <td style={{ padding: "3px 4px", textAlign: "right", color: C.muted, fontSize: 10 }}>{row[1]}</td>
+          <td style={{ padding: "3px 4px", textAlign: "right", fontWeight: 700, color: C.text, fontSize: 10 }}>{row[2]}</td>
          </tr>); })}
        </tbody>
       </table></div>
-     <div style={{ fontSize: 7, color: C.muted, lineHeight: 1.4 }}>
+     <div style={{ fontSize: 8.5, color: C.muted, lineHeight: 1.4 }}>
       BRRRR = Buy · Rehab · Rent · Refinance · Repeat。低价买入→翻新增值→按ARV再融资取出现金→买下一套。现金回收率≥100% = "无限回报"。</div></div>
       </div>);
   })()}
   {modal === "homeReport" && (() => {
-    var overlay = { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.3)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 };
+    var overlay = { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.3)", backdropFilter: "none", WebkitBackdropFilter: "none", zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 };
     var closeModal = function() { setModal(null); setRptStep(0); };
     // Step 0: Setup
     if (rptStep === 0) {
       var buyYr0 = alreadyBought && purchaseYear ? parseInt(purchaseYear)||2026 : 2026;
       var yrOptions = []; for (var yi = 2026; yi <= buyYr0 + 50; yi++) yrOptions.push(yi);
       return <div style={overlay} onClick={closeModal}>
-        <div onClick={function(e){e.stopPropagation();}} style={{ background: "#fff", borderRadius: 14, padding: "18px 20px", maxWidth: 340, width: "100%", boxShadow: "0 8px 32px rgba(0,0,0,0.25)" }}>
-         <div style={{ fontSize: 14, fontWeight: 800, color: "#1565C0", marginBottom: 4 }}>📊 报告设置</div>
-         <div style={{ fontSize: 8, color: "#90A4AE", marginBottom: 12 }}>选择报告基准年份和还贷方案</div>
+        <div onClick={function(e){e.stopPropagation();}} style={{ background: "#fff", borderRadius: 0, padding: "18px 20px", maxWidth: 340, width: "100%", boxShadow: "none"}}>
+         <div style={{ fontSize: 18, fontWeight: 700, fontFamily: C.serif, color: C.text, marginBottom: 4 }}>报告设置</div>
+         <div style={{ fontSize: 9.5, color: "#767676", marginBottom: 12 }}>选择报告基准年份和还贷方案</div>
          <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 9, fontWeight: 700, color: "#5D4037", marginBottom: 4 }}>📅 预测目标年份</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#4A3F38", marginBottom: 4 }}>预测目标年份</div>
           <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-           {[5,10,15,20,25,30].map(function(n) { var yr = 2026 + n; return <button key={yr} onClick={function(){setRptYear(String(yr));}} style={{ padding: "6px 10px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 700, border: parseInt(rptYear) === yr ? "2px solid #1565C0" : "1px solid #E0E0E0", background: parseInt(rptYear) === yr ? "#E3F2FD" : "#fff", color: parseInt(rptYear) === yr ? "#1565C0" : "#5D4037" }}>{yr}<span style={{ fontSize: 7, color: "#90A4AE" }}> ({n}yr)</span></button>; })}
+           {[5,10,15,20,25,30].map(function(n) { var yr = 2026 + n; return <button key={yr} onClick={function(){setRptYear(String(yr));}} style={{ padding: "6px 10px", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 700, border: parseInt(rptYear) === yr ? "2px solid #121212" : "1px solid #DFDFDF", background: parseInt(rptYear) === yr ? "#FFFFFF" : "#fff", color: parseInt(rptYear) === yr ? "#121212" : "#4A3F38" }}>{yr}<span style={{ fontSize: 8.5, color: "#767676" }}> ({n}yr)</span></button>; })}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6 }}>
-           <span style={{ fontSize: 8, color: "#78909C" }}>自定义:</span>
-           <select value={rptYear} onChange={function(e){setRptYear(e.target.value);}} style={{ padding: "4px 6px", borderRadius: 6, border: "1px solid #E0E0E0", fontSize: 10, fontWeight: 600, fontFamily: "inherit", color: "#1565C0", cursor: "pointer" }}>
+           <span style={{ fontSize: 9.5, color: "#727272" }}>自定义:</span>
+           <select value={rptYear} onChange={function(e){setRptYear(e.target.value);}} style={{ padding: "4px 6px", borderRadius: 0, border: "1px solid #DFDFDF", fontSize: 10, fontWeight: 600, fontFamily: "inherit", color: "#121212", cursor: "pointer" }}>
             {yrOptions.map(function(y){return <option key={y} value={String(y)}>{y}年</option>;})}
            </select>
-           <span style={{ fontSize: 8, color: "#90A4AE" }}>距今{parseInt(rptYear)-2026}年</span>
+           <span style={{ fontSize: 9.5, color: "#767676" }}>距今{parseInt(rptYear)-2026}年</span>
           </div>
          </div>
          {homeHasLoan && <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 9, fontWeight: 700, color: "#5D4037", marginBottom: 4 }}>⚡ 提前还贷方案</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#4A3F38", marginBottom: 4 }}>提前还贷方案</div>
           <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 4 }}>
-           {[0,500,1000,1500,2000,3000,5000].map(function(v) { return <button key={v} onClick={function(){setRptPrepay(v);}} style={{ padding: "5px 8px", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, border: rptPrepay === v ? "2px solid " + (v > 0 ? "#E53935" : "#78909C") : "1px solid #E0E0E0", background: rptPrepay === v ? (v > 0 ? "#FFEBEE" : "#F5F5F5") : "#fff", color: rptPrepay === v ? (v > 0 ? "#E53935" : "#5D4037") : "#78909C" }}>{v === 0 ? "不提前" : "$"+v+"/月"}</button>; })}
+           {[0,500,1000,1500,2000,3000,5000].map(function(v) { return <button key={v} onClick={function(){setRptPrepay(v);}} style={{ padding: "5px 8px", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, border: rptPrepay === v ? "2px solid " + (v > 0 ? "#B8312F" : "#727272") : "1px solid #DFDFDF", background: rptPrepay === v ? (v > 0 ? "#FFFFFF" : "#F4F4F4") : "#fff", color: rptPrepay === v ? (v > 0 ? "#B8312F" : "#4A3F38") : "#727272" }}>{v === 0 ? "不提前" : "$"+v+"/月"}</button>; })}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-           <span style={{ fontSize: 8, color: "#78909C" }}>自定义:</span>
-           <input type="range" min={0} max={5000} step={100} value={rptPrepay} onChange={function(e){setRptPrepay(parseInt(e.target.value));}} style={{ flex: 1, accentColor: rptPrepay > 0 ? "#E53935" : "#BDBDBD", cursor: "pointer" }} />
-           <span style={{ fontSize: 10, fontWeight: 800, color: rptPrepay > 0 ? "#E53935" : "#78909C" }}>{rptPrepay > 0 ? "$"+rptPrepay+"/月" : "无"}</span>
+           <span style={{ fontSize: 9.5, color: "#727272" }}>自定义:</span>
+           <input type="range" min={0} max={5000} step={100} value={rptPrepay} onChange={function(e){setRptPrepay(parseInt(e.target.value));}} style={{ flex: 1, accentColor: rptPrepay > 0 ? "#B8312F" : "#999999", cursor: "pointer" }} />
+           <span style={{ fontSize: 10, fontWeight: 800, color: rptPrepay > 0 ? "#B8312F" : "#727272" }}>{rptPrepay > 0 ? "$"+rptPrepay+"/月" : "无"}</span>
           </div>
          </div>}
          <div style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 9, fontWeight: 700, color: "#5D4037", marginBottom: 4 }}>🎨 报告风格</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#4A3F38", marginBottom: 4 }}>报告风格</div>
           <div style={{ display: "flex", gap: 6 }}>
-           {[["list","📋 详细列表","传统表格"],["grid","📊 卡片看板","2×2可视化"]].map(function(s) { return <button key={s[0]} onClick={function(){setRptStyle(s[0]);}} style={{ flex: 1, padding: "8px 6px", borderRadius: 10, cursor: "pointer", fontFamily: "inherit", border: rptStyle === s[0] ? "2px solid #1565C0" : "1px solid #E0E0E0", background: rptStyle === s[0] ? "#E3F2FD" : "#fff", textAlign: "center" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: rptStyle === s[0] ? "#1565C0" : "#5D4037" }}>{s[1]}</div>
-            <div style={{ fontSize: 7, color: "#90A4AE" }}>{s[2]}</div></button>; })}
+           {[["list","详细列表","传统表格"],["grid","卡片看板","2×2可视化"]].map(function(s) { return <button key={s[0]} onClick={function(){setRptStyle(s[0]);}} style={{ flex: 1, padding: "8px 6px", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", border: rptStyle === s[0] ? "2px solid #121212" : "1px solid #DFDFDF", background: rptStyle === s[0] ? "#FFFFFF" : "#fff", textAlign: "center" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: rptStyle === s[0] ? "#121212" : "#4A3F38" }}>{s[1]}</div>
+            <div style={{ fontSize: 8.5, color: "#767676" }}>{s[2]}</div></button>; })}
           </div>
          </div>
-         <button onClick={function(){setRptStep(1);}} style={{ width: "100%", padding: "10px 0", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700, background: "linear-gradient(135deg, #1565C0, #1976D2)", border: "none", color: "#fff", boxShadow: "0 2px 8px rgba(21,101,192,0.3)" }}>生成报告 →</button>
-         <button onClick={closeModal} style={{ width: "100%", padding: "6px 0", marginTop: 6, borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: 9, fontWeight: 600, background: "transparent", border: "none", color: "#90A4AE" }}>取消</button>
+         <button onClick={function(){setRptStep(1);}} style={{ width: "100%", padding: "10px 0", borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700, background: "#121212", border: "none", color: "#fff", boxShadow: "none"}}>生成报告 →</button>
+         <button onClick={closeModal} style={{ width: "100%", padding: "6px 0", marginTop: 6, borderRadius: 0, cursor: "pointer", fontFamily: "inherit", fontSize: 10, fontWeight: 600, background: "transparent", border: "none", color: "#767676" }}>取消</button>
         </div></div>;
     }
     // Step 1: Report
@@ -2944,176 +2969,176 @@ return { months: months, totalInterest: totalInt, annualRows: rows };
     var effectiveMoCost = totalYrs > 0 ? (totalHoldingCost - totalAppreciation) / (totalYrs * 12) : 0;
     var propLabel = homePropType === "sf" ? "独栋" : homePropType === "th" ? "联排" : homePropType === "condo" ? "Condo" : homePropType === "coop" ? "Co-op" : "多户";
     var rSec = function(title, color) { return { fontSize: 10, fontWeight: 800, color: color, marginTop: 8, marginBottom: 4, paddingBottom: 2, borderBottom: "1px solid " + color + "30" }; };
-    var rRow = function(label, val, color) { return <div style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}><span style={{ fontSize: 9, color: "#5D4037" }}>{label}</span><span style={{ fontSize: 9, fontWeight: 700, color: color || "#3E2723" }}>{val}</span></div>; };
-    var rNote = function(text) { return <div style={{ fontSize: 7, color: "#90A4AE", marginTop: -1, marginBottom: 2 }}>{text}</div>; };
+    var rRow = function(label, val, color) { return <div style={{ display: "flex", justifyContent: "space-between", padding: "2px 0" }}><span style={{ fontSize: 10, color: "#4A3F38" }}>{label}</span><span style={{ fontSize: 10, fontWeight: 700, color: color || "#121212" }}>{val}</span></div>; };
+    var rNote = function(text) { return <div style={{ fontSize: 8.5, color: "#767676", marginTop: -1, marginBottom: 2 }}>{text}</div>; };
     return <div style={overlay} onClick={closeModal}>
-      <div onClick={function(e){e.stopPropagation();}} style={{ background: "#fff", borderRadius: 14, padding: "16px 18px", maxWidth: 400, width: "100%", maxHeight: "85vh", overflow: "auto", boxShadow: "0 8px 32px rgba(0,0,0,0.25)" }}>
+      <div onClick={function(e){e.stopPropagation();}} style={{ background: "#fff", borderRadius: 0, padding: "16px 18px", maxWidth: 400, width: "100%", maxHeight: "85vh", overflow: "auto", boxShadow: "none"}}>
        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-        <div style={{ fontSize: 14, fontWeight: 800, color: "#1565C0" }}>📊 自住房分析报告</div>
+        <div style={{ fontSize: 18, fontWeight: 700, fontFamily: C.serif, color: C.text}}>自住房分析报告</div>
         <div style={{ display: "flex", gap: 4 }}>
-         <button onClick={function(){setRptStep(0);}} style={{ background: "#f5f5f5", border: "none", borderRadius: 5, color: "#1565C0", fontSize: 8, cursor: "pointer", padding: "2px 6px", fontFamily: "inherit", fontWeight: 600 }}>← 重选</button>
-         <button onClick={closeModal} style={{ background: "#f5f5f5", border: "none", borderRadius: 5, color: "#78909C", fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+         <button onClick={function(){setRptStep(0);}} style={{ background: "#F4F4F4", border: "none", borderRadius: 0, color: "#326891", fontSize: 9.5, cursor: "pointer", padding: "2px 6px", fontFamily: "inherit", fontWeight: 600 }}>← 重选</button>
+         <button onClick={closeModal} style={{ background: "#F4F4F4", border: "none", borderRadius: 0, color: "#727272", fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
         </div>
        </div>
-       <div style={{ fontSize: 7, color: "#90A4AE", marginBottom: 6 }}>生成 {new Date().toLocaleDateString("zh-CN")} · 目标{tgtYr}年(距今{yrsFromNow}年) · 升值{appR}%/年{rptPrepay > 0 ? " · 提前还贷$"+rptPrepay+"/月" : ""}</div>
+       <div style={{ fontSize: 8.5, color: "#767676", marginBottom: 6 }}>生成 {new Date().toLocaleDateString("zh-CN")} · 目标{tgtYr}年(距今{yrsFromNow}年) · 升值{appR}%/年{rptPrepay > 0 ? " · 提前还贷$"+rptPrepay+"/月" : ""}</div>
 
        {rptStyle === "grid" ? <>
        {/* === GRID STYLE: 2x2 cards === */}
        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 6 }}>
         {/* Card 1: Property & Appreciation */}
-        <div style={{ background: "linear-gradient(135deg, #FFF8E1, #FFFDE7)", borderRadius: 12, padding: "10px 10px 8px", border: "1px solid #F9A82530", position: "relative", overflow: "hidden" }}>
-         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}>🏠</div>
-         <div style={{ fontSize: 8, fontWeight: 800, color: "#5D4037", marginBottom: 6 }}>🏠 物业增值</div>
-         <div style={{ fontSize: 7, color: "#78909C" }}>买入价</div>
-         <div style={{ fontSize: 14, fontWeight: 800, color: "#5D4037", marginBottom: 2 }}>{fmtMoney(hSP)}</div>
+        <div style={{ background: "#F7F7F7", borderRadius: 0, padding: "10px 10px 8px", border: "1px solid #8A6D1F30", position: "relative", overflow: "hidden" }}>
+         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}></div>
+         <div style={{ fontSize: 9.5, fontWeight: 800, color: "#4A3F38", marginBottom: 6 }}>物业增值</div>
+         <div style={{ fontSize: 8.5, color: "#727272" }}>买入价</div>
+         <div style={{ fontSize: 14, fontWeight: 800, color: "#4A3F38", marginBottom: 2 }}>{fmtMoney(hSP)}</div>
          <div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 4 }}>
-          <div style={{ flex: 1, height: 4, borderRadius: 2, background: "#E0E0E0" }}>
-           <div style={{ width: Math.min(100, totalAppreciation/hSP*100) + "%", height: 4, borderRadius: 2, background: "linear-gradient(90deg, #43A047, #1B5E20)" }}></div></div>
-          <span style={{ fontSize: 7, fontWeight: 700, color: "#1B5E20" }}>+{fmtPct(totalAppreciation/hSP*100)}</span>
+          <div style={{ flex: 1, height: 4, borderRadius: 0, background: "#DFDFDF" }}>
+           <div style={{ width: Math.min(100, totalAppreciation/hSP*100) + "%", height: 4, borderRadius: 0, background: "#1D5536" }}></div></div>
+          <span style={{ fontSize: 8.5, fontWeight: 700, color: "#1D5536" }}>+{fmtPct(totalAppreciation/hSP*100)}</span>
          </div>
-         <div style={{ fontSize: 7, color: "#78909C" }}>{tgtYr}年市值</div>
-         <div style={{ fontSize: 16, fontWeight: 800, color: "#1B5E20" }}>{fmtMoney(tgtVal)}</div>
-         <div style={{ fontSize: 6, color: "#90A4AE", marginTop: 2 }}>{propLabel} · {hOwn*100}%持股 · 增{fmtMoney(totalAppreciation)}</div>
-         {breakEvenYr && <div style={{ fontSize: 6, color: "#2E7D32", marginTop: 2, fontWeight: 600 }}>📍 {breakEvenYr}年回本(持有{breakEvenYr-buyYr}年)</div>}
+         <div style={{ fontSize: 8.5, color: "#727272" }}>{tgtYr}年市值</div>
+         <div style={{ fontSize: 16, fontWeight: 800, color: "#1D5536" }}>{fmtMoney(tgtVal)}</div>
+         <div style={{ fontSize: 7.5, color: "#767676", marginTop: 2 }}>{propLabel} · {hOwn*100}%持股 · 增{fmtMoney(totalAppreciation)}</div>
+         {breakEvenYr && <div style={{ fontSize: 7.5, color: "#2A7A4B", marginTop: 2, fontWeight: 600 }}>{breakEvenYr}年回本(持有{breakEvenYr-buyYr}年)</div>}
         </div>
 
         {/* Card 2: Loan & Equity */}
-        <div style={{ background: homeHasLoan ? "linear-gradient(135deg, #E3F2FD, #E8EAF6)" : "linear-gradient(135deg, #E8F5E9, #C8E6C9)", borderRadius: 12, padding: "10px 10px 8px", border: "1px solid " + (homeHasLoan ? "#1565C020" : "#2E7D3220"), position: "relative", overflow: "hidden" }}>
-         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}>{homeHasLoan ? "💳" : "✅"}</div>
-         <div style={{ fontSize: 8, fontWeight: 800, color: homeHasLoan ? "#1565C0" : "#2E7D32", marginBottom: 6 }}>{homeHasLoan ? "💳 贷款 & 净资产" : "✅ 全款持有"}</div>
+        <div style={{ background: homeHasLoan ? "#FFFFFF" : "#CFE3D5", borderRadius: 0, padding: "10px 10px 8px", border: "1px solid " + (homeHasLoan ? "#32689120" : "#2A7A4B20"), position: "relative", overflow: "hidden" }}>
+         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}>{homeHasLoan ? "" : "✓"}</div>
+         <div style={{ fontSize: 9.5, fontWeight: 800, color: homeHasLoan ? "#326891" : "#2A7A4B", marginBottom: 6 }}>{homeHasLoan ? "贷款 & 净资产" : "✓ 全款持有"}</div>
          {homeHasLoan ? <>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-           <div><div style={{ fontSize: 6, color: "#78909C" }}>贷款额</div><div style={{ fontSize: 10, fontWeight: 800, color: "#1565C0" }}>{fmtMoney(hLoan)}</div></div>
-           <div style={{ textAlign: "right" }}><div style={{ fontSize: 6, color: "#78909C" }}>月供</div><div style={{ fontSize: 10, fontWeight: 800, color: "#1565C0" }}>{fmtMoney(hPI)}</div></div>
+           <div><div style={{ fontSize: 7.5, color: "#727272" }}>贷款额</div><div style={{ fontSize: 10, fontWeight: 800, color: "#326891" }}>{fmtMoney(hLoan)}</div></div>
+           <div style={{ textAlign: "right" }}><div style={{ fontSize: 7.5, color: "#727272" }}>月供</div><div style={{ fontSize: 10, fontWeight: 800, color: "#326891" }}>{fmtMoney(hPI)}</div></div>
           </div>
-          <div style={{ fontSize: 6, color: "#78909C" }}>{tgtYr}年余额</div>
-          <div style={{ fontSize: 14, fontWeight: 800, color: tgtBal > 0.01 ? "#D32F2F" : "#2E7D32" }}>{tgtBal > 0.01 ? fmtMoney(tgtBal) : "$0 ✓"}</div>
-          <div style={{ fontSize: 6, color: "#78909C", marginTop: 3 }}>累计利息</div>
-          <div style={{ fontSize: 9, fontWeight: 700, color: "#E65100" }}>{fmtMoney(totalIntPaid)}<span style={{ fontSize: 6, color: "#90A4AE" }}> / 本金{fmtMoney(totalPrinPaid)}</span></div>
+          <div style={{ fontSize: 7.5, color: "#727272" }}>{tgtYr}年余额</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: tgtBal > 0.01 ? "#A62B29" : "#2A7A4B" }}>{tgtBal > 0.01 ? fmtMoney(tgtBal) : "$0 ✓"}</div>
+          <div style={{ fontSize: 7.5, color: "#727272", marginTop: 3 }}>累计利息</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#B35C1E" }}>{fmtMoney(totalIntPaid)}<span style={{ fontSize: 7.5, color: "#767676" }}> / 本金{fmtMoney(totalPrinPaid)}</span></div>
          </> : <>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#2E7D32", marginBottom: 2 }}>无房贷</div>
-          <div style={{ fontSize: 8, color: "#2E7D32" }}>全款购入 · 零负债</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#2A7A4B", marginBottom: 2 }}>无房贷</div>
+          <div style={{ fontSize: 9.5, color: "#2A7A4B" }}>全款购入 · 零负债</div>
          </>}
-         <div style={{ fontSize: 6, color: "#1565C0", marginTop: 3, fontWeight: 700 }}>净资产 {fmtMoney(tgtEquity * hOwn)}</div>
+         <div style={{ fontSize: 7.5, color: "#326891", marginTop: 3, fontWeight: 700 }}>净资产 {fmtMoney(tgtEquity * hOwn)}</div>
         </div>
 
         {/* Card 3: ROI */}
-        <div style={{ background: "linear-gradient(135deg, #F3E5F5, #EDE7F6)", borderRadius: 12, padding: "10px 10px 8px", border: "1px solid #6A1B9A20", position: "relative", overflow: "hidden" }}>
-         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}>📊</div>
-         <div style={{ fontSize: 8, fontWeight: 800, color: "#6A1B9A", marginBottom: 6 }}>📊 投资回报</div>
-         <div style={{ fontSize: 6, color: "#78909C" }}>总投入 TCI</div>
-         <div style={{ fontSize: 10, fontWeight: 800, color: "#5D4037", marginBottom: 4 }}>{fmtMoney(tci)}</div>
+        <div style={{ background: "#F7F7F7", borderRadius: 0, padding: "10px 10px 8px", border: "1px solid #6B4E8C20", position: "relative", overflow: "hidden" }}>
+         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}></div>
+         <div style={{ fontSize: 9.5, fontWeight: 800, color: "#5E3A7A", marginBottom: 6 }}>投资回报</div>
+         <div style={{ fontSize: 7.5, color: "#727272" }}>总投入 TCI</div>
+         <div style={{ fontSize: 10, fontWeight: 800, color: "#4A3F38", marginBottom: 4 }}>{fmtMoney(tci)}</div>
          <div style={{ display: "flex", gap: 6 }}>
-          <div><div style={{ fontSize: 6, color: "#78909C" }}>ROI</div><div style={{ fontSize: 16, fontWeight: 800, color: roi >= 0 ? "#2E7D32" : "#D32F2F" }}>{fmtPct(roi*100)}</div></div>
-          <div><div style={{ fontSize: 6, color: "#78909C" }}>年化</div><div style={{ fontSize: 16, fontWeight: 800, color: "#6A1B9A" }}>{fmtPct(annualizedRoi*100)}</div></div>
+          <div><div style={{ fontSize: 7.5, color: "#727272" }}>ROI</div><div style={{ fontSize: 16, fontWeight: 800, color: roi >= 0 ? "#2A7A4B" : "#A62B29" }}>{fmtPct(roi*100)}</div></div>
+          <div><div style={{ fontSize: 7.5, color: "#727272" }}>年化</div><div style={{ fontSize: 16, fontWeight: 800, color: "#5E3A7A" }}>{fmtPct(annualizedRoi*100)}</div></div>
          </div>
-         <div style={{ fontSize: 6, color: "#90A4AE", marginTop: 4 }}>{totalYrs}年 · 净赚{fmtMoney(tgtEquity*hOwn - tci)}</div>
-         {effectiveMoCost < 0 && <div style={{ fontSize: 6, color: "#2E7D32", fontWeight: 700, marginTop: 1 }}>🎉 增值覆盖全部持有成本!</div>}
+         <div style={{ fontSize: 7.5, color: "#767676", marginTop: 4 }}>{totalYrs}年 · 净赚{fmtMoney(tgtEquity*hOwn - tci)}</div>
+         {effectiveMoCost < 0 && <div style={{ fontSize: 7.5, color: "#2A7A4B", fontWeight: 700, marginTop: 1 }}>增值覆盖全部持有成本!</div>}
         </div>
 
         {/* Card 4: Holding Cost OR Prepay */}
         {rptPrepay > 0 && homeHasLoan ? (
-        <div style={{ background: "linear-gradient(135deg, #FFEBEE, #FCE4EC)", borderRadius: 12, padding: "10px 10px 8px", border: "1px solid #E5393520", position: "relative", overflow: "hidden" }}>
-         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}>⚡</div>
-         <div style={{ fontSize: 8, fontWeight: 800, color: "#E53935", marginBottom: 6 }}>⚡ 提前还贷</div>
-         <div style={{ fontSize: 7, color: "#78909C" }}>额外${rptPrepay}/月</div>
+        <div style={{ background: "#F7F7F7", borderRadius: 0, padding: "10px 10px 8px", border: "1px solid #B8312F20", position: "relative", overflow: "hidden" }}>
+         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}></div>
+         <div style={{ fontSize: 9.5, fontWeight: 800, color: "#B8312F", marginBottom: 6 }}>提前还贷</div>
+         <div style={{ fontSize: 8.5, color: "#727272" }}>额外${rptPrepay}/月</div>
          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, marginTop: 2 }}>
-          <div><div style={{ fontSize: 6, color: "#78909C" }}>节省时间</div><div style={{ fontSize: 12, fontWeight: 800, color: "#2E7D32" }}>{moSaved > 0 ? moToYrMo(moSaved) : "—"}</div></div>
-          <div style={{ textAlign: "right" }}><div style={{ fontSize: 6, color: "#78909C" }}>节省利息</div><div style={{ fontSize: 12, fontWeight: 800, color: "#2E7D32" }}>{intSaved > 0 ? fmtMoney(intSaved) : "—"}</div></div>
+          <div><div style={{ fontSize: 7.5, color: "#727272" }}>节省时间</div><div style={{ fontSize: 12, fontWeight: 800, color: "#2A7A4B" }}>{moSaved > 0 ? moToYrMo(moSaved) : "—"}</div></div>
+          <div style={{ textAlign: "right" }}><div style={{ fontSize: 7.5, color: "#727272" }}>节省利息</div><div style={{ fontSize: 12, fontWeight: 800, color: "#2A7A4B" }}>{intSaved > 0 ? fmtMoney(intSaved) : "—"}</div></div>
          </div>
-         <div style={{ display: "flex", gap: 4, fontSize: 6 }}>
-          <span style={{ color: "#78909C" }}>原{moToYrMo(baseMo)}</span>
-          <span style={{ color: "#E53935" }}>→</span>
-          <span style={{ color: "#1565C0", fontWeight: 700 }}>{moToYrMo(prepMo)}</span>
+         <div style={{ display: "flex", gap: 4, fontSize: 7.5 }}>
+          <span style={{ color: "#727272" }}>原{moToYrMo(baseMo)}</span>
+          <span style={{ color: "#B8312F" }}>→</span>
+          <span style={{ color: "#326891", fontWeight: 700 }}>{moToYrMo(prepMo)}</span>
          </div>
-         {intBase > 0 && <div style={{ fontSize: 6, color: "#2E7D32", fontWeight: 600, marginTop: 2 }}>节省{fmtPct(intSaved/intBase*100)}利息</div>}
+         {intBase > 0 && <div style={{ fontSize: 7.5, color: "#2A7A4B", fontWeight: 600, marginTop: 2 }}>节省{fmtPct(intSaved/intBase*100)}利息</div>}
         </div>
         ) : (
-        <div style={{ background: "linear-gradient(135deg, #FFF3E0, #FBE9E7)", borderRadius: 12, padding: "10px 10px 8px", border: "1px solid #E6510020", position: "relative", overflow: "hidden" }}>
-         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}>🏷</div>
-         <div style={{ fontSize: 8, fontWeight: 800, color: "#E65100", marginBottom: 6 }}>🏷 持有成本</div>
+        <div style={{ background: "#F7F7F7", borderRadius: 0, padding: "10px 10px 8px", border: "1px solid #B35C1E20", position: "relative", overflow: "hidden" }}>
+         <div style={{ position: "absolute", top: -8, right: -8, fontSize: 40, opacity: 0.08 }}></div>
+         <div style={{ fontSize: 9.5, fontWeight: 800, color: "#B35C1E", marginBottom: 6 }}>持有成本</div>
          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-          <div><div style={{ fontSize: 6, color: "#78909C" }}>月供P&I</div><div style={{ fontSize: 10, fontWeight: 800, color: "#1565C0" }}>{homeHasLoan ? fmtMoney(hPI) : "$0"}</div></div>
-          <div style={{ textAlign: "right" }}><div style={{ fontSize: 6, color: "#78909C" }}>月固定</div><div style={{ fontSize: 10, fontWeight: 800, color: "#6A1B9A" }}>{fmtMoney(fixedNow)}</div></div>
+          <div><div style={{ fontSize: 7.5, color: "#727272" }}>月供P&I</div><div style={{ fontSize: 10, fontWeight: 800, color: "#326891" }}>{homeHasLoan ? fmtMoney(hPI) : "$0"}</div></div>
+          <div style={{ textAlign: "right" }}><div style={{ fontSize: 7.5, color: "#727272" }}>月固定</div><div style={{ fontSize: 10, fontWeight: 800, color: "#5E3A7A" }}>{fmtMoney(fixedNow)}</div></div>
          </div>
-         <div style={{ fontSize: 6, color: "#78909C" }}>{totalYrs}年累计</div>
-         <div style={{ fontSize: 14, fontWeight: 800, color: "#BF360C" }}>{fmtMoney(totalHoldingCost)}</div>
-         {yrsFromNow > 0 && <div style={{ fontSize: 6, color: "#E65100", marginTop: 2 }}>{tgtYr}年月固定预测: {fmtMoney(fixedTgt)}</div>}
-         {effectiveMoCost >= 0 ? <div style={{ fontSize: 6, color: "#78909C", marginTop: 1 }}>等效月成本(扣增值): {fmtMoney(effectiveMoCost)}</div>
-          : <div style={{ fontSize: 6, color: "#2E7D32", fontWeight: 600, marginTop: 1 }}>增值 &gt; 成本 · 等效免费住!</div>}
+         <div style={{ fontSize: 7.5, color: "#727272" }}>{totalYrs}年累计</div>
+         <div style={{ fontSize: 14, fontWeight: 800, color: "#8F4418" }}>{fmtMoney(totalHoldingCost)}</div>
+         {yrsFromNow > 0 && <div style={{ fontSize: 7.5, color: "#B35C1E", marginTop: 2 }}>{tgtYr}年月固定预测: {fmtMoney(fixedTgt)}</div>}
+         {effectiveMoCost >= 0 ? <div style={{ fontSize: 7.5, color: "#727272", marginTop: 1 }}>等效月成本(扣增值): {fmtMoney(effectiveMoCost)}</div>
+          : <div style={{ fontSize: 7.5, color: "#2A7A4B", fontWeight: 600, marginTop: 1 }}>增值 &gt; 成本 · 等效免费住!</div>}
         </div>
         )}
        </div>
        </> : <>
        {/* === LIST STYLE === */}
        <div style={{ display: "flex", gap: 3, marginBottom: 6 }}>
-        <div style={{ flex: 1, background: "#FFF8E1", borderRadius: 8, padding: "4px 6px", textAlign: "center" }}>
-         <div style={{ fontSize: 7, color: "#5D4037" }}>🏠{propLabel}</div>
-         <div style={{ fontSize: 11, fontWeight: 800, color: "#5D4037" }}>{fmtMoney(hSP)}</div></div>
-        <div style={{ flex: 1, background: "#E8F5E9", borderRadius: 8, padding: "4px 6px", textAlign: "center" }}>
-         <div style={{ fontSize: 7, color: "#1B5E20" }}>📈{tgtYr}年市值</div>
-         <div style={{ fontSize: 11, fontWeight: 800, color: "#1B5E20" }}>{fmtMoney(tgtVal)}</div></div>
-        <div style={{ flex: 1, background: "#E3F2FD", borderRadius: 8, padding: "4px 6px", textAlign: "center" }}>
-         <div style={{ fontSize: 7, color: "#1565C0" }}>💰净资产</div>
-         <div style={{ fontSize: 11, fontWeight: 800, color: "#1565C0" }}>{fmtMoney(tgtEquity * hOwn)}</div></div>
+        <div style={{ flex: 1, background: "#F7F7F7", borderRadius: 0, padding: "4px 6px", textAlign: "center" }}>
+         <div style={{ fontSize: 8.5, color: "#4A3F38" }}>{propLabel}</div>
+         <div style={{ fontSize: 11, fontWeight: 800, color: "#4A3F38" }}>{fmtMoney(hSP)}</div></div>
+        <div style={{ flex: 1, background: "#F7F7F7", borderRadius: 0, padding: "4px 6px", textAlign: "center" }}>
+         <div style={{ fontSize: 8.5, color: "#1D5536" }}>{tgtYr}年市值</div>
+         <div style={{ fontSize: 11, fontWeight: 800, color: "#1D5536" }}>{fmtMoney(tgtVal)}</div></div>
+        <div style={{ flex: 1, background: "#F7F7F7", borderRadius: 0, padding: "4px 6px", textAlign: "center" }}>
+         <div style={{ fontSize: 8.5, color: "#326891" }}>净资产</div>
+         <div style={{ fontSize: 11, fontWeight: 800, color: "#326891" }}>{fmtMoney(tgtEquity * hOwn)}</div></div>
        </div>
 
-       <div style={rSec("🏠 物业概况", "#5D4037")}>物业概况</div>
-       {rRow("买入价 → " + tgtYr + "年", fmtMoney(hSP) + " → " + fmtMoney(tgtVal), "#1B5E20")}
+       <div style={rSec("物业概况", "#4A3F38")}>物业概况</div>
+       {rRow("买入价 → " + tgtYr + "年", fmtMoney(hSP) + " → " + fmtMoney(tgtVal), "#1D5536")}
        {rNote(fmtMoney(hSP) + " × (1+" + appR + "%)^" + totalYrs + " · 增值" + fmtMoney(totalAppreciation) + " (+" + fmtPct(totalAppreciation/hSP*100) + ")")}
        {rRow("持股 " + (hOwn*100) + "% · TCI", fmtMoney(tci))}
        {heldYrs > 0 && rRow("购入", buyYr + "年 · 已持有" + heldYrs + "年")}
        {rRow("当前市值(2026)", fmtMoney(curVal))}
 
        {homeHasLoan ? <>
-        <div style={rSec("💳 贷款详情", "#1565C0")}>贷款</div>
+        <div style={rSec("贷款详情", "#326891")}>贷款</div>
         {rRow("贷款", fmtMoney(hLoan) + " @ " + (parseFloat(homeAnnRate)||6.75) + "% × " + (parseInt(homeLoanYrs)||30) + "年")}
-        {rRow("月供 P&I", fmtMoney(hPI), "#1565C0")}
-        {rRow("当前余额(2026)", fmtMoney(curBal), "#D32F2F")}
-        {rRow(tgtYr + "年余额", fmtMoney(tgtBal), tgtBal > 0.01 ? "#D32F2F" : "#2E7D32")}
-        {tgtBal < 0.01 && rNote("🎉 " + tgtYr + "年已还清贷款!")}
+        {rRow("月供 P&I", fmtMoney(hPI), "#326891")}
+        {rRow("当前余额(2026)", fmtMoney(curBal), "#A62B29")}
+        {rRow(tgtYr + "年余额", fmtMoney(tgtBal), tgtBal > 0.01 ? "#A62B29" : "#2A7A4B")}
+        {tgtBal < 0.01 && rNote("" + tgtYr + "年已还清贷款!")}
         {rRow("累计已付本金", fmtMoney(totalPrinPaid))}
-        {rRow("累计已付利息", fmtMoney(totalIntPaid), "#E65100")}
+        {rRow("累计已付利息", fmtMoney(totalIntPaid), "#B35C1E")}
         {rNote("利息占比: " + (totalPrinPaid + totalIntPaid > 0 ? fmtPct(totalIntPaid/(totalPrinPaid+totalIntPaid)*100) : "0%") + " · 本金占比: " + (totalPrinPaid + totalIntPaid > 0 ? fmtPct(totalPrinPaid/(totalPrinPaid+totalIntPaid)*100) : "0%"))}
        </> : <>
-        <div style={rSec("✅ 全款购入", "#2E7D32")}>全款</div>
-        {rRow("状态", "无房贷 · 全款持有", "#2E7D32")}
+        <div style={rSec("✓ 全款购入", "#2A7A4B")}>全款</div>
+        {rRow("状态", "无房贷 · 全款持有", "#2A7A4B")}
        </>}
 
-       <div style={rSec("📊 投资回报", "#6A1B9A")}>回报</div>
+       <div style={rSec("投资回报", "#5E3A7A")}>回报</div>
        {rRow("总投入 TCI", fmtMoney(tci))}
-       {rRow(tgtYr + "年净资产", fmtMoney(tgtEquity * hOwn), "#1B5E20")}
-       {rRow("投资回报率 ROI", fmtPct(roi * 100), roi >= 0 ? "#2E7D32" : "#D32F2F")}
+       {rRow(tgtYr + "年净资产", fmtMoney(tgtEquity * hOwn), "#1D5536")}
+       {rRow("投资回报率 ROI", fmtPct(roi * 100), roi >= 0 ? "#2A7A4B" : "#A62B29")}
        {rNote("(" + fmtMoney(tgtEquity * hOwn) + " - " + fmtMoney(tci) + ") ÷ " + fmtMoney(tci))}
-       {totalYrs > 0 && rRow("年化回报率", fmtPct(annualizedRoi * 100), "#6A1B9A")}
-       {breakEvenYr && rRow("回本年份", breakEvenYr + "年 (持有" + (breakEvenYr - buyYr) + "年)", "#2E7D32")}
+       {totalYrs > 0 && rRow("年化回报率", fmtPct(annualizedRoi * 100), "#5E3A7A")}
+       {breakEvenYr && rRow("回本年份", breakEvenYr + "年 (持有" + (breakEvenYr - buyYr) + "年)", "#2A7A4B")}
        {rNote("净资产 ≥ 总投入TCI的时间点")}
 
-       <div style={rSec("🏷 持有成本", "#E65100")}>成本</div>
-       {rRow("月固定(当前)", fmtMoney(fixedNow), "#6A1B9A")}
-       {yrsFromNow > 0 && rRow("月固定(" + tgtYr + "年预测)", fmtMoney(fixedTgt), "#E65100")}
-       {rRow("月总支出(当前)", fmtMoney(hPI + fixedNow), "#BF360C")}
-       {rRow(totalYrs + "年累计总持有成本", fmtMoney(totalHoldingCost), "#BF360C")}
-       {effectiveMoCost < 0 && rRow("等效月成本(扣增值)", fmtMoney(0) + " (增值>成本)", "#2E7D32")}
-       {effectiveMoCost >= 0 && rRow("等效月成本(扣增值)", fmtMoney(effectiveMoCost), "#E65100")}
+       <div style={rSec("持有成本", "#B35C1E")}>成本</div>
+       {rRow("月固定(当前)", fmtMoney(fixedNow), "#5E3A7A")}
+       {yrsFromNow > 0 && rRow("月固定(" + tgtYr + "年预测)", fmtMoney(fixedTgt), "#B35C1E")}
+       {rRow("月总支出(当前)", fmtMoney(hPI + fixedNow), "#8F4418")}
+       {rRow(totalYrs + "年累计总持有成本", fmtMoney(totalHoldingCost), "#8F4418")}
+       {effectiveMoCost < 0 && rRow("等效月成本(扣增值)", fmtMoney(0) + " (增值>成本)", "#2A7A4B")}
+       {effectiveMoCost >= 0 && rRow("等效月成本(扣增值)", fmtMoney(effectiveMoCost), "#B35C1E")}
        {rNote("(总持有成本 - 房价增值) ÷ 总月数 · 负数=增值超过成本")}
 
        {rptPrepay > 0 && homeHasLoan && <>
-        <div style={rSec("⚡ 提前还贷对比", "#E53935")}>提前还贷</div>
-        {rRow("每月额外还贷", "$" + rptPrepay + "/月", "#E53935")}
+        <div style={rSec("提前还贷对比", "#B8312F")}>提前还贷</div>
+        {rRow("每月额外还贷", "$" + rptPrepay + "/月", "#B8312F")}
         {rRow("原始还清", moToYrMo(baseMo) + " (" + (buyYr + Math.ceil(baseMo/12)) + "年)")}
-        {rRow("提前还清", moToYrMo(prepMo) + " (" + (buyYr + Math.ceil(prepMo/12)) + "年)", "#1565C0")}
-        {rRow("节省时间", moSaved > 0 ? moToYrMo(moSaved) : "—", "#2E7D32")}
-        {rRow("节省利息", intSaved > 0 ? fmtMoney(intSaved) : "—", "#2E7D32")}
+        {rRow("提前还清", moToYrMo(prepMo) + " (" + (buyYr + Math.ceil(prepMo/12)) + "年)", "#326891")}
+        {rRow("节省时间", moSaved > 0 ? moToYrMo(moSaved) : "—", "#2A7A4B")}
+        {rRow("节省利息", intSaved > 0 ? fmtMoney(intSaved) : "—", "#2A7A4B")}
         {intBase > 0 && rNote("利息节省率: " + fmtPct(intSaved/intBase*100) + " · 原总利息" + fmtMoney(intBase) + " → " + fmtMoney(intPrep))}
-        {rRow("每月多付$" + rptPrepay + "的回报", intSaved > 0 ? fmtMoney(intSaved / (rptPrepay * prepMo) * rptPrepay) + "/月等值" : "—", "#6A1B9A")}
+        {rRow("每月多付$" + rptPrepay + "的回报", intSaved > 0 ? fmtMoney(intSaved / (rptPrepay * prepMo) * rptPrepay) + "/月等值" : "—", "#5E3A7A")}
        </>}
        </>}
 
-       <div style={{ marginTop: 10, padding: "6px 8px", background: "#F5F5F5", borderRadius: 6, fontSize: 7, color: "#78909C", lineHeight: 1.5 }}>
-        💡 本报告基于固定利率{parseFloat(homeAnnRate)||6.75}%、年升值{appR}%、年成本涨幅{costGrow}%假设。实际回报受市场波动、利率变化、维护费用等因素影响。本工具不构成投资建议，请结合专业人士评估。
+       <div style={{ marginTop: 10, padding: "6px 8px", background: "#F4F4F4", borderRadius: 0, fontSize: 8.5, color: "#727272", lineHeight: 1.5 }}>
+        本报告基于固定利率{parseFloat(homeAnnRate)||6.75}%、年升值{appR}%、年成本涨幅{costGrow}%假设。实际回报受市场波动、利率变化、维护费用等因素影响。本工具不构成投资建议，请结合专业人士评估。
        </div>
-       <div style={{ fontSize: 6, color: "#BDBDBD", textAlign: "center", marginTop: 6 }}>© JMJ Invest LLC · 钱景 FIRE Calculator</div>
+       <div style={{ fontSize: 7.5, color: "#767676", textAlign: "center", marginTop: 6 }}>© JMJ Invest LLC · 钱景 FIRE Calculator</div>
       </div></div>;
   })()}
   {modal === "fireReport" && (() => {
@@ -3154,68 +3179,68 @@ return { months: months, totalInterest: totalInt, annualRows: rows };
     var adjAnnSav = adjInc * adjSavR / 100;
     var saved = baseAge && adjAge ? baseAge - adjAge : 0;
     var strategies = [];
-    for (var si = 10; si <= 50; si += 10) { var a = simFire(si, 0, 0); if (a && baseAge && a < baseAge) strategies.push({ l: "收入+" + si + "%", age: a, save: baseAge - a, c: "#1565C0" }); }
-    for (var ss = 5; ss <= 25; ss += 5) { var a2 = simFire(0, ss, 0); if (a2 && baseAge && a2 < baseAge) strategies.push({ l: "储蓄率+" + ss + "%", age: a2, save: baseAge - a2, c: "#2E7D32" }); }
-    for (var st = 10; st <= 30; st += 10) { var a3 = simFire(0, 0, st); if (a3 && baseAge && a3 < baseAge) strategies.push({ l: "目标-" + st + "%", age: a3, save: baseAge - a3, c: "#E65100" }); }
+    for (var si = 10; si <= 50; si += 10) { var a = simFire(si, 0, 0); if (a && baseAge && a < baseAge) strategies.push({ l: "收入+" + si + "%", age: a, save: baseAge - a, c: "#326891" }); }
+    for (var ss = 5; ss <= 25; ss += 5) { var a2 = simFire(0, ss, 0); if (a2 && baseAge && a2 < baseAge) strategies.push({ l: "储蓄率+" + ss + "%", age: a2, save: baseAge - a2, c: "#2A7A4B" }); }
+    for (var st = 10; st <= 30; st += 10) { var a3 = simFire(0, 0, st); if (a3 && baseAge && a3 < baseAge) strategies.push({ l: "目标-" + st + "%", age: a3, save: baseAge - a3, c: "#B35C1E" }); }
     strategies.sort(function(a,b) { return a.age - b.age; });
     return (
       <div style={overlay} onClick={() => { setModal(null); setScnInc(0); setScnSav(0); setScnTgt(0); }}>
         <div style={{ ...mBox, maxWidth: 420, maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-      <span style={{ fontSize: 13, fontWeight: 800, color: C.green }}>🔮 FIRE 加速规划器</span>
-      <button onClick={() => { setModal(null); setScnInc(0); setScnSav(0); setScnTgt(0); }} style={{ background: C.inset, border: "none", borderRadius: 5, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+      <span style={{ fontSize: 18, fontWeight: 700, fontFamily: C.serif, color: C.text}}>FIRE 加速规划器</span>
+      <button onClick={() => { setModal(null); setScnInc(0); setScnSav(0); setScnTgt(0); }} style={{ background: C.inset, border: "none", borderRadius: 0, color: C.sub, fontSize: 16, cursor: "pointer", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
      </div>
      <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
-      <div style={{ flex: 1, background: C.green+"10", borderRadius: 8, padding: "8px", textAlign: "center" }}>
-       <div style={{ fontSize: 7, color: C.muted }}>当前预测</div>
+      <div style={{ flex: 1, background: C.green+"10", borderRadius: 0, padding: "8px", textAlign: "center" }}>
+       <div style={{ fontSize: 8.5, color: C.muted }}>当前预测</div>
        <div style={{ fontSize: 22, fontWeight: 800, color: baseAge ? C.green : C.red }}>{baseAge || "—"}<span style={{ fontSize: 10 }}>岁</span></div></div>
       {(scnInc > 0 || scnSav > 0 || scnTgt > 0) && <div style={{ display: "flex", alignItems: "center", fontSize: 16, color: C.muted }}>→</div>}
-      {(scnInc > 0 || scnSav > 0 || scnTgt > 0) && <div style={{ flex: 1, background: adjAge && adjAge < (baseAge||99) ? "#E8F5E9" : C.accent+"10", borderRadius: 8, padding: "8px", textAlign: "center" }}>
-       <div style={{ fontSize: 7, color: C.muted }}>调整后</div>
-       <div style={{ fontSize: 22, fontWeight: 800, color: adjAge && adjAge < (baseAge||99) ? "#2E7D32" : C.accent }}>{adjAge || "—"}<span style={{ fontSize: 10 }}>岁</span></div>
-       {saved > 0 && <div style={{ fontSize: 8, color: "#2E7D32", fontWeight: 700 }}>提前{saved}年 🎉</div>}
+      {(scnInc > 0 || scnSav > 0 || scnTgt > 0) && <div style={{ flex: 1, background: adjAge && adjAge < (baseAge||99) ? "#FFFFFF" : C.accent+"10", borderRadius: 0, padding: "8px", textAlign: "center" }}>
+       <div style={{ fontSize: 8.5, color: C.muted }}>调整后</div>
+       <div style={{ fontSize: 22, fontWeight: 800, color: adjAge && adjAge < (baseAge||99) ? "#2A7A4B" : C.accent }}>{adjAge || "—"}<span style={{ fontSize: 10 }}>岁</span></div>
+       {saved > 0 && <div style={{ fontSize: 9.5, color: "#2A7A4B", fontWeight: 700 }}>提前{saved}年 </div>}
       </div>}</div>
-     <div style={{ fontSize: 9, fontWeight: 700, color: C.text, marginBottom: 4 }}>📊 调整参数看影响</div>
-     <div style={{ background: C.inset, borderRadius: 8, padding: "8px", marginBottom: 6 }}>
+     <div style={{ fontSize: 10, fontWeight: 700, color: C.text, marginBottom: 4 }}>调整参数看影响</div>
+     <div style={{ background: C.inset, borderRadius: 0, padding: "8px", marginBottom: 6 }}>
       <div style={{ marginBottom: 8 }}>
        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-        <span style={{ fontSize: 8, color: C.sub }}>💰 收入提升</span>
-        <span style={{ fontSize: 9, fontWeight: 800, color: scnInc > 0 ? "#1565C0" : C.muted }}>{scnInc > 0 ? "+" + scnInc + "%" : "不变"} → {fmtMoney(adjInc)}/年</span></div>
-       <input type="range" min={0} max={100} step={5} value={scnInc} onChange={function(e) { setScnInc(parseInt(e.target.value)); }} style={{ width: "100%", height: 12, accentColor: "#1565C0", cursor: "pointer" }} />
+        <span style={{ fontSize: 9.5, color: C.sub }}>收入提升</span>
+        <span style={{ fontSize: 10, fontWeight: 800, color: scnInc > 0 ? "#326891" : C.muted }}>{scnInc > 0 ? "+" + scnInc + "%" : "不变"} → {fmtMoney(adjInc)}/年</span></div>
+       <input type="range" min={0} max={100} step={5} value={scnInc} onChange={function(e) { setScnInc(parseInt(e.target.value)); }} style={{ width: "100%", height: 12, accentColor: "#326891", cursor: "pointer" }} />
       </div>
       <div style={{ marginBottom: 8 }}>
        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-        <span style={{ fontSize: 8, color: C.sub }}>📈 储蓄率提升</span>
-        <span style={{ fontSize: 9, fontWeight: 800, color: scnSav > 0 ? "#2E7D32" : C.muted }}>{scnSav > 0 ? "+" + scnSav + "%" : "不变"} → {adjSavR}% ({fmtMoney(adjAnnSav)}/年)</span></div>
-       <input type="range" min={0} max={40} step={2} value={scnSav} onChange={function(e) { setScnSav(parseInt(e.target.value)); }} style={{ width: "100%", height: 12, accentColor: "#2E7D32", cursor: "pointer" }} />
+        <span style={{ fontSize: 9.5, color: C.sub }}>储蓄率提升</span>
+        <span style={{ fontSize: 10, fontWeight: 800, color: scnSav > 0 ? "#2A7A4B" : C.muted }}>{scnSav > 0 ? "+" + scnSav + "%" : "不变"} → {adjSavR}% ({fmtMoney(adjAnnSav)}/年)</span></div>
+       <input type="range" min={0} max={40} step={2} value={scnSav} onChange={function(e) { setScnSav(parseInt(e.target.value)); }} style={{ width: "100%", height: 12, accentColor: "#2A7A4B", cursor: "pointer" }} />
       </div>
       <div>
        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-        <span style={{ fontSize: 8, color: C.sub }}>🎯 降低月目标</span>
-        <span style={{ fontSize: 9, fontWeight: 800, color: scnTgt > 0 ? "#E65100" : C.muted }}>{scnTgt > 0 ? "-" + scnTgt + "%" : "不变"} → {fmtMoney(adjTgt)}/月</span></div>
-       <input type="range" min={0} max={50} step={5} value={scnTgt} onChange={function(e) { setScnTgt(parseInt(e.target.value)); }} style={{ width: "100%", height: 12, accentColor: "#E65100", cursor: "pointer" }} />
+        <span style={{ fontSize: 9.5, color: C.sub }}>降低月目标</span>
+        <span style={{ fontSize: 10, fontWeight: 800, color: scnTgt > 0 ? "#B35C1E" : C.muted }}>{scnTgt > 0 ? "-" + scnTgt + "%" : "不变"} → {fmtMoney(adjTgt)}/月</span></div>
+       <input type="range" min={0} max={50} step={5} value={scnTgt} onChange={function(e) { setScnTgt(parseInt(e.target.value)); }} style={{ width: "100%", height: 12, accentColor: "#B35C1E", cursor: "pointer" }} />
       </div></div>
-     {(scnInc > 0 || scnSav > 0 || scnTgt > 0) && <div style={{ background: "#E8F5E9", borderRadius: 6, padding: "6px 8px", marginBottom: 6, fontSize: 8, lineHeight: 1.8 }}>
-      <div style={{ fontWeight: 700, fontSize: 9, color: "#2E7D32", marginBottom: 2 }}>📋 调整方案摘要</div>
+     {(scnInc > 0 || scnSav > 0 || scnTgt > 0) && <div style={{ background: "#F7F7F7", borderRadius: 0, padding: "6px 8px", marginBottom: 6, fontSize: 9.5, lineHeight: 1.8 }}>
+      <div style={{ fontWeight: 700, fontSize: 10, color: "#2A7A4B", marginBottom: 2 }}>调整方案摘要</div>
       {scnInc > 0 && <div>收入从 <b>{fmtMoney(annInc)}</b> → <b>{fmtMoney(adjInc)}</b> (+{fmtMoney(adjInc-annInc)}/年)</div>}
       {scnSav > 0 && <div>储蓄率从 <b>{savR}%</b> → <b>{adjSavR}%</b> (年储蓄+{fmtMoney(adjAnnSav - annInc*savR/100)})</div>}
       {scnTgt > 0 && <div>月目标从 <b>{fmtMoney(tgtMo)}</b> → <b>{fmtMoney(adjTgt)}</b></div>}
-      <div style={{ color: "#2E7D32", fontWeight: 700, marginTop: 2 }}>{saved > 0 ? "→ FIRE提前" + saved + "年，" + adjAge + "岁达成！" : adjAge ? adjAge + "岁达成FIRE" : "仍需更大调整"}</div></div>}
-     <div style={{ fontSize: 9, fontWeight: 700, color: C.text, marginBottom: 4 }}>⚡ 快速策略对比</div>
+      <div style={{ color: "#2A7A4B", fontWeight: 700, marginTop: 2 }}>{saved > 0 ? "→ FIRE提前" + saved + "年，" + adjAge + "岁达成！" : adjAge ? adjAge + "岁达成FIRE" : "仍需更大调整"}</div></div>}
+     <div style={{ fontSize: 10, fontWeight: 700, color: C.text, marginBottom: 4 }}>快速策略对比</div>
      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3, marginBottom: 6 }}>
       {strategies.slice(0, 8).map(function(s, i) { return (
-       <div key={i} style={{ background: s.c + "08", border: "1px solid " + s.c + "20", borderRadius: 6, padding: "4px 6px", cursor: "pointer" }} onClick={function() {
+       <div key={i} style={{ background: s.c + "08", border: "1px solid " + s.c + "20", borderRadius: 0, padding: "4px 6px", cursor: "pointer" }} onClick={function() {
         if (s.l.includes("收入")) setScnInc(parseInt(s.l.match(/\d+/)[0]));
         else if (s.l.includes("储蓄率")) setScnSav(parseInt(s.l.match(/\d+/)[0]));
         else if (s.l.includes("目标")) setScnTgt(parseInt(s.l.match(/\d+/)[0]));
        }}>
-        <div style={{ fontSize: 8, fontWeight: 600, color: s.c }}>{s.l}</div>
+        <div style={{ fontSize: 9.5, fontWeight: 600, color: s.c }}>{s.l}</div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
          <span style={{ fontSize: 12, fontWeight: 800, color: s.c }}>{s.age}岁</span>
-         <span style={{ fontSize: 7, color: "#2E7D32", fontWeight: 700 }}>早{s.save}年</span></div></div>
+         <span style={{ fontSize: 8.5, color: "#2A7A4B", fontWeight: 700 }}>早{s.save}年</span></div></div>
       ); })}</div>
-     <div style={{ fontSize: 9, fontWeight: 700, color: C.text, marginBottom: 4 }}>💡 个性化建议</div>
-     <div style={{ background: C.accent+"06", borderRadius: 6, padding: "6px 8px", fontSize: 8, lineHeight: 1.8, color: C.sub }}>
+     <div style={{ fontSize: 10, fontWeight: 700, color: C.text, marginBottom: 4 }}>个性化建议</div>
+     <div style={{ background: C.accent+"06", borderRadius: 0, padding: "6px 8px", fontSize: 9.5, lineHeight: 1.8, color: C.sub }}>
       {savR < 15 && <div>• 储蓄率{savR}%偏低，每增加5%储蓄率可提前约{strategies.find(function(s){return s.l==="储蓄率+5%";})?.save||2}年退休</div>}
       {savR >= 15 && savR < 30 && <div>• 储蓄率{savR}%中等，提升到25%+可显著加速FIRE</div>}
       {savR >= 30 && <div>• 储蓄率{savR}%优秀！保持纪律是关键</div>}
